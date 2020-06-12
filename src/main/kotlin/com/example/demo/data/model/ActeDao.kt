@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleStringProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 
@@ -17,8 +17,8 @@ import tornadofx.*
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object ActesTbl : IntIdTable() {
-    override val id = integer("ActeId").entityId()
+object ActesTbl : IdTable<Int>() {
+    override val id = integer("ActeId").autoIncrement().entityId()
     val Name = text("Name")
     val AppliedAmount = decimal("AppliedAmount", scale = 0, precision = 9)
     val OfficialAmount = decimal("OfficialAmount", scale = 0, precision = 9)

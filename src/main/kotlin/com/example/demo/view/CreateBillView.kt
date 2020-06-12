@@ -1,14 +1,24 @@
 package com.example.demo.view
 
+import com.example.demo.data.db.createTables
+import com.example.demo.data.db.enableConsoleLogger
 import com.example.demo.utils.defaultPadding
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
+import org.jetbrains.exposed.sql.Database
 import tornadofx.*
 
 class CreateBillView : View("My View") {
+
+    init {
+        // Initialize DB
+        enableConsoleLogger()
+        Database.connect("jdbc:sqlite:./app-hospital.db", "org.sqlite.JDBC")
+        createTables()
+    }
 
     override val root = gridpane {
 

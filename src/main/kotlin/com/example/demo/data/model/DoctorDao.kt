@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.IdTable
 import tornadofx.*
 
 /**
@@ -15,7 +15,7 @@ import tornadofx.*
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object DoctorsTbl : IntIdTable() {
+object DoctorsTbl : IdTable<Int>() {
     override val id = MedicalStaffsTbl.integer("DoctorID").entityId() references MedicalStaffsTbl.id
     val Speciality = reference("SpecialityID", SpecialitiesTbl, fkName = "FK_Doctor_Speciality")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))

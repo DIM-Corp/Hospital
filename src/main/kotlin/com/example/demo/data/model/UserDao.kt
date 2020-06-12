@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleStringProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.IdTable
 import tornadofx.*
 import java.time.LocalDate
 
@@ -18,8 +18,8 @@ import java.time.LocalDate
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object UsersTbl : IntIdTable() {
-    override val id = integer("UserID").entityId()
+object UsersTbl : IdTable<Int>() {
+    override val id = integer("UserID").autoIncrement().entityId()
     val Name = varchar("Name", 32)
     val Surname = varchar("Surname", 32)
     val Address = text("Address")

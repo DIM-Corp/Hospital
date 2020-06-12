@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleLongProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.IdTable
 import tornadofx.*
 
 /**
@@ -15,7 +15,7 @@ import tornadofx.*
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object MedicationsTbl : IntIdTable() {
+object MedicationsTbl : IdTable<Int>() {
     override val id = integer("MedicationID").entityId() references ActesTbl.id
     var CounterStock = long("CounterStock")
     var WarehouseStock = long("WarehouseStock")

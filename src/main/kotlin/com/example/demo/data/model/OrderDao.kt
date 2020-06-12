@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.IdTable
 import tornadofx.*
 import java.time.LocalDate
 
@@ -16,8 +16,8 @@ import java.time.LocalDate
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object OrdersTbl : IntIdTable() {
-    override val id = integer("ActeId").entityId()
+object OrdersTbl : IdTable<Int>() {
+    override val id = integer("OrderId").autoIncrement().entityId()
     val Timestamp = long("Timestamp")
     val Patient = reference("PatientID", PatientsTbl, fkName = "FK_Order_Patient")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))

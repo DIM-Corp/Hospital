@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 
@@ -15,7 +15,7 @@ import tornadofx.*
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object CashiersTbl : IntIdTable() {
+object CashiersTbl : IdTable<Int>() {
     override val id = integer("CashierID").entityId() references MedicalStaffsTbl.id
     val Type = integer("Type")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
