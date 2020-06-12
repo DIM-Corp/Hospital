@@ -23,7 +23,7 @@ fun createTables() {
         SchemaUtils.create(
                 ActesTbl,
                 CashiersTbl,
-                CashierOrders,
+                CashierOrdersTbl,
                 Doctors,
                 DoctorOrders,
                 MedicalStaffsTbl,
