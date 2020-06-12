@@ -62,3 +62,13 @@ class UserEntry(id: Int, name: String, surname: String, address: String, gender:
     val telephoneProperty = SimpleStringProperty(telephone)
     val telephone by telephoneProperty
 }
+
+class UserViewModel : ItemViewModel<UserEntry>() {
+    val id = bind { item?.idProperty }
+    val name = bind { item?.nameProperty }
+    val surname = bind { item?.surnameProperty }
+    val address = bind { item?.addressProperty }
+    val gender = bind { item?.genderProperty }
+    val dateOfBirth = bind { item?.dateOfBirthProperty }
+    val telephone = bind { item?.telephoneProperty }
+}
