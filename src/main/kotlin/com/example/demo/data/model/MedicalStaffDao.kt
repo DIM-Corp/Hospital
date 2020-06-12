@@ -34,9 +34,9 @@ class MedicalStaffTbl(id: EntityID<Int>) : IntEntity(id) {
 }
 
 class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, service: ServiceEntry) {
-    var id = SimpleIntegerProperty(id)
-    var username = SimpleStringProperty(username)
-    var password = SimpleStringProperty(password)
-    var role = SimpleIntegerProperty(role)
-    var service = SimpleObjectProperty(service)
+    var idProperty = SimpleIntegerProperty(id)
+    var usernameProperty = SimpleStringProperty(username)
+    var passwordProperty = SimpleStringProperty(password)
+    var roleProperty = SimpleIntegerProperty(role)
+    var serviceProperty = SimpleObjectProperty(service)
 }
