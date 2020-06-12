@@ -22,7 +22,7 @@ fun createTables() {
     with(newTransaction()) {
         SchemaUtils.create(
                 ActesTbl,
-                Cashiers,
+                CashiersTbl,
                 CashierOrders,
                 Doctors,
                 DoctorOrders,
