@@ -50,3 +50,11 @@ class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, 
     var serviceProperty = SimpleObjectProperty(service)
     val service by serviceProperty
 }
+
+class MedicalStaffViewModel : ItemViewModel<MedicalStaffEntry>() {
+    val id = bind { item?.idProperty }
+    val username = bind { item?.usernameProperty }
+    val password = bind { item?.passwordProperty }
+    val role = bind { item?.roleProperty }
+    val service = bind { item?.roleProperty }
+}
