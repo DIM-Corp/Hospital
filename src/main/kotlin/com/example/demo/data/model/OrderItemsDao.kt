@@ -11,6 +11,6 @@ import org.jetbrains.exposed.sql.Table
  */
 object OrderItems : Table() {
     val Acte = reference("ActeID", ActesTbl, fkName = "FK_OrderItems_Acte")
-    val Order = reference("OrderID", Orders, fkName = "FK_OrderItems_Order")
+    val Order = reference("OrderID", OrdersTbl, fkName = "FK_OrderItems_Order")
     val Quantity = integer("Quantity")
 }

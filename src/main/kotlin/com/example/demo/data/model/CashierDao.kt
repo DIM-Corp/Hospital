@@ -24,7 +24,7 @@ class CashierTbl(id: EntityID<Int>) : IntEntity(id) {
 
     var type by CashiersTbl.Type
 
-    var orders by Order via CashierOrders
+    var orders by OrderTbl via CashierOrders
 }
 
 class CashierEntry(id: Int, type: Int) {

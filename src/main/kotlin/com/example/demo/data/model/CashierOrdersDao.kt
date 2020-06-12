@@ -10,6 +10,6 @@ import org.jetbrains.exposed.sql.Table
  * @created 12-Jun-2020 05:34:28 AM
  */
 object CashierOrders : Table() {
-    val Order = reference("OrderID", Orders, fkName = "FK_CreateOrder_Order")
+    val Order = reference("OrderID", OrdersTbl, fkName = "FK_CreateOrder_Order")
     val Cashier = reference("CashierID", CashiersTbl, fkName = "FK_CreateOrder_Cashier")
 }

@@ -28,7 +28,7 @@ fun createTables() {
                 DoctorOrders,
                 MedicalStaffsTbl,
                 Medications,
-                Orders,
+                OrdersTbl,
                 OrderItems,
                 PatientsTbl,
                 ServicesTbl,
