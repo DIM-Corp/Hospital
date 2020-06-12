@@ -5,6 +5,7 @@ package com.example.demo.data.model
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.sql.Table
+import tornadofx.*
 
 /**
  * @author forntoh
@@ -19,6 +20,11 @@ object OrderItemsTbl : Table() {
 
 class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
     val acteProperty = SimpleObjectProperty(acte)
+    val acte by acteProperty
+
     val orderProperty = SimpleObjectProperty(order)
+    val order by orderProperty
+
     val quantityProperty = SimpleIntegerProperty(quantity)
+    val quantity by quantityProperty
 }
