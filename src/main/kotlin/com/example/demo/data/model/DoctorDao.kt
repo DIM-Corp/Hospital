@@ -23,7 +23,7 @@ object DoctorsTbl : IntIdTable() {
 class DoctorTbl(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<DoctorTbl>(DoctorsTbl)
 
-    var orders by OrderTbl via DoctorOrders
+    var orders by OrderTbl via DoctorOrdersTbl
 }
 
 class DoctorEntry(id: Int, speciality: SpecialityEntry) {
