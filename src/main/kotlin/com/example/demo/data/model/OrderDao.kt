@@ -42,3 +42,9 @@ class OrderEntry(id: Int, date: LocalDate, patient: PatientEntry) {
     val patientProperty = SimpleObjectProperty(patient)
     val patient by patientProperty
 }
+
+class OrderViewModel : ItemViewModel<OrderEntry>() {
+    val id = bind { item?.idProperty }
+    val date = bind { item?.dateProperty }
+    val patient = bind { item?.patientProperty }
+}
