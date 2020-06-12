@@ -39,3 +39,9 @@ class MedicationEntry(id: Int, counterStock: Long, warehouseStock: Long) {
     var warehouseStockProperty = SimpleLongProperty(warehouseStock)
     val warehouseStock by warehouseStockProperty
 }
+
+class MedicationViewModel : ItemViewModel<MedicationEntry>() {
+    val id = bind { item?.idProperty }
+    val counterStock = bind { item?.counterStockProperty }
+    val warehouseStock = bind { item?.warehouseStockProperty }
+}
