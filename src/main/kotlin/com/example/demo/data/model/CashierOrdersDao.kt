@@ -23,3 +23,8 @@ class CashierOrderEntry(order: OrderEntry, cashier: CashierEntry) {
     val cashierProperty = SimpleObjectProperty(cashier)
     val cashier by cashierProperty
 }
+
+class CashierOrderViewModel : ItemViewModel<CashierOrderEntry>() {
+    val order = bind { item?.orderProperty }
+    val cashier = bind { item?.cashierProperty }
+}
