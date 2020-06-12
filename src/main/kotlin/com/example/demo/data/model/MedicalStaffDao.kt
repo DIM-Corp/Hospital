@@ -9,6 +9,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import tornadofx.*
 
 /**
  * @author forntoh
@@ -35,8 +36,17 @@ class MedicalStaffTbl(id: EntityID<Int>) : IntEntity(id) {
 
 class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, service: ServiceEntry) {
     var idProperty = SimpleIntegerProperty(id)
+    val id by idProperty
+
     var usernameProperty = SimpleStringProperty(username)
+    val username by usernameProperty
+
     var passwordProperty = SimpleStringProperty(password)
+    val password by passwordProperty
+
     var roleProperty = SimpleIntegerProperty(role)
+    val role by roleProperty
+
     var serviceProperty = SimpleObjectProperty(service)
+    val service by serviceProperty
 }
