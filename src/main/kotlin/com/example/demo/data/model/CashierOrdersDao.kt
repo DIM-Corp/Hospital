@@ -19,7 +19,7 @@ object CashierOrdersTbl : Table() {
 
 fun ResultRow.toCashierOrderEntry() = CashierOrderEntry(
         OrderTbl(this[CashierOrdersTbl.Order]).readValues.toOrderEntry(),
-        OrderTbl(this[CashierOrdersTbl.Cashier]).readValues.toCashierEntry()
+        CashierTbl(this[CashierOrdersTbl.Cashier]).readValues.toCashierEntry()
 )
 
 class CashierOrderEntry(order: OrderEntry, cashier: CashierEntry) {

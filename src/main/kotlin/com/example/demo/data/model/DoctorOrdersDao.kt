@@ -19,7 +19,7 @@ object DoctorOrdersTbl : Table() {
 
 fun ResultRow.toDoctorOrderEntry() = DoctorOrderEntry(
         OrderTbl(this[DoctorOrdersTbl.Order]).readValues.toOrderEntry(),
-        OrderTbl(this[DoctorOrdersTbl.Doctor]).readValues.toDoctorEntry()
+        DoctorTbl(this[DoctorOrdersTbl.Doctor]).readValues.toDoctorEntry()
 )
 
 class DoctorOrderEntry(order: OrderEntry, doctor: DoctorEntry) {
