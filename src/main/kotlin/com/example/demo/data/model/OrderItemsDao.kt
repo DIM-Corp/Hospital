@@ -28,3 +28,9 @@ class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
     val quantityProperty = SimpleIntegerProperty(quantity)
     val quantity by quantityProperty
 }
+
+class OrderItem : ItemViewModel<OrderItemEntry>() {
+    val acte = bind { item?.acteProperty }
+    val order = bind { item?.orderProperty }
+    val quantity = bind { item?.quantityProperty }
+}
