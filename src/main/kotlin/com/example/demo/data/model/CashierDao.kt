@@ -35,3 +35,8 @@ class CashierEntry(id: Int, type: Int) {
     val typeProperty = SimpleIntegerProperty(type)
     val type by typeProperty
 }
+
+class CashierVieModel : ItemViewModel<CashierEntry>() {
+    val id = bind { item?.idProperty }
+    val type = bind { item?.typeProperty }
+}
