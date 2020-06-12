@@ -34,3 +34,8 @@ class SpecialityEntry(id: Int, name: String) {
     var nameProperty = SimpleStringProperty(name)
     val name by nameProperty
 }
+
+class SpecialityViewModel : ItemViewModel<SpecialityEntry>() {
+    val id = bind { item?.idProperty }
+    val name = bind { item?.nameProperty }
+}
