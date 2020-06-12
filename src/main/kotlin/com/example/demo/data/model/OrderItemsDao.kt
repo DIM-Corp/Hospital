@@ -4,6 +4,7 @@ package com.example.demo.data.model
 
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import tornadofx.*
 
@@ -17,6 +18,12 @@ object OrderItemsTbl : Table() {
     val Order = reference("OrderID", OrdersTbl, fkName = "FK_OrderItems_Order")
     val Quantity = integer("Quantity")
 }
+
+fun ResultRow.toOrderItemEntry() = OrderItemEntry(
+        ActeTbl(this[OrderItemsTbl.Acte]).readValues.toActeEntry(),
+        OrderTbl(this[OrderItemsTbl.Order]).readValues.toOrderEntry(),
+        this[OrderItemsTbl.Quantity]
+)
 
 class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
     val acteProperty = SimpleObjectProperty(acte)
