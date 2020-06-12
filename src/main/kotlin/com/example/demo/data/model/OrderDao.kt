@@ -2,6 +2,7 @@
 
 package com.example.demo.data.model
 
+import com.example.demo.utils.toLocalDateTime
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.dao.IntEntity
@@ -10,7 +11,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * @author forntoh
@@ -35,11 +36,11 @@ class OrderTbl(id: EntityID<Int>) : IntEntity(id) {
 
 fun ResultRow.toOrderEntry() = OrderEntry(
         this[OrdersTbl.id].value,
-        this[OrdersTbl.Timestamp],
+        this[OrdersTbl.Timestamp].toLocalDateTime(),
         PatientTbl(this[OrdersTbl.Patient]).readValues.toPatientEntry()
 )
 
-class OrderEntry(id: Int, date: LocalDate, patient: PatientEntry) {
+class OrderEntry(id: Int, date: LocalDateTime, patient: PatientEntry) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
