@@ -34,3 +34,8 @@ class ServiceEntry(id: Int, name: String) {
     val nameProperty = SimpleStringProperty(name)
     val name by nameProperty
 }
+
+class ServiceViewModel : ItemViewModel<ServiceEntry>() {
+    val id = bind { item?.idProperty }
+    val name = bind { item?.nameProperty }
+}
