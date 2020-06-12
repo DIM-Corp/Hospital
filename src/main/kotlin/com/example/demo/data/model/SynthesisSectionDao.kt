@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 
 /**
@@ -26,6 +27,11 @@ class SynthesisSectionTbl(id: EntityID<Int>) : IntEntity(id) {
 
     var name by SynthesisSectionsTbl.Name
 }
+
+fun ResultRow.toSynthesisSectionEntry() = SynthesisSectionEntry(
+        this[SynthesisSectionsTbl.id].value,
+        this[SynthesisSectionsTbl.Name]
+)
 
 class SynthesisSectionEntry(id: Int, name: String) {
     val idProperty = SimpleIntegerProperty(id)
