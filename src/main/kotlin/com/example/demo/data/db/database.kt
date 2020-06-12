@@ -33,7 +33,7 @@ fun createTables() {
                 Patients,
                 Services,
                 Specialities,
-                SynthesisSections,
+                SynthesisSectionsTbl,
                 Users
         )
     }

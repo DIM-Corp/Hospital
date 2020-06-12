@@ -21,7 +21,7 @@ object ActesTbl : IntIdTable() {
     val Name = text("Name")
     val AppliedAmount = decimal("AppliedAmount", scale = 0, precision = 9)
     val OfficialAmount = decimal("OfficialAmount", scale = 0, precision = 9)
-    val SynthesisSection = reference("SynthesisSectionId", SynthesisSections, fkName = "FK_Acte_Belongs")
+    val SynthesisSection = reference("SynthesisSectionId", SynthesisSectionsTbl, fkName = "FK_Acte_Belongs")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
@@ -39,7 +39,7 @@ class ActesEntry(
         name: String,
         appliedAmount: Double,
         officialAmount: Double,
-        synthesisSection: SynthesisSection
+        synthesisSection: SynthesisSectionEntry
 ) {
     val idProperty = SimpleIntegerProperty(id)
     val nameProperty = SimpleStringProperty(name)
