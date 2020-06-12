@@ -57,3 +57,11 @@ class ActeEntry(
     val synthesisSectionProperty = SimpleObjectProperty(synthesisSection)
     val synthesisSection by synthesisSectionProperty
 }
+
+class ActeViewModel : ItemViewModel<ActeEntry>() {
+    val id = bind { item?.idProperty }
+    val name = bind { item?.nameProperty }
+    val appliedAmount = bind { item?.appliedAmountProperty }
+    val officialAmount = bind { item?.officialAmountProperty }
+    val synthesisSection = bind { item?.synthesisSectionProperty }
+}
