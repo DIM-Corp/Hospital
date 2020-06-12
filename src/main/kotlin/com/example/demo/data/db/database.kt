@@ -30,7 +30,7 @@ fun createTables() {
                 Medications,
                 Orders,
                 OrderItems,
-                Patients,
+                PatientsTbl,
                 Services,
                 Specialities,
                 SynthesisSectionsTbl,

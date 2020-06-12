@@ -15,7 +15,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 object Orders : IntIdTable() {
     override val id = integer("ActeId").entityId()
     val Timestamp = long("Timestamp")
-    val Patient = reference("PatientID", Patients, fkName = "FK_Order_Patient")
+    val Patient = reference("PatientID", PatientsTbl, fkName = "FK_Order_Patient")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
