@@ -7,6 +7,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import tornadofx.*
 
 /**
  * @author forntoh
@@ -29,5 +30,8 @@ class CashierTbl(id: EntityID<Int>) : IntEntity(id) {
 
 class CashierEntry(id: Int, type: Int) {
     val idProperty = SimpleIntegerProperty(id)
+    val id by idProperty
+
     val typeProperty = SimpleIntegerProperty(type)
+    val type by typeProperty
 }
