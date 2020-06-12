@@ -4,7 +4,6 @@ package com.example.demo.data.model
 
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -40,7 +39,7 @@ class ActeEntry(
         name: String,
         appliedAmount: Double,
         officialAmount: Double,
-        synthesisSection: SynthesisSectionEntry
+        synthesisSectionId: Int
 ) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
@@ -54,8 +53,8 @@ class ActeEntry(
     val officialAmountProperty = SimpleDoubleProperty(officialAmount)
     val officialAmount by officialAmountProperty
 
-    val synthesisSectionProperty = SimpleObjectProperty(synthesisSection)
-    val synthesisSection by synthesisSectionProperty
+    val synthesisSectionIdProperty = SimpleIntegerProperty(synthesisSectionId)
+    val synthesisSectionId by synthesisSectionIdProperty
 }
 
 class ActeViewModel : ItemViewModel<ActeEntry>() {
@@ -63,5 +62,5 @@ class ActeViewModel : ItemViewModel<ActeEntry>() {
     val name = bind { item?.nameProperty }
     val appliedAmount = bind { item?.appliedAmountProperty }
     val officialAmount = bind { item?.officialAmountProperty }
-    val synthesisSection = bind { item?.synthesisSectionProperty }
+    val synthesisSection = bind { item?.synthesisSectionIdProperty }
 }
