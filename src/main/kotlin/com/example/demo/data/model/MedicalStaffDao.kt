@@ -19,7 +19,7 @@ object MedicalStaffsTbl : IntIdTable() {
     override val id = integer("Matriculation").entityId() references UsersTbl.id
     var Username = varchar("Username", 32)
     var Password = varchar("Password", 32)
-    var Service = reference("ServiceID", Services, fkName = "FK_MedicalStaff_WorksIn")
+    var Service = reference("ServiceID", ServicesTbl, fkName = "FK_MedicalStaff_WorksIn")
     var Role = integer("Role")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
