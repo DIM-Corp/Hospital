@@ -15,8 +15,8 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 object Actes : IntIdTable() {
     override val id = integer("ActeId").entityId()
     val Name = text("Name")
-    val AppliedAmount = double("AppliedAmount")
-    val OfficialAmount = double("OfficialAmount")
+    val AppliedAmount = decimal("AppliedAmount")
+    val OfficialAmount = decimal("OfficialAmount")
     val SynthesisSection = reference("SynthesisSectionId", SynthesisSections, fkName = "FK_Acte_Belongs")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
