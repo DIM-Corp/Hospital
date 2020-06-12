@@ -7,6 +7,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 
 /**
@@ -25,6 +26,11 @@ class PatientTbl(id: EntityID<Int>) : IntEntity(id) {
 
     var condition by PatientsTbl.Condition
 }
+
+fun ResultRow.toPatientEntry() = PatientEntry(
+        this[PatientsTbl.id].value,
+        this[PatientsTbl.Condition]
+)
 
 class PatientEntry(id: Int, condition: Int) {
     val idProperty = SimpleIntegerProperty(id)
