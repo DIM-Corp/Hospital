@@ -21,7 +21,7 @@ fun enableConsoleLogger() {
 fun createTables() {
     with(newTransaction()) {
         SchemaUtils.create(
-                Actes,
+                ActesTbl,
                 Cashiers,
                 CashierOrders,
                 Doctors,

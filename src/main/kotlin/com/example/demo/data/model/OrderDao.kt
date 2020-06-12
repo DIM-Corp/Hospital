@@ -25,5 +25,5 @@ class Order(id: EntityID<Int>) : IntEntity(id) {
     var timeStamp by Orders.Timestamp
     var patient by Orders.Patient
 
-    var orderItems by Acte via OrderItems
+    var orderItems by ActeTbl via OrderItems
 }

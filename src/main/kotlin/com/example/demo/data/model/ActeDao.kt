@@ -2,6 +2,10 @@
 
 package com.example.demo.data.model
 
+import javafx.beans.property.SimpleDoubleProperty
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -12,7 +16,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object Actes : IntIdTable() {
+object ActesTbl : IntIdTable() {
     override val id = integer("ActeId").entityId()
     val Name = text("Name")
     val AppliedAmount = decimal("AppliedAmount", scale = 0, precision = 9)
@@ -21,11 +25,25 @@ object Actes : IntIdTable() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class Acte(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<Acte>(Actes)
+class ActeTbl(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<ActeTbl>(ActesTbl)
 
-    var name by Actes.Name
-    var appliedAmount by Actes.AppliedAmount
-    var officialAmount by Actes.OfficialAmount
-    var synthesisSection by Actes.SynthesisSection
+    var name by ActesTbl.Name
+    var appliedAmount by ActesTbl.AppliedAmount
+    var officialAmount by ActesTbl.OfficialAmount
+    var synthesisSection by ActesTbl.SynthesisSection
+}
+
+class ActesEntry(
+        id: Int,
+        name: String,
+        appliedAmount: Double,
+        officialAmount: Double,
+        synthesisSection: SynthesisSection
+) {
+    val idProperty = SimpleIntegerProperty(id)
+    val nameProperty = SimpleStringProperty(name)
+    val appliedAmountProperty = SimpleDoubleProperty(appliedAmount)
+    val officialAmountProperty = SimpleDoubleProperty(officialAmount)
+    val synthesisSectionProperty = SimpleObjectProperty(synthesisSection)
 }
