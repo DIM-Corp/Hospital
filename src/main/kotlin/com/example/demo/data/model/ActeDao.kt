@@ -1,0 +1,31 @@
+@file:Suppress("MemberVisibilityCanBePrivate", "unused")
+
+package com.example.demo.data.model
+
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
+
+/**
+ * @author forntoh
+ * @version 1.0
+ * @created 12-Jun-2020 11:17:28 AM
+ */
+object Actes : IntIdTable() {
+    override val id = integer("ActeId").entityId()
+    val Name = text("Name")
+    val AppliedAmount = double("AppliedAmount")
+    val OfficialAmount = double("OfficialAmount")
+    val SynthesisSection = reference("SynthesisSectionId", SynthesisSections, fkName = "FK_Acte_Belongs")
+    override val primaryKey = PrimaryKey(columns = *arrayOf(id))
+}
+
+class Acte(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Acte>(Actes)
+
+    var name by Actes.Name
+    var appliedAmount by Actes.AppliedAmount
+    var officialAmount by Actes.OfficialAmount
+    var synthesisSection by Actes.SynthesisSection
+}
