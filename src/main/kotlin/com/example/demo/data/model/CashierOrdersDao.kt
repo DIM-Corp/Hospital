@@ -4,6 +4,7 @@ package com.example.demo.data.model
 
 import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.sql.Table
+import tornadofx.*
 
 /**
  * @author forntoh
@@ -17,5 +18,8 @@ object CashierOrdersTbl : Table() {
 
 class CashierOrderEntry(order: OrderEntry, cashier: CashierEntry) {
     val orderProperty = SimpleObjectProperty(order)
+    val order by orderProperty
+
     val cashierProperty = SimpleObjectProperty(cashier)
+    val cashier by cashierProperty
 }
