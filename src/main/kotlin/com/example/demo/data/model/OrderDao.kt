@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import tornadofx.*
 import java.time.LocalDate
 
 /**
@@ -33,6 +34,11 @@ class OrderTbl(id: EntityID<Int>) : IntEntity(id) {
 
 class OrderEntry(id: Int, date: LocalDate, patient: PatientEntry) {
     val idProperty = SimpleIntegerProperty(id)
+    val id by idProperty
+
     val dateProperty = SimpleObjectProperty(date)
+    val date by dateProperty
+
     val patientProperty = SimpleObjectProperty(patient)
+    val patient by patientProperty
 }
