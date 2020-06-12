@@ -34,7 +34,7 @@ class ActeTbl(id: EntityID<Int>) : IntEntity(id) {
     var synthesisSection by ActesTbl.SynthesisSection
 }
 
-class ActesEntry(
+class ActeEntry(
         id: Int,
         name: String,
         appliedAmount: Double,

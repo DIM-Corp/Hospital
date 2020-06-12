@@ -17,7 +17,7 @@ object OrderItemsTbl : Table() {
     val Quantity = integer("Quantity")
 }
 
-class OrderItemEntry(acte: ActesEntry, order: OrderEntry, quantity: Int) {
+class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
     val acteProperty = SimpleObjectProperty(acte)
     val orderProperty = SimpleObjectProperty(order)
     val quantityProperty = SimpleIntegerProperty(quantity)
