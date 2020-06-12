@@ -13,7 +13,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
  * @created 12-Jun-2020 11:17:28 AM
  */
 object Cashiers : IntIdTable() {
-    override val id = MedicalStaffs.integer("CashierID").entityId() references MedicalStaffs.id
+    override val id = MedicalStaffsTbl.integer("CashierID").entityId() references MedicalStaffsTbl.id
     val Type = integer("Type")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }

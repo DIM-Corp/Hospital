@@ -13,7 +13,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
  * @created 12-Jun-2020 11:17:28 AM
  */
 object Doctors : IntIdTable() {
-    override val id = MedicalStaffs.integer("DoctorID").entityId() references MedicalStaffs.id
+    override val id = MedicalStaffsTbl.integer("DoctorID").entityId() references MedicalStaffsTbl.id
     val Speciality = reference("SpecialityID", Specialities, fkName = "FK_Doctor_Speciality")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
