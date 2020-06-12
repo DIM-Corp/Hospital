@@ -23,3 +23,8 @@ class DoctorOrderEntry(order: OrderEntry, doctor: DoctorEntry) {
     val doctorProperty = SimpleObjectProperty(doctor)
     val doctor by doctorProperty
 }
+
+class DoctorOrderViewModel : ItemViewModel<DoctorOrderEntry>() {
+    val order = bind { item?.orderProperty }
+    val doctor = bind { item?.doctorProperty }
+}
