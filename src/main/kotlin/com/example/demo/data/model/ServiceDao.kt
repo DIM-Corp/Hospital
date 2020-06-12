@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 
 /**
@@ -26,6 +27,11 @@ class ServiceTbl(id: EntityID<Int>) : IntEntity(id) {
 
     var name by ServicesTbl.Name
 }
+
+fun ResultRow.toServiceEntry() = ServiceEntry(
+        this[ServicesTbl.id].value,
+        this[ServicesTbl.Name]
+)
 
 class ServiceEntry(id: Int, name: String) {
     val idProperty = SimpleIntegerProperty(id)
