@@ -34,3 +34,8 @@ class SynthesisSectionEntry(id: Int, name: String) {
     val nameProperty = SimpleStringProperty(name)
     val name by idProperty
 }
+
+class SynthesisSectionViewModel : ItemViewModel<SynthesisSectionEntry>() {
+    val id = bind { item?.idProperty }
+    val name = bind { item?.nameProperty }
+}
