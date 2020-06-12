@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import tornadofx.*
 
 /**
  * @author forntoh
@@ -30,6 +31,11 @@ class MedicationTbl(id: EntityID<Int>) : IntEntity(id) {
 
 class MedicationEntry(id: Int, counterStock: Long, warehouseStock: Long) {
     var idProperty = SimpleIntegerProperty(id)
+    val id by idProperty
+
     var counterStockProperty = SimpleLongProperty(counterStock)
+    val counterStock by counterStockProperty
+
     var warehouseStockProperty = SimpleLongProperty(warehouseStock)
+    val warehouseStock by warehouseStockProperty
 }
