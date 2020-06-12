@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 import java.time.LocalDate
 
@@ -39,6 +40,16 @@ open class UserTbl(id: EntityID<Int>) : IntEntity(id) {
     var dateOfBirth by UsersTbl.DateOfBirth
     var telephone by UsersTbl.Telephone
 }
+
+fun ResultRow.toUserEntry() = UserEntry(
+        this[UsersTbl.id].value,
+        this[UsersTbl.Name],
+        this[UsersTbl.Surname],
+        this[UsersTbl.Address],
+        this[UsersTbl.Gender],
+        this[UsersTbl.DateOfBirth],
+        this[UsersTbl.Telephone]
+)
 
 class UserEntry(id: Int, name: String, surname: String, address: String, gender: Boolean, dateOfBirth: LocalDate, telephone: String) {
     val idProperty = SimpleIntegerProperty(id)

@@ -11,7 +11,6 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.select
 import tornadofx.*
 
 /**
@@ -42,9 +41,7 @@ fun ResultRow.toActeEntry() = ActeEntry(
         this[ActesTbl.Name],
         this[ActesTbl.AppliedAmount].toDouble(),
         this[ActesTbl.OfficialAmount].toDouble(),
-        SynthesisSectionsTbl.select {
-            SynthesisSectionsTbl.id eq this@toActeEntry[ActesTbl.SynthesisSection].value
-        }.first().toSynthesisSectionEntry()
+        SynthesisSectionTbl(this[ActesTbl.SynthesisSection]).readValues.toSynthesisSectionEntry()
 )
 
 class ActeEntry(
