@@ -2,17 +2,22 @@
 
 package com.example.demo.data.model
 
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import java.time.LocalDate
 
 /**
  * @author forntoh
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object Users : IntIdTable() {
+object UsersTbl : IntIdTable() {
     override val id = integer("UserID").entityId()
     val Name = varchar("Name", 32)
     val Surname = varchar("Surname", 32)
@@ -23,13 +28,31 @@ object Users : IntIdTable() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-open class User(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<User>(Users)
+open class UserTbl(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<UserTbl>(UsersTbl)
 
-    var name by Users.Name
-    var surname by Users.Surname
-    var address by Users.Address
-    var gender by Users.Gender
-    var dateOfBirth by Users.DateOfBirth
-    var telephone by Users.Telephone
+    var name by UsersTbl.Name
+    var surname by UsersTbl.Surname
+    var address by UsersTbl.Address
+    var gender by UsersTbl.Gender
+    var dateOfBirth by UsersTbl.DateOfBirth
+    var telephone by UsersTbl.Telephone
+}
+
+class UserEntry(
+        id: Int,
+        name: String,
+        surname: String,
+        address: String,
+        gender: Boolean,
+        dateOfBirth: LocalDate,
+        telephone: String
+) {
+    val idProperty = SimpleIntegerProperty(id)
+    val nameProperty = SimpleStringProperty(name)
+    val surnameProperty = SimpleStringProperty(surname)
+    val addressProperty = SimpleStringProperty(address)
+    val genderProperty = SimpleBooleanProperty(gender)
+    val dateOfBirthProperty = SimpleObjectProperty(dateOfBirth)
+    val telephoneProperty = SimpleStringProperty(telephone)
 }

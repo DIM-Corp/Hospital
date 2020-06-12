@@ -13,7 +13,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
  * @created 12-Jun-2020 11:17:28 AM
  */
 object MedicalStaffs : IntIdTable() {
-    override val id = integer("Matriculation").entityId() references Users.id
+    override val id = integer("Matriculation").entityId() references UsersTbl.id
     var Username = varchar("Username", 32)
     var Password = varchar("Password", 32)
     var Service = reference("ServiceID", Services, fkName = "FK_MedicalStaff_WorksIn")

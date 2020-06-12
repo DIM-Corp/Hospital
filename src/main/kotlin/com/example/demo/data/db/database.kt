@@ -34,7 +34,7 @@ fun createTables() {
                 Services,
                 Specialities,
                 SynthesisSectionsTbl,
-                Users
+                UsersTbl
         )
     }
 }
