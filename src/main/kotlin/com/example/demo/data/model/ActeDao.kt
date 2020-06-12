@@ -9,6 +9,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 
 /**
@@ -33,6 +34,14 @@ class ActeTbl(id: EntityID<Int>) : IntEntity(id) {
     var officialAmount by ActesTbl.OfficialAmount
     var synthesisSection by ActesTbl.SynthesisSection
 }
+
+fun ResultRow.toActeEntry() = ActeEntry(
+        this[ActesTbl.id].value,
+        this[ActesTbl.Name],
+        this[ActesTbl.AppliedAmount].toDouble(),
+        this[ActesTbl.OfficialAmount].toDouble(),
+        this[ActesTbl.SynthesisSection].value
+)
 
 class ActeEntry(
         id: Int,
