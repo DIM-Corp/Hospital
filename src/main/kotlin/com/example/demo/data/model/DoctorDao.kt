@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import tornadofx.*
 
 /**
  * @author forntoh
@@ -28,5 +29,8 @@ class DoctorTbl(id: EntityID<Int>) : IntEntity(id) {
 
 class DoctorEntry(id: Int, speciality: SpecialityEntry) {
     var idProperty = SimpleIntegerProperty(id)
+    val id by idProperty
+
     var specialityProperty = SimpleObjectProperty(speciality)
+    val speciality by specialityProperty
 }
