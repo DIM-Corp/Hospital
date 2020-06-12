@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import tornadofx.*
 
 /**
  * @author forntoh
@@ -42,8 +43,17 @@ class ActeEntry(
         synthesisSection: SynthesisSectionEntry
 ) {
     val idProperty = SimpleIntegerProperty(id)
+    val id by idProperty
+
     val nameProperty = SimpleStringProperty(name)
+    val name by nameProperty
+
     val appliedAmountProperty = SimpleDoubleProperty(appliedAmount)
+    val appliedAmount by appliedAmountProperty
+
     val officialAmountProperty = SimpleDoubleProperty(officialAmount)
+    val officialAmount by officialAmountProperty
+
     val synthesisSectionProperty = SimpleObjectProperty(synthesisSection)
+    val synthesisSection by synthesisSectionProperty
 }
