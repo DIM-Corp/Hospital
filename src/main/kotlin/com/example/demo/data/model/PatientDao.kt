@@ -33,3 +33,8 @@ class PatientEntry(id: Int, condition: Int) {
     val conditionProperty = SimpleIntegerProperty(condition)
     val condition by conditionProperty
 }
+
+class PatientViewModel : ItemViewModel<PatientEntry>() {
+    val id = bind { item?.idProperty }
+    val condition = bind { item?.conditionProperty }
+}
