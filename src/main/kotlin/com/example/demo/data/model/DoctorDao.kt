@@ -34,3 +34,8 @@ class DoctorEntry(id: Int, speciality: SpecialityEntry) {
     var specialityProperty = SimpleObjectProperty(speciality)
     val speciality by specialityProperty
 }
+
+class DoctorViewModel : ItemViewModel<DoctorEntry>() {
+    val id = bind { item?.idProperty }
+    val speciality = bind { item?.specialityProperty }
+}
