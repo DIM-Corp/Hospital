@@ -1,13 +1,11 @@
 package com.example.demo.app
 
-import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.*
 
 class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
-        val negative by cssclass()
     }
 
     init {
@@ -15,10 +13,6 @@ class Styles : Stylesheet() {
             padding = box(10.px)
             fontSize = 20.px
             fontWeight = FontWeight.BOLD
-        }
-
-        button and negative {
-            backgroundColor += Color.RED
         }
     }
 }
