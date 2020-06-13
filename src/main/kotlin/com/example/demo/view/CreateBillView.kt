@@ -1,23 +1,29 @@
 package com.example.demo.view
 
-import com.example.demo.data.db.createTables
-import com.example.demo.data.db.enableConsoleLogger
+import com.example.demo.data.db.transactionInsert
+import com.example.demo.data.model.UserTbl
 import com.example.demo.utils.defaultPadding
+import com.example.demo.utils.toTimestamp
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.control.Spinner
 import javafx.scene.layout.Priority
-import org.jetbrains.exposed.sql.Database
 import tornadofx.*
+import java.time.LocalDate
 
 class CreateBillView : View("My View") {
 
     init {
-        // Initialize DB
-        enableConsoleLogger()
-        Database.connect("jdbc:sqlite:./app-hospital.db", "org.sqlite.JDBC")
-        createTables()
+        transactionInsert(UserTbl) {
+            name = "Johnson"
+            surname = "Doe"
+            address = "Efoulan Lac"
+            gender = true
+            dateOfBirth = LocalDate.now().toTimestamp()
+            telephone = "454545"
+        }
     }
 
     override val root = gridpane {
@@ -35,12 +41,12 @@ class CreateBillView : View("My View") {
                                 fitToParentWidth()
                             }
                         }
-                        hbox {
-                            spacing = defaultPadding
+                        flowpane {
+                            hgap = defaultPadding
                             field(messages["age"]) {
-                                textfield {
+                                spinner(1, 200, 20) {
                                     promptText = messages["placeHolderAge"]
-                                    filterInput { it.controlNewText.isInt() && it.controlNewText.toInt() < 200 }
+                                    addClass(Spinner.STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL)
                                 }
                             }
                             field(messages["sex"]) {
@@ -50,9 +56,6 @@ class CreateBillView : View("My View") {
                                     radiobutton(text = messages["female"])
                                 }
                             }
-                        }
-                        hbox {
-                            spacing = defaultPadding
                             field(messages["address"]) {
                                 textfield { promptText = messages["placeHolderAddress"] }
                             }
@@ -62,11 +65,11 @@ class CreateBillView : View("My View") {
                                     filterInput { it.controlNewText.isNotEmpty() && it.controlNewText.first() == '6' && it.controlNewText.length <= 9 }
                                 }
                             }
-                        }
-                        field(messages["situation"]) {
-                            togglegroup {
-                                radiobutton(text = messages["sitIn"]) { isSelected = true }
-                                radiobutton(text = messages["sitOut"])
+                            field(messages["situation"]) {
+                                togglegroup {
+                                    radiobutton(text = messages["sitIn"]) { isSelected = true }
+                                    radiobutton(text = messages["sitOut"])
+                                }
                             }
                         }
                     }
@@ -81,6 +84,8 @@ class CreateBillView : View("My View") {
 
                     column(messages["name"], Person::nameProperty)
                     column(messages["age"], Person::ageProperty)
+
+                    addClass("alternating-row-colors")
                 }
                 /*
                  * Left Pane Properties
