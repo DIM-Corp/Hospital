@@ -2,7 +2,7 @@
 
 package com.example.demo.data.model
 
-import com.example.demo.utils.toLocalDateTime
+import com.example.demo.utils.toLocalDate
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -13,7 +13,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 /**
  * @author forntoh
@@ -48,11 +48,11 @@ fun ResultRow.toUserEntry() = UserEntry(
         this[UsersTbl.Surname],
         this[UsersTbl.Address],
         this[UsersTbl.Gender],
-        this[UsersTbl.DateOfBirth].toLocalDateTime(),
+        this[UsersTbl.DateOfBirth].toLocalDate(),
         this[UsersTbl.Telephone]
 )
 
-class UserEntry(id: Int, name: String, surname: String, address: String, gender: Boolean, dateOfBirth: LocalDateTime, telephone: String) {
+class UserEntry(id: Int, name: String, surname: String, address: String, gender: Boolean, dateOfBirth: LocalDate, telephone: String) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
