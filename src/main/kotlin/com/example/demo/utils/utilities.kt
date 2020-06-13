@@ -2,7 +2,7 @@ package com.example.demo.utils
 
 import java.time.*
 
-val isDarkTheme = true
+const val isDarkTheme = true
 
 fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 

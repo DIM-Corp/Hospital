@@ -23,7 +23,9 @@ class MyApp : App(HospitalWorkspace::class, Styles::class) {
     override fun start(stage: Stage) {
         with(stage) {
             width = 1280.0
-            height = 600.0
+            height = 768.0
+            minWidth = width / 1.9
+            minHeight = height / 1.3
         }
         super.start(stage)
     }
