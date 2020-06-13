@@ -2,10 +2,9 @@ package com.example.demo.controller
 
 import com.example.demo.data.db.SqlRepository
 import com.example.demo.data.model.*
-import com.example.demo.utils.toTimestamp
+import com.example.demo.utils.toMillis
 import javafx.collections.ObservableList
 import tornadofx.*
-import java.time.LocalDate
 
 class UserController : Controller() {
 
@@ -30,7 +29,7 @@ class UserController : Controller() {
             newSurname: String,
             newAddress: String,
             newGender: Boolean,
-            newDateOfBirth: LocalDate,
+            newAge: Int,
             newTelephone: String
     ): UserEntry? {
         val newEntry = userSqlRepository.transactionInsert {
@@ -38,7 +37,7 @@ class UserController : Controller() {
             surname = newSurname
             address = newAddress
             gender = newGender
-            dateOfBirth = newDateOfBirth.toTimestamp()
+            dateOfBirth = newAge.toMillis()
             telephone = newTelephone
         }
         return newEntry?.toUserEntry()
@@ -50,7 +49,7 @@ class UserController : Controller() {
             it[Surname] = updatedItem.surname.value
             it[Address] = updatedItem.address.value
             it[Gender] = updatedItem.gender.value
-            it[DateOfBirth] = updatedItem.dateOfBirth.value.toTimestamp()
+            it[DateOfBirth] = updatedItem.age.value.toMillis()
             it[Telephone] = updatedItem.telephone.value
         }
     }

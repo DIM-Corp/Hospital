@@ -2,7 +2,7 @@
 
 package com.example.demo.data.model
 
-import com.example.demo.utils.toLocalDate
+import com.example.demo.utils.toAge
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -13,7 +13,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
-import java.time.LocalDate
 
 /**
  * @author forntoh
@@ -48,11 +47,11 @@ fun ResultRow.toUserEntry() = UserEntry(
         this[UsersTbl.Surname],
         this[UsersTbl.Address],
         this[UsersTbl.Gender],
-        this[UsersTbl.DateOfBirth].toLocalDate(),
+        this[UsersTbl.DateOfBirth].toAge(),
         this[UsersTbl.Telephone]
 )
 
-class UserEntry(id: Int, name: String, surname: String, address: String, gender: Boolean, dateOfBirth: LocalDate, telephone: String) {
+class UserEntry(id: Int, name: String, surname: String, address: String, gender: Boolean, age: Int, telephone: String) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
@@ -68,8 +67,8 @@ class UserEntry(id: Int, name: String, surname: String, address: String, gender:
     val genderProperty = SimpleBooleanProperty(gender)
     val gender by genderProperty
 
-    val dateOfBirthProperty = SimpleObjectProperty(dateOfBirth)
-    val dateOfBirth by dateOfBirthProperty
+    val ageProperty = SimpleObjectProperty(age)
+    val age by ageProperty
 
     val telephoneProperty = SimpleStringProperty(telephone)
     val telephone by telephoneProperty
@@ -81,6 +80,6 @@ class UserViewModel : ItemViewModel<UserEntry>() {
     val surname = bind { item?.surnameProperty }
     val address = bind { item?.addressProperty }
     val gender = bind { item?.genderProperty }
-    val dateOfBirth = bind { item?.dateOfBirthProperty }
+    val age = bind { item?.ageProperty }
     val telephone = bind { item?.telephoneProperty }
 }
