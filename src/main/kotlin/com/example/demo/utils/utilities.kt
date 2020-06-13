@@ -2,6 +2,8 @@ package com.example.demo.utils
 
 import java.time.*
 
+val isDarkTheme = true
+
 fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
 fun Long.toLocalDateTime(): LocalDateTime = Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDateTime()

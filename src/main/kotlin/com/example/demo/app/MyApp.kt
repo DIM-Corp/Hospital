@@ -2,15 +2,14 @@ package com.example.demo.app
 
 import com.example.demo.data.db.createTables
 import com.example.demo.data.db.enableConsoleLogger
-import com.example.demo.view.CreateBillView
-import javafx.scene.paint.Color
+import com.example.demo.utils.isDarkTheme
 import javafx.stage.Stage
 import jfxtras.styles.jmetro.JMetro
 import jfxtras.styles.jmetro.Style
 import org.jetbrains.exposed.sql.Database
 import tornadofx.*
 
-class MyApp : App(CreateBillView::class, Styles::class) {
+class MyApp : App(HospitalWorkspace::class, Styles::class) {
 
     init {
         reloadStylesheetsOnFocus()
@@ -31,9 +30,9 @@ class MyApp : App(CreateBillView::class, Styles::class) {
 
     override fun onBeforeShow(view: UIComponent) {
         super.onBeforeShow(view)
-        JMetro(view.root, Style.DARK).apply {
+        JMetro(view.root, if (isDarkTheme) Style.DARK else Style.LIGHT).apply {
             isAutomaticallyColorPanes = true
         }
-        view.root.style = "accent_color: ${Color.BLUEVIOLET.css}"
+        view.root.addClass(Styles.j_metro)
     }
 }
