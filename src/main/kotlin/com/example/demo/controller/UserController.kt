@@ -36,7 +36,9 @@ class UserController : Controller() {
             dateOfBirth = newAge.toMillis()
             telephone = newTelephone
         }
-        return newEntry?.toUserEntry()
+        return newEntry?.toUserEntry().also {
+            listOfUsers.add(UserViewModel().apply { item = it })
+        }
     }
 
     fun update(updatedItem: UserViewModel): Int? {

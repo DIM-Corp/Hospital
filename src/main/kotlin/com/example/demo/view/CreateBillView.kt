@@ -42,7 +42,6 @@ class CreateBillView : View("Create bill") {
                                 spinner(1, 200, 20) {
                                     bind(userModel.age)
                                     promptText = messages["placeHolderAge"]
-                                    isEditable = true
                                 }
                             }
                             field(messages["sex"]) {
@@ -59,6 +58,7 @@ class CreateBillView : View("Create bill") {
                             field(messages["tel"]) {
                                 textfield(userModel.telephone) {
                                     promptText = messages["placeHolderTel"]
+                                    required()
                                     filterInput { it.controlNewText.isNotEmpty() && it.controlNewText.first() == '6' && it.controlNewText.length <= 9 }
                                 }
                             }
@@ -118,11 +118,19 @@ class CreateBillView : View("Create bill") {
 
         row {
             buttonbar {
-                button(messages["clear"])
+                button(messages["clear"]) {
+                    action {
+                        userModel.rollback()
+                    }
+                }
                 button(messages["validate"]) {
                     isDefaultButton = true
+                    enableWhen(userModel.valid)
                     action {
-                        createPatient()
+                        userModel.commit {
+                            createPatient()
+                            userModel.rollback()
+                        }
                     }
                 }
                 paddingTop = defaultPadding
@@ -149,6 +157,7 @@ class CreateBillView : View("Create bill") {
                         gender.value = user.gender.value
                         age.value = user.age.value
                         telephone.value = user.telephone.value
+                        editor.text = user.name.value
                     }
                 }
             }
@@ -167,10 +176,8 @@ class CreateBillView : View("Create bill") {
 
                 hide()
                 if (items.isNotEmpty()) show()
-                else selectionModel.clearSelection()
-
-                if (items.size == 1) {
-                    selectionModel.clearAndSelect(0)
+                else {
+                    selectionModel.clearSelection()
                     hide()
                 }
             }
