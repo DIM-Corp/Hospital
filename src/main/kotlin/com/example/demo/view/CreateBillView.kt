@@ -4,13 +4,14 @@ import com.example.demo.controller.UserController
 import com.example.demo.data.model.UserViewModel
 import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
+import javafx.geometry.Insets
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
 import javafx.scene.layout.Priority
 import tornadofx.*
 
-class CreateBillView : View("My View") {
+class CreateBillView : View("Create bill") {
 
     private var toUpdateUser = false
     private val userModel = UserViewModel()
@@ -22,20 +23,18 @@ class CreateBillView : View("My View") {
         paddingAll = defaultPadding
 
         row {
-            form {
-                vbox {
+            vbox {
+                form {
                     fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
-                        vbox {
-                            field(messages["name"]) {
-                                nameField = combobox {
-                                    bind(userModel.name)
-                                    items = userController.items.map { it.name.value }.observable()
-                                    promptText = messages["placeHolderName"]
-                                    isEditable = true
-                                    fitToParentWidth()
-                                }
-                                addListenersAndValidation()
+                        field(messages["name"]) {
+                            nameField = combobox {
+                                bind(userModel.name)
+                                items = userController.items.map { it.name.value }.observable()
+                                promptText = messages["placeHolderName"]
+                                isEditable = true
+                                fitToParentWidth()
                             }
+                            addListenersAndValidation()
                         }
                         flowpane {
                             hgap = defaultPadding
@@ -70,9 +69,11 @@ class CreateBillView : View("My View") {
                                 }
                             }
                         }
+                        padding = Insets(0.0, 8.0, 0.0, 8.0)
                     }
+                    paddingBottom = 0.0
                 }
-                separator(orientation = Orientation.HORIZONTAL) { paddingBottom = 16.0 }
+                separator(orientation = Orientation.HORIZONTAL)
                 tableview<UserViewModel> {
                     items = userController.items
 
@@ -84,13 +85,12 @@ class CreateBillView : View("My View") {
                 /*
                  * Left Pane Properties
                  */
-                gridpaneColumnConstraints {
-                    percentWidth = 40.0
-                }
+                spacing = defaultPadding
+                gridpaneColumnConstraints { percentWidth = 40.0 }
+                fitToParentSize()
             }
             vbox {
                 hbox {
-                    spacing = defaultPadding
                     textfield {
                         promptText = messages["search"]
                         hgrow = Priority.ALWAYS
@@ -99,6 +99,7 @@ class CreateBillView : View("My View") {
                 }
                 tableview<UserViewModel> {
                     items = userController.items
+                    vgrow = Priority.ALWAYS
 
                     column(messages["name"], UserViewModel::name)
                     column(messages["address"], UserViewModel::address)
@@ -111,6 +112,7 @@ class CreateBillView : View("My View") {
                 paddingLeft = defaultPadding
                 spacing = defaultPadding
                 gridpaneColumnConstraints { percentWidth = 60.0 }
+                fitToParentSize()
             }
         }
 

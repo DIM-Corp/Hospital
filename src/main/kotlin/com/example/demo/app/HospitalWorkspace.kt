@@ -15,6 +15,7 @@ class HospitalWorkspace : Workspace("Efoulan", NavigationMode.Tabs) {
         dock<CreateBillView>()
         dock<ActesView>()
         tabContainer.tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
+        header.hide()
     }
 
 }
