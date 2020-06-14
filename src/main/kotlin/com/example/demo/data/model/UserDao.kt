@@ -23,7 +23,7 @@ object UsersTbl : IdTable<Int>() {
     override val id = integer("UserID").autoIncrement().entityId()
     val Name = varchar("Name", 32)
     val Surname = varchar("Surname", 32)
-    val Address = text("Address")
+    val Address = text("Address").nullable()
     val Gender = bool("Gender")
     val DateOfBirth = long("DateOfBirth")
     val Telephone = varchar("Telephone", 9)
@@ -51,7 +51,7 @@ fun ResultRow.toUserEntry() = UserEntry(
         this[UsersTbl.Telephone]
 )
 
-class UserEntry(id: Int, name: String, surname: String, address: String, gender: Boolean, age: Int, telephone: String) {
+class UserEntry(id: Int, name: String, surname: String, address: String?, gender: Boolean, age: Int, telephone: String) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 

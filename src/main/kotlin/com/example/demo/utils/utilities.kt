@@ -16,4 +16,4 @@ fun LocalDate.toTimestamp(): Long = this.atStartOfDay(ZoneId.systemDefault()).to
 
 fun Long.toAge(): Int = Period.between(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).years
 
-fun Int.toMillis(): Long = LocalDate.of(this, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+fun Int.toMillis(): Long = LocalDate.of(LocalDate.now().year - this, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()

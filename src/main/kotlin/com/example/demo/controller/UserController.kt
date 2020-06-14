@@ -10,11 +10,9 @@ class UserController : Controller() {
 
     private val userSqlRepository by lazy { SqlRepository(UsersTbl, UserTbl) }
 
-    private var userModel = UserViewModel()
-
     private val listOfUsers: ObservableList<UserViewModel> = userSqlRepository.transactionSelectAll {
         it.map {
-            userModel.apply { item = it.toUserEntry() }
+            UserViewModel().apply { item = it.toUserEntry() }
         }.observable()
     }
 
@@ -27,7 +25,7 @@ class UserController : Controller() {
     fun add(
             newName: String,
             newSurname: String,
-            newAddress: String,
+            newAddress: String?,
             newGender: Boolean,
             newAge: Int,
             newTelephone: String

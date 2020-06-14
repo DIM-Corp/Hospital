@@ -2,9 +2,8 @@ package com.example.demo.view
 
 import com.example.demo.controller.UserController
 import com.example.demo.data.model.UserViewModel
+import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleStringProperty
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
@@ -13,22 +12,30 @@ import tornadofx.*
 class CreateBillView : View("My View") {
 
     private val userModel = UserViewModel()
-    private val controller: UserController by inject()
+    private val userController: UserController by inject()
 
     override val root = gridpane {
 
         paddingAll = defaultPadding
 
         row {
-            vbox {
-                form {
+            form {
+                vbox {
                     fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
                         vbox {
                             field(messages["name"]) {
-                                combobox<UserViewModel> {
+                                combobox<String> {
+                                    bind(userModel.name)
                                     promptText = messages["placeHolderName"]
                                     isEditable = true
                                     fitToParentWidth()
+
+                                    required()
+                                    validator { if (editor.text.length < 3) error(messages["ld3"]) else null }
+
+                                    editor.textProperty().addListener { _, _, new ->
+                                        this.editor.text = new.capitalizeWords()
+                                    }
                                 }
                             }
                             field(messages["surname"]) {
@@ -36,6 +43,13 @@ class CreateBillView : View("My View") {
                                     promptText = messages["placeHolderSurname"]
                                     isEditable = true
                                     fitToParentWidth()
+
+                                    required()
+                                    //validator { if (text.isNullOrBlank() && text.length < 3) error(messages["ld3"]) else null }
+
+                                    textProperty().addListener { _, _, new ->
+                                        this.text = new.capitalizeWords()
+                                    }
                                 }
                             }
                         }
@@ -75,7 +89,7 @@ class CreateBillView : View("My View") {
                 }
                 separator(orientation = Orientation.HORIZONTAL) { paddingBottom = 16.0 }
                 tableview<UserViewModel> {
-                    items = controller.items
+                    items = userController.items
 
                     column(messages["name"], UserViewModel::name)
                     column(messages["surname"], UserViewModel::surname)
@@ -99,19 +113,14 @@ class CreateBillView : View("My View") {
                     }
                     button(messages["search"])
                 }
-                tableview<Person> {
-                    items = listOf(
-                            Person("Joe Thompson", 33),
-                            Person("Sam Smith", 29),
-                            Person("Nancy Reams", 41)
-                    ).observable()
+                tableview<UserViewModel> {
+                    items = userController.items
 
-                    column(messages["name"], Person::nameProperty)
-                    column(messages["age"], Person::ageProperty)
-
-                    vboxConstraints {
-                        vGrow = Priority.ALWAYS
-                    }
+                    column(messages["name"], UserViewModel::name)
+                    column(messages["surname"], UserViewModel::surname)
+                    column(messages["address"], UserViewModel::address)
+                    column(messages["age"], UserViewModel::age)
+                    column(messages["tel"], UserViewModel::telephone)
                 }
                 /*
                  * Right Pane Properties
@@ -125,14 +134,25 @@ class CreateBillView : View("My View") {
         row {
             buttonbar {
                 button(messages["clear"])
-                button(messages["validate"]) { isDefaultButton = true }
+                button(messages["validate"]) {
+                    isDefaultButton = true
+                    action {
+                        createPatient()
+                    }
+                }
                 paddingTop = defaultPadding
             }
         }
     }
-}
 
-class Person(name: String, age: Int) {
-    var nameProperty: String by SimpleStringProperty(name)
-    var ageProperty by SimpleIntegerProperty(age)
+    private fun createPatient() {
+        userController.add(
+                userModel.name.value,
+                userModel.surname.value,
+                userModel.address.value,
+                userModel.gender.value,
+                userModel.age.value,
+                userModel.telephone.value
+        )
+    }
 }

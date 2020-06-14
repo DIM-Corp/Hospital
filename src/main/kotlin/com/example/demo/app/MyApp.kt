@@ -12,8 +12,8 @@ import tornadofx.*
 class MyApp : App(HospitalWorkspace::class, Styles::class) {
 
     init {
-        reloadStylesheetsOnFocus()
-        reloadViewsOnFocus()
+        //reloadStylesheetsOnFocus()
+        //reloadViewsOnFocus()
         // Initialize DB
         enableConsoleLogger()
         Database.connect("jdbc:sqlite:./app-hospital.db", "org.sqlite.JDBC")
