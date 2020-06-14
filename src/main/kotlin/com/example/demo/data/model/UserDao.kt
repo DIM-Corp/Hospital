@@ -22,7 +22,6 @@ import tornadofx.*
 object UsersTbl : IdTable<Int>() {
     override val id = integer("UserID").autoIncrement().entityId()
     val Name = varchar("Name", 32)
-    val Surname = varchar("Surname", 32)
     val Address = text("Address").nullable()
     val Gender = bool("Gender")
     val DateOfBirth = long("DateOfBirth")
@@ -34,7 +33,6 @@ open class UserTbl(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<UserTbl>(UsersTbl)
 
     var name by UsersTbl.Name
-    var surname by UsersTbl.Surname
     var address by UsersTbl.Address
     var gender by UsersTbl.Gender
     var dateOfBirth by UsersTbl.DateOfBirth
@@ -44,22 +42,18 @@ open class UserTbl(id: EntityID<Int>) : IntEntity(id) {
 fun ResultRow.toUserEntry() = UserEntry(
         this[UsersTbl.id].value,
         this[UsersTbl.Name],
-        this[UsersTbl.Surname],
         this[UsersTbl.Address],
         this[UsersTbl.Gender],
         this[UsersTbl.DateOfBirth].toAge(),
         this[UsersTbl.Telephone]
 )
 
-class UserEntry(id: Int, name: String, surname: String, address: String?, gender: Boolean, age: Int, telephone: String) {
+class UserEntry(id: Int, name: String, address: String?, gender: Boolean, age: Int, telephone: String) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
     val nameProperty = SimpleStringProperty(name)
     val name by nameProperty
-
-    val surnameProperty = SimpleStringProperty(surname)
-    val surname by surnameProperty
 
     val addressProperty = SimpleStringProperty(address)
     val address by addressProperty
@@ -77,7 +71,6 @@ class UserEntry(id: Int, name: String, surname: String, address: String?, gender
 class UserViewModel : ItemViewModel<UserEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.nameProperty }
-    val surname = bind { item?.surnameProperty }
     val address = bind { item?.addressProperty }
     val gender = bind { item?.genderProperty }
     val age = bind { item?.ageProperty }

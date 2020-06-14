@@ -6,13 +6,16 @@ import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.control.ComboBox
 import javafx.scene.layout.Priority
 import tornadofx.*
 
 class CreateBillView : View("My View") {
 
+    private var toUpdateUser = false
     private val userModel = UserViewModel()
     private val userController: UserController by inject()
+    lateinit var nameField: ComboBox<String>
 
     override val root = gridpane {
 
@@ -24,33 +27,14 @@ class CreateBillView : View("My View") {
                     fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
                         vbox {
                             field(messages["name"]) {
-                                combobox<String> {
+                                nameField = combobox {
                                     bind(userModel.name)
+                                    items = userController.items.map { it.name.value }.observable()
                                     promptText = messages["placeHolderName"]
                                     isEditable = true
                                     fitToParentWidth()
-
-                                    required()
-                                    validator { if (editor.text.length < 3) error(messages["ld3"]) else null }
-
-                                    editor.textProperty().addListener { _, _, new ->
-                                        this.editor.text = new.capitalizeWords()
-                                    }
                                 }
-                            }
-                            field(messages["surname"]) {
-                                textfield(userModel.surname) {
-                                    promptText = messages["placeHolderSurname"]
-                                    isEditable = true
-                                    fitToParentWidth()
-
-                                    required()
-                                    //validator { if (text.isNullOrBlank() && text.length < 3) error(messages["ld3"]) else null }
-
-                                    textProperty().addListener { _, _, new ->
-                                        this.text = new.capitalizeWords()
-                                    }
-                                }
+                                addListenersAndValidation()
                             }
                         }
                         flowpane {
@@ -59,6 +43,7 @@ class CreateBillView : View("My View") {
                                 spinner(1, 200, 20) {
                                     bind(userModel.age)
                                     promptText = messages["placeHolderAge"]
+                                    isEditable = true
                                 }
                             }
                             field(messages["sex"]) {
@@ -92,7 +77,6 @@ class CreateBillView : View("My View") {
                     items = userController.items
 
                     column(messages["name"], UserViewModel::name)
-                    column(messages["surname"], UserViewModel::surname)
                     column(messages["address"], UserViewModel::address)
                     column(messages["age"], UserViewModel::age)
                     column(messages["tel"], UserViewModel::telephone)
@@ -117,7 +101,6 @@ class CreateBillView : View("My View") {
                     items = userController.items
 
                     column(messages["name"], UserViewModel::name)
-                    column(messages["surname"], UserViewModel::surname)
                     column(messages["address"], UserViewModel::address)
                     column(messages["age"], UserViewModel::age)
                     column(messages["tel"], UserViewModel::telephone)
@@ -145,10 +128,56 @@ class CreateBillView : View("My View") {
         }
     }
 
+    private fun addListenersAndValidation() {
+        with(nameField) {
+            required()
+            validator {
+                val value = userModel.name.value
+                if (!value.isNullOrBlank() && value.length < 3) error(messages["ld3"]) else null
+            }
+
+            selectionModel?.selectedIndexProperty()?.addListener { _, _, new ->
+                if (nameField.items.isNotEmpty() && new.toInt() >= 0) {
+                    toUpdateUser = true
+                    val user = userController.items.find {
+                        items[new.toInt()].contains(it!!.name.value)
+                    }!!
+                    with(userModel) {
+                        address.value = user.address.value
+                        gender.value = user.gender.value
+                        age.value = user.age.value
+                        telephone.value = user.telephone.value
+                    }
+                }
+            }
+
+            editor.textProperty().addListener { _, _, new ->
+                val filtered = userController.items.map { it.name.value }.filter {
+                    it.contains(new, true)
+                }
+
+                items.removeIf { !filtered.contains(it) }
+                filtered.forEach {
+                    if (!items.contains(it)) items.add(it)
+                }
+
+                editor.text = new.capitalizeWords()
+
+                hide()
+                if (items.isNotEmpty()) show()
+                else selectionModel.clearSelection()
+
+                if (items.size == 1) {
+                    selectionModel.clearAndSelect(0)
+                    hide()
+                }
+            }
+        }
+    }
+
     private fun createPatient() {
         userController.add(
                 userModel.name.value,
-                userModel.surname.value,
                 userModel.address.value,
                 userModel.gender.value,
                 userModel.age.value,

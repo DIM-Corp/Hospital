@@ -7,6 +7,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
 import tornadofx.*
 
@@ -16,7 +17,7 @@ import tornadofx.*
  * @created 12-Jun-2020 11:17:28 AM
  */
 object PatientsTbl : IdTable<Int>() {
-    override val id = integer("PatientID").entityId() references UsersTbl.id
+    override val id = reference("PatientID", UsersTbl, onDelete = ReferenceOption.CASCADE)
     val Condition = integer("Condition")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }

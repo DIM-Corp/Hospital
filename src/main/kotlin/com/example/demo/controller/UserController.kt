@@ -24,15 +24,13 @@ class UserController : Controller() {
 
     fun add(
             newName: String,
-            newSurname: String,
             newAddress: String?,
             newGender: Boolean,
             newAge: Int,
             newTelephone: String
     ): UserEntry? {
-        val newEntry = userSqlRepository.transactionInsert {
+        val newEntry = userSqlRepository.transactionNew {
             name = newName
-            surname = newSurname
             address = newAddress
             gender = newGender
             dateOfBirth = newAge.toMillis()
@@ -44,7 +42,6 @@ class UserController : Controller() {
     fun update(updatedItem: UserViewModel): Int? {
         return userSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
             it[Name] = updatedItem.name.value
-            it[Surname] = updatedItem.surname.value
             it[Address] = updatedItem.address.value
             it[Gender] = updatedItem.gender.value
             it[DateOfBirth] = updatedItem.age.value.toMillis()

@@ -5,6 +5,7 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.statements.UpdateStatement
 import tornadofx.*
 
@@ -31,7 +32,15 @@ open class SqlRepository<ID : Comparable<ID>, TBL : IdTable<ID>, T : EntityClass
         mapping(table.selectAll())
     }
 
-    fun transactionInsert(body: M.() -> Unit) = execute {
+    fun <VM : ViewModel> transactionSelectOne(key: ID, mapping: (ResultRow?) -> VM) = execute {
+        mapping(table.select { table.id eq key }.firstOrNull())
+    }
+
+    fun transactionInsert(body: TBL.(InsertStatement<*>) -> Unit) = execute {
+        table.insertAndGetId(body = body)
+    }
+
+    fun transactionNew(body: M.() -> Unit) = execute {
         try {
             row.new(body).readValues
         } catch (e: Exception) {
