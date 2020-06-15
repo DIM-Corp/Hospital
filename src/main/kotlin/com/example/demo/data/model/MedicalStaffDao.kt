@@ -40,7 +40,7 @@ fun ResultRow.toMedicalStaffEntry() = MedicalStaffEntry(
         this[MedicalStaffsTbl.Username],
         this[MedicalStaffsTbl.Password],
         this[MedicalStaffsTbl.Role],
-        ServiceTbl(this[MedicalStaffsTbl.Service]).readValues.toServiceEntry()
+        this.toServiceEntry()
 )
 
 class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, service: ServiceEntry) {

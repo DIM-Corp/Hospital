@@ -20,8 +20,8 @@ object OrderItemsTbl : Table() {
 }
 
 fun ResultRow.toOrderItemEntry() = OrderItemEntry(
-        ActeTbl(this[OrderItemsTbl.Acte]).readValues.toActeEntry(),
-        OrderTbl(this[OrderItemsTbl.Order]).readValues.toOrderEntry(),
+        this.toActeEntry(),
+        this.toOrderEntry(),
         this[OrderItemsTbl.Quantity]
 )
 

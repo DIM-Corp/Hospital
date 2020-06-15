@@ -17,7 +17,7 @@ import tornadofx.*
  * @created 12-Jun-2020 11:17:28 AM
  */
 object SynthesisSectionsTbl : IdTable<Int>() {
-    override val id = integer("ActeId").autoIncrement().entityId()
+    override val id = integer("SynthesisSectionId").autoIncrement().entityId()
     val Name = varchar("Name", 64)
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
@@ -38,7 +38,7 @@ class SynthesisSectionEntry(id: Int, name: String) {
     val id by idProperty
 
     val nameProperty = SimpleStringProperty(name)
-    val name by idProperty
+    val name by nameProperty
 }
 
 class SynthesisSectionViewModel : ItemViewModel<SynthesisSectionEntry>() {

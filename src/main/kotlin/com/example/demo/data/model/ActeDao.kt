@@ -41,7 +41,7 @@ fun ResultRow.toActeEntry() = ActeEntry(
         this[ActesTbl.Name],
         this[ActesTbl.AppliedAmount].toDouble(),
         this[ActesTbl.OfficialAmount].toDouble(),
-        SynthesisSectionTbl(this[ActesTbl.SynthesisSection]).readValues.toSynthesisSectionEntry()
+        this.toSynthesisSectionEntry()
 )
 
 class ActeEntry(

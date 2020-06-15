@@ -37,7 +37,7 @@ class OrderTbl(id: EntityID<Int>) : IntEntity(id) {
 fun ResultRow.toOrderEntry() = OrderEntry(
         this[OrdersTbl.id].value,
         this[OrdersTbl.Timestamp].toLocalDateTime(),
-        PatientTbl(this[OrdersTbl.Patient]).readValues.toPatientEntry()
+        this.toPatientEntry()
 )
 
 class OrderEntry(id: Int, date: LocalDateTime, patient: PatientEntry) {

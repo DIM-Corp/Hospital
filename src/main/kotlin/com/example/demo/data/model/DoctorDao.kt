@@ -30,7 +30,7 @@ class DoctorTbl(id: EntityID<Int>) : IntEntity(id) {
 
 fun ResultRow.toDoctorEntry() = DoctorEntry(
         this[DoctorsTbl.id].value,
-        SpecialityTbl(this[DoctorsTbl.Speciality]).readValues.toSpecialityEntry()
+        this.toSpecialityEntry()
 )
 
 class DoctorEntry(id: Int, speciality: SpecialityEntry) {
