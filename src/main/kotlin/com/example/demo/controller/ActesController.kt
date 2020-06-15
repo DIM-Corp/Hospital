@@ -27,9 +27,6 @@ class ActesController : Controller() {
 
     init {
         items = listOfActes
-        println(items.map {
-            "${it.id.value}, ${it.acte.value.name}, ${it.acte.value.appliedAmount}, ${it.counterStock.value}"
-        })
     }
 
     fun add(

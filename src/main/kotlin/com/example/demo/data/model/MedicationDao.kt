@@ -4,7 +4,6 @@ package com.example.demo.data.model
 
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleLongProperty
-import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -43,8 +42,7 @@ class MedicationEntry(id: Int, counterStock: Long?, warehouseStock: Long?, acteE
     var idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
-    var acteProperty = SimpleObjectProperty(acteEntry)
-    val acte by acteProperty
+    val acte = ActeViewModel().apply { item = acteEntry }
 
     var counterStockProperty = SimpleLongProperty(counterStock ?: -1)
     val counterStock by counterStockProperty
@@ -55,7 +53,12 @@ class MedicationEntry(id: Int, counterStock: Long?, warehouseStock: Long?, acteE
 
 class MedicationEntryModel : ItemViewModel<MedicationEntry>() {
     val id = bind { item?.idProperty }
-    val acte = bind { item?.acteProperty }
+    val name = bind { item?.acte?.name }
+    val appliedAmount = bind { item?.acte?.appliedAmount }
+    val officialAmount = bind { item?.acte?.appliedAmount }
     val counterStock = bind { item?.counterStockProperty }
     val warehouseStock = bind { item?.warehouseStockProperty }
+
+    val synthesisSectionId = bind { item?.acte?.synthesisSectionId }
+    val synthesisSectionName = bind { item?.acte?.synthesisSectionName }
 }
