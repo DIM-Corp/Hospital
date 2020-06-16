@@ -1,6 +1,10 @@
 package com.example.demo.view
 
+import com.example.demo.controller.ActesController
+import com.example.demo.controller.OrderController
 import com.example.demo.controller.UserController
+import com.example.demo.data.model.MedicationEntryModel
+import com.example.demo.data.model.OrderItemModel
 import com.example.demo.data.model.UserViewModel
 import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
@@ -8,15 +12,25 @@ import javafx.geometry.Insets
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
+import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
+import java.text.NumberFormat
+import java.util.*
 
 class CreateBillView : View("Create bill") {
 
     private var toUpdateUser = false
     private val userModel = UserViewModel()
+
     private val userController: UserController by inject()
-    lateinit var nameField: ComboBox<String>
+    private val actesController: ActesController by inject()
+    private val orderController: OrderController by inject()
+
+    var nameField: ComboBox<String> by singleAssign()
+    var tableOfActes: TableViewEditModel<MedicationEntryModel> by singleAssign()
+
+    var tableOfCommandItems: TableView<OrderItemModel> by singleAssign()
 
     override val root = gridpane {
 
@@ -74,13 +88,27 @@ class CreateBillView : View("Create bill") {
                     paddingBottom = 0.0
                 }
                 separator(orientation = Orientation.HORIZONTAL)
-                tableview<UserViewModel> {
-                    items = userController.items
+                tableOfCommandItems = tableview {
+                    items = orderController.orderItems
 
-                    column(messages["name"], UserViewModel::name)
-                    column(messages["address"], UserViewModel::address)
-                    column(messages["age"], UserViewModel::age)
-                    column(messages["tel"], UserViewModel::telephone)
+                    columnResizePolicy = SmartResize.POLICY
+
+                    column(messages["label"], OrderItemModel::label)
+                    column(messages["price"], OrderItemModel::price).cellFormat {
+                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
+                        this.text = currencyFormat.format(this.item)
+                    }
+                    column(messages["qty"], OrderItemModel::quantity) {
+                        cellFormat {
+                            graphic = spinner(1, 999, item) {
+                                bind(rowItem.qtyTemp)
+                            }
+                        }
+                    }
+                    column(messages["amount"], OrderItemModel::amtCalc).cellFormat {
+                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
+                        this.text = currencyFormat.format(this.item)
+                    }
                 }
                 /*
                  * Left Pane Properties
@@ -94,17 +122,45 @@ class CreateBillView : View("Create bill") {
                     textfield {
                         promptText = messages["search"]
                         hgrow = Priority.ALWAYS
+
+                        textProperty().addListener { _, _, new ->
+                            tableOfActes.tableView.selectionModel.clearSelection()
+                            tableOfActes.tableView.items = actesController.items.filter { it.name.value.contains(new, true) }.observable()
+                        }
                     }
                     button(messages["search"])
                 }
-                tableview<UserViewModel> {
-                    items = userController.items
+
+                tableview<MedicationEntryModel> {
+                    items = actesController.items
                     vgrow = Priority.ALWAYS
 
-                    column(messages["name"], UserViewModel::name)
-                    column(messages["address"], UserViewModel::address)
-                    column(messages["age"], UserViewModel::age)
-                    column(messages["tel"], UserViewModel::telephone)
+                    tableOfActes = editModel
+
+                    setColumnResizePolicy { true }
+
+                    column(messages["id"], MedicationEntryModel::id)
+                    column(messages["label"], MedicationEntryModel::name)
+                    column(messages["price"], MedicationEntryModel::officialAmount) {
+                        cellFormat {
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
+                            this.text = currencyFormat.format(this.item)
+                        }
+                    }
+                    column(messages["section"], MedicationEntryModel::synthesisSectionName)
+
+                    selectionModel.selectedItemProperty().addListener { _, _, new ->
+                        if (selectionModel.selectedItem != null) {
+                            orderController.selectedItems.add(new)
+                            tableOfCommandItems.requestResize()
+                        }
+                    }
+/*
+                    setRowFactory {
+                        val row = TableRow<MedicationEntryModel>()
+                        row.disableWhen(Bindings.selectInteger(row.itemProperty(), MedicationEntryModel::warehouseStock.name).lessThan(-1))
+                        return@setRowFactory row
+                    }*/
                 }
                 /*
                  * Right Pane Properties

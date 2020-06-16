@@ -2,8 +2,8 @@
 
 package com.example.demo.data.model
 
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import tornadofx.*
@@ -26,18 +26,30 @@ fun ResultRow.toOrderItemEntry() = OrderItemEntry(
 )
 
 class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
-    val acteProperty = SimpleObjectProperty(acte)
-    val acte by acteProperty
-
-    val orderProperty = SimpleObjectProperty(order)
-    val order by orderProperty
+    val acte = ActeViewModel().apply { item = acte }
+    val order = OrderViewModel().apply { item = order }
 
     val quantityProperty = SimpleIntegerProperty(quantity)
     val quantity by quantityProperty
 }
 
-class OrderItem : ItemViewModel<OrderItemEntry>() {
-    val acte = bind { item?.acteProperty }
-    val order = bind { item?.orderProperty }
+class OrderItemModel : ItemViewModel<OrderItemEntry>() {
+    val label = bind { item?.acte?.name }
+    val price = bind { item?.acte?.appliedAmount }
     val quantity = bind { item?.quantityProperty }
+    var timeStamp = bind { item?.order?.date }
+
+    val acteId = bind { item?.acte?.id }
+    val orderId = bind { item?.order?.id }
+
+    val qtyTemp = bind { SimpleIntegerProperty(1) }
+    val amtCalc = bind { SimpleDoubleProperty(0.0) }
+
+    init {
+        qtyTemp.addListener { _, _, new ->
+            val qty: Int = new.toInt()
+            val p: Double = price.value.toDouble()
+            amtCalc.value = qty * p
+        }
+    }
 }

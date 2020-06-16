@@ -55,7 +55,7 @@ class MedicationEntryModel : ItemViewModel<MedicationEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.acte?.name }
     val appliedAmount = bind { item?.acte?.appliedAmount }
-    val officialAmount = bind { item?.acte?.appliedAmount }
+    val officialAmount = bind { item?.acte?.officialAmount }
     val counterStock = bind { item?.counterStockProperty }
     val warehouseStock = bind { item?.warehouseStockProperty }
 
