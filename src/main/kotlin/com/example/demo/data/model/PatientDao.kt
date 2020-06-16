@@ -30,18 +30,26 @@ class PatientTbl(id: EntityID<Int>) : IntEntity(id) {
 
 fun ResultRow.toPatientEntry() = PatientEntry(
         this[PatientsTbl.id].value,
-        this[PatientsTbl.Condition]
+        this[PatientsTbl.Condition],
+        this.toUserEntry()
 )
 
-class PatientEntry(id: Int, condition: Int) {
+class PatientEntry(id: Int, condition: Int, user: UserEntry) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
     val conditionProperty = SimpleIntegerProperty(condition)
     val condition by conditionProperty
+
+    val user = UserViewModel().apply { item = user }
 }
 
-class PatientViewModel : ItemViewModel<PatientEntry>() {
+class PatientEntryModel : ItemViewModel<PatientEntry>() {
     val id = bind { item?.idProperty }
+    val name = bind { item?.user?.name }
+    val address = bind { item?.user?.address }
+    val gender = bind { item?.user?.gender }
+    val age = bind { item?.user?.age }
+    val telephone = bind { item?.user?.telephone }
     val condition = bind { item?.conditionProperty }
 }
