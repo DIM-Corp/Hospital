@@ -94,13 +94,10 @@ class CreateBillView : View("Create bill") {
                 tableOfCommandItems = tableview {
                     items = orderController.orderItems
 
-                    columnResizePolicy = SmartResize.POLICY
+                    smartResize()
 
                     column("", OrderItemModel::acteId) {
-
-                        maxWidth = 50.0
-                        useMaxWidth = true
-
+                        maxWidth = 30.0
                         cellFormat {
                             graphic = group {
                                 circle(0, 0, 8) { fill = Color.valueOf("#E21B1B") }
@@ -120,21 +117,30 @@ class CreateBillView : View("Create bill") {
                     }
 
 
-                    column(messages["label"], OrderItemModel::label)
-                    column(messages["price"], OrderItemModel::price).cellFormat {
-                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
-                        this.text = currencyFormat.format(this.item)
+                    column(messages["label"], OrderItemModel::label) {
+                        prefWidth = 200.0
+                    }
+                    column(messages["price"], OrderItemModel::price) {
+                        prefWidth = 100.0
+                        cellFormat {
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
+                            this.text = currencyFormat.format(this.item)
+                        }
                     }
                     column(messages["qty"], OrderItemModel::quantity) {
+                        minWidth = 96.0
                         cellFormat {
                             graphic = spinner(1, 999, item) {
                                 bind(rowItem.qtyTemp)
+                                isEditable = true
                             }
                         }
                     }
-                    column(messages["amount"], OrderItemModel::amtCalc).cellFormat {
-                        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
-                        this.text = currencyFormat.format(this.item)
+                    column(messages["amount"], OrderItemModel::amtCalc) {
+                        cellFormat {
+                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
+                            this.text = currencyFormat.format(this.item)
+                        }
                     }
                 }
                 /*
@@ -153,6 +159,7 @@ class CreateBillView : View("Create bill") {
                         textProperty().addListener { _, _, new ->
                             tableOfActes.tableView.selectionModel.clearSelection()
                             tableOfActes.tableView.items = actesController.items.filter { it.name.value.contains(new, true) }.observable()
+                            tableOfActes.tableView.requestResize()
                         }
                     }
                     button(messages["search"])
@@ -164,11 +171,10 @@ class CreateBillView : View("Create bill") {
 
                     tableOfActes = editModel
 
-                    setColumnResizePolicy { true }
-
                     column(messages["id"], MedicationEntryModel::id)
                     column(messages["label"], MedicationEntryModel::name)
                     column(messages["price"], MedicationEntryModel::officialAmount) {
+                        prefWidth = 100.0
                         cellFormat {
                             val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
                             this.text = currencyFormat.format(this.item)
@@ -178,16 +184,13 @@ class CreateBillView : View("Create bill") {
 
                     selectionModel.selectedItemProperty().addListener { _, _, new ->
                         if (selectionModel.selectedItem != null) {
-                            orderController.selectedItems.add(new)
+                            if (!orderController.selectedItems.contains(new))
+                                orderController.selectedItems.add(new)
                             tableOfCommandItems.requestResize()
                         }
                     }
-/*
-                    setRowFactory {
-                        val row = TableRow<MedicationEntryModel>()
-                        row.disableWhen(Bindings.selectInteger(row.itemProperty(), MedicationEntryModel::warehouseStock.name).lessThan(-1))
-                        return@setRowFactory row
-                    }*/
+
+                    smartResize()
                 }
                 /*
                  * Right Pane Properties
