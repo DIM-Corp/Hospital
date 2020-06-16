@@ -45,8 +45,8 @@ class OrderItemModel : ItemViewModel<OrderItemEntry>() {
     val acteId = bind { item?.acte?.id }
     val orderId = bind { item?.order?.id }
 
-    val qtyTemp = bind { SimpleIntegerProperty(1) }
-    val amtCalc = bind { SimpleDoubleProperty(0.0) }
+    val qtyTemp = SimpleIntegerProperty(1)
+    val amtCalc = SimpleDoubleProperty(0.0)
 
     var totalAmount = itemProperty.select(OrderItemEntry::totalAmount)
 
@@ -54,7 +54,7 @@ class OrderItemModel : ItemViewModel<OrderItemEntry>() {
         qtyTemp.addListener { _, _, new ->
             val qty: Int = new.toInt()
             val p: Double = price.value.toDouble()
-            amtCalc.value = qty * p
+            amtCalc.set(qty * p)
         }
     }
 }

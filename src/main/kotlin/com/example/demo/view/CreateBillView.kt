@@ -1,5 +1,6 @@
 package com.example.demo.view
 
+import com.example.demo.app.Styles
 import com.example.demo.controller.ActesController
 import com.example.demo.controller.OrderController
 import com.example.demo.controller.UserController
@@ -10,6 +11,7 @@ import com.example.demo.utils.cancelButton
 import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
 import com.example.demo.utils.formatCurrencyCM
+import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Insets
 import javafx.geometry.Orientation
@@ -105,6 +107,7 @@ class CreateBillView : View("Create bill") {
                         cellFormat {
                             graphic = cancelButton {
                                 orderController.selectedItems.removeIf { it.id.value == item.toInt() }
+                                updateOrderTotal()
                             }
                         }
                     }
@@ -119,12 +122,20 @@ class CreateBillView : View("Create bill") {
                             graphic = spinner(1, 999, item) {
                                 bind(rowItem.qtyTemp)
                                 isEditable = true
-                                updateOrderTotal()
+                                this.valueProperty().addListener { _, o, n ->
+                                    if (o != n) updateOrderTotal()
+                                }
                             }
                         }
                     }.prefWidth(96.0)
                     column(messages["amount"], OrderItemModel::amtCalc).cellFormat { this.text = this.item.formatCurrencyCM() }
                 }
+
+                totalLabel = label {
+                    bind(Bindings.format("Total:        %,.0f FCFA", orderItemsTotalProperty))
+                    addClass(Styles.heading)
+                }
+
                 /*
                  * Left Pane Properties
                  */
@@ -201,8 +212,12 @@ class CreateBillView : View("Create bill") {
 
     private fun updateOrderTotal() {
         var total = 0.0
-        orderController.orderItems.forEach { total += it.amtCalc.value.toDouble() }
-        orderItemsTotalProperty.set(total)
+        try {
+            orderController.orderItems.forEach { total += it.amtCalc.value.toDouble() }
+            orderItemsTotalProperty.set(total)
+        } catch (e: Exception) {
+            orderItemsTotalProperty.set(0.0)
+        }
         orderItemsModel.totalAmount.value = total
     }
 

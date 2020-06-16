@@ -25,7 +25,7 @@ fun Long.toAge(): Int = Period.between(Instant.ofEpochMilli(this).atZone(ZoneId.
 fun Int.toMillis(): Long = LocalDate.of(LocalDate.now().year - this, 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
 fun Number.formatCurrencyCM(): String {
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("fr", "CM"))
     return currencyFormat.format(this)
 }
 
