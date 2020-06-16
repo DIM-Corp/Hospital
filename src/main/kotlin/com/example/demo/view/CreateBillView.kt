@@ -6,19 +6,19 @@ import com.example.demo.controller.UserController
 import com.example.demo.data.model.MedicationEntryModel
 import com.example.demo.data.model.OrderItemModel
 import com.example.demo.data.model.UserViewModel
+import com.example.demo.utils.cancelButton
 import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
+import com.example.demo.utils.formatCurrencyCM
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Insets
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Label
 import javafx.scene.control.TableView
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Priority
-import javafx.scene.paint.Color
 import tornadofx.*
-import java.text.NumberFormat
-import java.util.*
 
 
 class CreateBillView : View("Create bill") {
@@ -34,6 +34,10 @@ class CreateBillView : View("Create bill") {
     var tableOfActes: TableViewEditModel<MedicationEntryModel> by singleAssign()
 
     var tableOfCommandItems: TableView<OrderItemModel> by singleAssign()
+
+    private var orderItemsModel = OrderItemModel()
+    private var totalLabel: Label by singleAssign()
+    private var orderItemsTotalProperty = SimpleDoubleProperty(0.0)
 
     override val root = gridpane {
 
@@ -99,49 +103,27 @@ class CreateBillView : View("Create bill") {
                     column("", OrderItemModel::acteId) {
                         maxWidth = 30.0
                         cellFormat {
-                            graphic = group {
-                                circle(0, 0, 8) { fill = Color.valueOf("#E21B1B") }
-                                line(-2, 2, 2, -2) {
-                                    stroke = Color.WHITE
-                                    strokeWidth = 3.0
-                                }
-                                line(2, 2, -2, -2) {
-                                    stroke = Color.WHITE
-                                    strokeWidth = 3.0
-                                }
-                                addEventFilter(MouseEvent.MOUSE_CLICKED) { _ ->
-                                    orderController.selectedItems.removeIf { it.id.value == item.toInt() }
-                                }
+                            graphic = cancelButton {
+                                orderController.selectedItems.removeIf { it.id.value == item.toInt() }
                             }
                         }
                     }
 
 
-                    column(messages["label"], OrderItemModel::label) {
-                        prefWidth = 200.0
-                    }
+                    column(messages["label"], OrderItemModel::label) { prefWidth = 200.0 }
                     column(messages["price"], OrderItemModel::price) {
-                        prefWidth = 100.0
-                        cellFormat {
-                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
-                            this.text = currencyFormat.format(this.item)
-                        }
-                    }
+                        cellFormat { this.text = this.item.formatCurrencyCM() }
+                    }.prefWidth(100.0)
                     column(messages["qty"], OrderItemModel::quantity) {
-                        minWidth = 96.0
                         cellFormat {
                             graphic = spinner(1, 999, item) {
                                 bind(rowItem.qtyTemp)
                                 isEditable = true
+                                updateOrderTotal()
                             }
                         }
-                    }
-                    column(messages["amount"], OrderItemModel::amtCalc) {
-                        cellFormat {
-                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
-                            this.text = currencyFormat.format(this.item)
-                        }
-                    }
+                    }.prefWidth(96.0)
+                    column(messages["amount"], OrderItemModel::amtCalc).cellFormat { this.text = this.item.formatCurrencyCM() }
                 }
                 /*
                  * Left Pane Properties
@@ -174,22 +156,17 @@ class CreateBillView : View("Create bill") {
                     column(messages["id"], MedicationEntryModel::id)
                     column(messages["label"], MedicationEntryModel::name)
                     column(messages["price"], MedicationEntryModel::officialAmount) {
-                        prefWidth = 100.0
-                        cellFormat {
-                            val currencyFormat = NumberFormat.getCurrencyInstance(Locale("", "CM"))
-                            this.text = currencyFormat.format(this.item)
-                        }
-                    }
+                        cellFormat { this.text = this.item.formatCurrencyCM() }
+                    }.prefWidth(100.0)
                     column(messages["section"], MedicationEntryModel::synthesisSectionName)
 
                     selectionModel.selectedItemProperty().addListener { _, _, new ->
-                        if (selectionModel.selectedItem != null) {
-                            if (!orderController.selectedItems.contains(new))
-                                orderController.selectedItems.add(new)
+                        if (selectionModel.selectedItem != null && !orderController.selectedItems.contains(new)) {
+                            orderController.selectedItems.add(new)
                             tableOfCommandItems.requestResize()
+                            updateOrderTotal()
                         }
                     }
-
                     smartResize()
                 }
                 /*
@@ -205,9 +182,7 @@ class CreateBillView : View("Create bill") {
         row {
             buttonbar {
                 button(messages["clear"]) {
-                    action {
-                        userModel.rollback()
-                    }
+                    action { userModel.rollback() }
                 }
                 button(messages["validate"]) {
                     isDefaultButton = true
@@ -222,6 +197,13 @@ class CreateBillView : View("Create bill") {
                 paddingTop = defaultPadding
             }
         }
+    }
+
+    private fun updateOrderTotal() {
+        var total = 0.0
+        orderController.orderItems.forEach { total += it.amtCalc.value.toDouble() }
+        orderItemsTotalProperty.set(total)
+        orderItemsModel.totalAmount.value = total
     }
 
     private fun addListenersAndValidation() {

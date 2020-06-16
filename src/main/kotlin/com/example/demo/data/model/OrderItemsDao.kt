@@ -2,6 +2,7 @@
 
 package com.example.demo.data.model
 
+import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import org.jetbrains.exposed.sql.ResultRow
@@ -31,6 +32,8 @@ class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
 
     val quantityProperty = SimpleIntegerProperty(quantity)
     val quantity by quantityProperty
+
+    var totalAmount = Bindings.add(acte.appliedAmountProperty, 0)
 }
 
 class OrderItemModel : ItemViewModel<OrderItemEntry>() {
@@ -44,6 +47,8 @@ class OrderItemModel : ItemViewModel<OrderItemEntry>() {
 
     val qtyTemp = bind { SimpleIntegerProperty(1) }
     val amtCalc = bind { SimpleDoubleProperty(0.0) }
+
+    var totalAmount = itemProperty.select(OrderItemEntry::totalAmount)
 
     init {
         qtyTemp.addListener { _, _, new ->
