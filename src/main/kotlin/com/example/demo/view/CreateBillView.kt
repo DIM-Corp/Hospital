@@ -13,10 +13,13 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TableView
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Priority
+import javafx.scene.paint.Color
 import tornadofx.*
 import java.text.NumberFormat
 import java.util.*
+
 
 class CreateBillView : View("Create bill") {
 
@@ -92,6 +95,30 @@ class CreateBillView : View("Create bill") {
                     items = orderController.orderItems
 
                     columnResizePolicy = SmartResize.POLICY
+
+                    column("", OrderItemModel::acteId) {
+
+                        maxWidth = 50.0
+                        useMaxWidth = true
+
+                        cellFormat {
+                            graphic = group {
+                                circle(0, 0, 8) { fill = Color.valueOf("#E21B1B") }
+                                line(-2, 2, 2, -2) {
+                                    stroke = Color.WHITE
+                                    strokeWidth = 3.0
+                                }
+                                line(2, 2, -2, -2) {
+                                    stroke = Color.WHITE
+                                    strokeWidth = 3.0
+                                }
+                                addEventFilter(MouseEvent.MOUSE_CLICKED) { _ ->
+                                    orderController.selectedItems.removeIf { it.id.value == item.toInt() }
+                                }
+                            }
+                        }
+                    }
+
 
                     column(messages["label"], OrderItemModel::label)
                     column(messages["price"], OrderItemModel::price).cellFormat {

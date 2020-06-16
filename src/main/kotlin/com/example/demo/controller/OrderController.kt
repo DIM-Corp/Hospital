@@ -27,7 +27,9 @@ class OrderController : Controller() {
                         }
                     })
                 } else if (items.wasRemoved()) {
-                    orderItems.removeIf { o -> items.removed.findLast { o.acteId == it.id } != null }
+                    items.removed.forEach { m ->
+                        orderItems.removeIf { it.acteId.value == m.id.value }
+                    }
                 }
             }
         }
