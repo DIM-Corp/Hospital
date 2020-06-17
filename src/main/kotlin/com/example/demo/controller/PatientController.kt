@@ -15,7 +15,7 @@ class PatientController : Controller() {
     private val userSqlRepository by lazy { SqlRepository(UsersTbl, UserTbl) }
 
     private val listOfPatients: ObservableList<PatientEntryModel> = execute {
-        ActesTbl.join(PatientsTbl, JoinType.LEFT, PatientsTbl.id, UsersTbl.id)
+        PatientsTbl.join(UsersTbl, JoinType.LEFT, PatientsTbl.id, UsersTbl.id)
                 .selectAll().map {
                     PatientEntryModel().apply {
                         item = it.toPatientEntry()
@@ -55,11 +55,18 @@ class PatientController : Controller() {
         }
     }
 
-    /*fun update(updatedItem: PatientViewModel): Int? {
-        return patientSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
-            it[Condition] = updatedItem.condition.value
+    fun update(updatedItem: PatientEntryModel): Int? {
+        userSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
+            it[Name] = updatedItem.name.value
+            it[Address] = updatedItem.address.value
+            it[Gender] = updatedItem.gender.value
+            it[DateOfBirth] = updatedItem.age.value.toMillis()
+            it[Telephone] = updatedItem.telephone.value
         }
-    }*/
+        return patientSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
+            it[Condition] = updatedItem.condition.value.toInt()
+        }
+    }
 
     fun delete(patientItem: PatientEntry) = patientSqlRepository.deleteById(patientItem.id)
 

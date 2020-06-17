@@ -3,10 +3,10 @@ package com.example.demo.view
 import com.example.demo.app.Styles
 import com.example.demo.controller.ActesController
 import com.example.demo.controller.OrderController
-import com.example.demo.controller.UserController
+import com.example.demo.controller.PatientController
 import com.example.demo.data.model.MedicationEntryModel
 import com.example.demo.data.model.OrderItemModel
-import com.example.demo.data.model.UserViewModel
+import com.example.demo.data.model.PatientEntryModel
 import com.example.demo.utils.cancelButton
 import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
@@ -21,14 +21,15 @@ import javafx.scene.control.Label
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
+import java.util.*
 
 
 class CreateBillView : View("Create bill") {
 
     private var toUpdateUser = false
-    private val userModel = UserViewModel()
+    private val patientEntryModel = PatientEntryModel()
 
-    private val userController: UserController by inject()
+    private val patientController: PatientController by inject()
     private val actesController: ActesController by inject()
     private val orderController: OrderController by inject()
 
@@ -51,8 +52,8 @@ class CreateBillView : View("Create bill") {
                     fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
                         field(messages["name"]) {
                             nameField = combobox {
-                                bind(userModel.name)
-                                items = userController.items.map { it.name.value }.observable()
+                                bind(patientEntryModel.name)
+                                items = patientController.items.map { it.name.value }.observable()
                                 promptText = messages["placeHolderName"]
                                 isEditable = true
                                 fitToParentWidth()
@@ -63,23 +64,23 @@ class CreateBillView : View("Create bill") {
                             hgap = defaultPadding
                             field(messages["age"]) {
                                 spinner(1, 200, 20) {
-                                    bind(userModel.age)
+                                    bind(patientEntryModel.age)
                                     promptText = messages["placeHolderAge"]
                                 }
                             }
                             field(messages["sex"]) {
                                 togglegroup {
-                                    bind(userModel.gender)
+                                    bind(patientEntryModel.gender)
                                     alignment = Pos.BASELINE_LEFT
                                     radiobutton(text = messages["male"], value = true) { isSelected = true }
                                     radiobutton(text = messages["female"], value = false)
                                 }
                             }
                             field(messages["address"]) {
-                                textfield(userModel.address) { promptText = messages["placeHolderAddress"] }
+                                textfield(patientEntryModel.address) { promptText = messages["placeHolderAddress"] }
                             }
                             field(messages["tel"]) {
-                                textfield(userModel.telephone) {
+                                textfield(patientEntryModel.telephone) {
                                     promptText = messages["placeHolderTel"]
                                     required()
                                     filterInput { it.controlNewText.isNotEmpty() && it.controlNewText.first() == '6' && it.controlNewText.length <= 9 }
@@ -87,8 +88,9 @@ class CreateBillView : View("Create bill") {
                             }
                             field(messages["situation"]) {
                                 togglegroup {
-                                    radiobutton(text = messages["sitIn"], value = true) { isSelected = true }
-                                    radiobutton(text = messages["sitOut"], value = false)
+                                    bind(patientEntryModel.condition)
+                                    radiobutton(text = messages["sitIn"], value = 1) { isSelected = true }
+                                    radiobutton(text = messages["sitOut"], value = 0)
                                 }
                             }
                         }
@@ -132,7 +134,7 @@ class CreateBillView : View("Create bill") {
                 }
 
                 totalLabel = label {
-                    bind(Bindings.format("Total:        %,.0f FCFA", orderItemsTotalProperty))
+                    bind(Bindings.format(Locale("fr", "CM"), "Total:        %,.0f FCFA", orderItemsTotalProperty))
                     addClass(Styles.heading)
                 }
 
@@ -193,15 +195,18 @@ class CreateBillView : View("Create bill") {
         row {
             buttonbar {
                 button(messages["clear"]) {
-                    action { userModel.rollback() }
+                    action {
+                        patientEntryModel.rollback()
+                        toUpdateUser = false
+                    }
                 }
                 button(messages["validate"]) {
                     isDefaultButton = true
-                    enableWhen(userModel.valid)
+                    enableWhen(patientEntryModel.valid)
                     action {
-                        userModel.commit {
-                            createPatient()
-                            userModel.rollback()
+                        patientEntryModel.commit {
+                            if (!toUpdateUser) createPatient()
+                            patientEntryModel.rollback()
                         }
                     }
                 }
@@ -225,17 +230,17 @@ class CreateBillView : View("Create bill") {
         with(nameField) {
             required()
             validator {
-                val value = userModel.name.value
+                val value = patientEntryModel.name.value
                 if (!value.isNullOrBlank() && value.length < 3) error(messages["ld3"]) else null
             }
 
             selectionModel?.selectedIndexProperty()?.addListener { _, _, new ->
                 if (nameField.items.isNotEmpty() && new.toInt() >= 0) {
                     toUpdateUser = true
-                    val user = userController.items.find {
+                    val user = patientController.items.find {
                         items[new.toInt()].contains(it!!.name.value)
                     }!!
-                    with(userModel) {
+                    with(patientEntryModel) {
                         address.value = user.address.value
                         gender.value = user.gender.value
                         age.value = user.age.value
@@ -246,7 +251,7 @@ class CreateBillView : View("Create bill") {
             }
 
             editor.textProperty().addListener { _, _, new ->
-                val filtered = userController.items.map { it.name.value }.filter {
+                val filtered = patientController.items.map { it.name.value }.filter {
                     it.contains(new, true)
                 }
 
@@ -268,12 +273,13 @@ class CreateBillView : View("Create bill") {
     }
 
     private fun createPatient() {
-        userController.add(
-                userModel.name.value,
-                userModel.address.value,
-                userModel.gender.value,
-                userModel.age.value,
-                userModel.telephone.value
+        patientController.add(
+                patientEntryModel.name.value,
+                patientEntryModel.address.value,
+                patientEntryModel.gender.value,
+                patientEntryModel.age.value,
+                patientEntryModel.telephone.value,
+                patientEntryModel.condition.value.toInt()
         )
     }
 }
