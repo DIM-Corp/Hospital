@@ -2,6 +2,7 @@ package com.example.demo.app
 
 import com.example.demo.controller.ActesController
 import com.example.demo.controller.OrderController
+import com.example.demo.controller.PatientController
 import com.example.demo.controller.UserController
 import com.example.demo.view.ActesView
 import com.example.demo.view.CreateBillView
@@ -15,6 +16,7 @@ class HospitalWorkspace : Workspace("Efoulan", NavigationMode.Tabs) {
         UserController()
         ActesController()
         OrderController()
+        PatientController()
         // Tabs
         dock<CreateBillView>()
         dock<ActesView>()

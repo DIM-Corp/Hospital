@@ -13,7 +13,7 @@ const val isDarkTheme = true
 fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
 fun String.simplify(): String = with(split(" ")) {
-    joinToString(". ") { it[0].toString() } + this.last().substring(1, this.size)
+    joinToString(". ") { it[0].toString() } + this.last().substring(1)
 }
 
 fun Long.toLocalDateTime(): LocalDateTime = Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDateTime()

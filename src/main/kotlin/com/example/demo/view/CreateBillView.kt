@@ -206,6 +206,7 @@ class CreateBillView : View("Create bill") {
                     action {
                         patientEntryModel.commit {
                             if (!toUpdateUser) createPatient()
+                            orderController.printOrder(patientEntryModel)
                             patientEntryModel.rollback()
                         }
                     }
@@ -245,7 +246,8 @@ class CreateBillView : View("Create bill") {
                         gender.value = user.gender.value
                         age.value = user.age.value
                         telephone.value = user.telephone.value
-                        editor.text = user.name.value
+                        condition.value = user.condition.value
+                        name.value = user.name.value
                     }
                 }
             }
