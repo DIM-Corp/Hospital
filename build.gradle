@@ -24,7 +24,7 @@ plugins {
 
 javafx {
     version = "14"
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 jlink {
@@ -32,7 +32,7 @@ jlink {
         name = 'hellofx'
         jvmArgs = [
                 '--module-path "C:/Program Files/Java/javafx-sdk-14.0.1/lib"',
-                '--add-modules javafx.controls,javafx.fxml',
+                '--add-modules javafx.controls',
                 '--add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED',
                 '--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED'
         ]

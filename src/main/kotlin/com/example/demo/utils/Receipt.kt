@@ -9,10 +9,9 @@ class Receipt(
         pageFormat: PageFormat
 ) {
 
-    private var pageWidth = 7.6.cm
-    private var pageMargin = 0.3.cm
+    private var pageWidth = pageFormat.imageableWidth.toFloat()
     private var lineSpacing = 0.1.cm
-    private var yPos = pageMargin
+    private var yPos = 0f
 
     private val font = Font("Consolas", Font.PLAIN, 8)
 
@@ -38,14 +37,14 @@ class Receipt(
     fun addDivider(isUnderLine: Boolean = false): Receipt {
         yPos += (lineSpacing * 2)
 
-        val dashed: Stroke = BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, floatArrayOf(2f, 4f), 1f)
+        val dashed: Stroke = BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, floatArrayOf(2f, 4f), 0f)
         val original = graphics2D.stroke
 
         graphics2D.stroke = dashed
         graphics2D.drawLine(
-                if (isUnderLine) pageMargin.toInt() * 8 else pageMargin.toInt(),
+                if (isUnderLine) lineSpacing.toInt() * 16 else 0,
                 yPos.toInt(),
-                if (isUnderLine) (pageWidth - (pageMargin.toInt() * 8)).toInt() else (pageWidth - pageMargin).toInt(),
+                if (isUnderLine) (pageWidth - (lineSpacing.toInt() * 16)).toInt() else pageWidth.toInt(),
                 yPos.toInt()
         )
         graphics2D.stroke = original
@@ -65,8 +64,8 @@ class Receipt(
         }
 
         val xPos = when (alignment) {
-            Alignment.LEFT -> pageMargin + padding
-            Alignment.RIGHT -> pageWidth - textWidth - pageMargin
+            Alignment.LEFT -> padding
+            Alignment.RIGHT -> pageWidth - textWidth
             Alignment.CENTER -> (pageWidth / 2f) - (textWidth / 2f)
         }
 

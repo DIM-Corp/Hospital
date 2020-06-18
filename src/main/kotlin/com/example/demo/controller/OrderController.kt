@@ -3,10 +3,10 @@ package com.example.demo.controller
 import com.example.demo.data.model.MedicationEntryModel
 import com.example.demo.data.model.OrderItemModel
 import com.example.demo.data.model.PatientEntryModel
+import com.example.demo.utils.Item
 import com.example.demo.utils.PrinterService
 import javafx.collections.ObservableList
 import tornadofx.*
-import javax.print.PrintService
 
 class OrderController : Controller() {
 
@@ -16,14 +16,10 @@ class OrderController : Controller() {
 
     fun printOrder(patientEntryModel: PatientEntryModel) {
         //TODO: Save order
-        printerService.orderItems = orderItems
-        printerService.patientEntryModel = patientEntryModel
-        printerService.printReceipt()
-    }
-
-    private fun findPrintService(printerName: String, services: Array<PrintService>): PrintService? {
-        for (service in services) if (service.name.equals(printerName, ignoreCase = true)) return service
-        return null
+        printerService.printReceipt(
+                orderItems.map { Item(it.label.value, it.qtyTemp.value, it.price.value.toDouble()) },
+                patientEntryModel.name.value
+        )
     }
 
     init {

@@ -1,9 +1,5 @@
 package com.example.demo.utils
 
-import com.example.demo.data.model.OrderItemModel
-import com.example.demo.data.model.PatientEntryModel
-import javafx.collections.ObservableList
-import tornadofx.*
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.print.PageFormat
@@ -18,9 +14,6 @@ import javax.print.attribute.PrintRequestAttributeSet
 
 class PrinterService : Printable {
 
-    var orderItems: ObservableList<OrderItemModel> by singleAssign()
-    var patientEntryModel: PatientEntryModel by singleAssign()
-
     val printers: List<String>
         get() {
             val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
@@ -32,6 +25,9 @@ class PrinterService : Printable {
             }
             return printerList
         }
+
+    private var items: List<Item> = emptyList()
+    private var clientName = ""
 
     override fun print(graphics: Graphics, pageFormat: PageFormat, pageIndex: Int): Int {
         if (pageIndex > 0) return Printable.NO_SUCH_PAGE
@@ -52,7 +48,7 @@ class PrinterService : Printable {
 
             addPair("Tel: 673477745", "Receipt no: 50")
             addPair(now.format(dateFormatter), now.format(timeFormatter))
-            addPair("Cashier: Forntoh", "Client: ${patientEntryModel.name.value.simplify()}")
+            addPair("Cashier: Forntoh", "Client: ${clientName.simplify()}")
 
             //TODO: Cashier name
             //TODO: Receipt number
@@ -66,9 +62,9 @@ class PrinterService : Printable {
             addDivider()
 
             var total = 0.0
-            orderItems.forEach {
-                addReceiptItem(it.label.value, it.qtyTemp.value.toInt(), it.price.value.toDouble())
-                total += it.amtCalc.value.toDouble()
+            items.forEach {
+                addReceiptItem(it.label, it.quantity, it.price)
+                total += (it.price * it.quantity)
             }
 
             addDivider()
@@ -82,7 +78,10 @@ class PrinterService : Printable {
         return Printable.PAGE_EXISTS
     }
 
-    fun printReceipt() {
+    fun printReceipt(items: List<Item>, clientName: String) {
+        this.items = items
+        this.clientName = clientName
+
         //val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
         //val pRas: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
         //val printService = PrintServiceLookup.lookupPrintServices(flavor, pRas)
@@ -92,7 +91,7 @@ class PrinterService : Printable {
 
         //job.printService = service
 
-        job.setPrintable(this, getPageFormat(job))
+        job.setPrintable(this, getPageFormat(job, items.size))
 
         job.print()
     }
@@ -112,20 +111,24 @@ class PrinterService : Printable {
         }
     }
 
-    private fun getPageFormat(job: PrinterJob): PageFormat {
+    private fun getPageFormat(job: PrinterJob, bodyHeight: Int): PageFormat {
         val pf = job.defaultPage()
 
-        val headerHeight = 5.0
-        val bodyHeight = 5.0
-        val footerHeight = 5.0
+        val headerHeight = 6.0
+        val footerHeight = 2.0
 
-        val height = (headerHeight + bodyHeight + footerHeight).cm
+        val height = (headerHeight + bodyHeight + footerHeight).cm.toDouble()
+        val width = 7.6.cm.toDouble()
+        val margin = 0.3.cm.toDouble()
 
-        with(pf) {
-            paper.setSize(7.6.cm.toDouble(), height.toDouble())
-            paper.setImageableArea(0.0, 10.0, 7.6.cm.toDouble(), (height - 1.cm).toDouble())
-            orientation = PageFormat.PORTRAIT
+        val paper = with(pf.paper) {
+            setSize(width, height)
+            setImageableArea(margin, margin, width - (margin * 2), height - (margin * 2))
+            this
         }
+
+        pf.paper = paper
+        pf.orientation = PageFormat.PORTRAIT
         return pf
     }
 

@@ -8,7 +8,7 @@ import java.text.NumberFormat
 import java.time.*
 import java.util.*
 
-const val isDarkTheme = true
+const val isDarkTheme = false
 
 fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
