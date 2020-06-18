@@ -157,7 +157,6 @@ class CreateBillView : View("Create bill") {
                             tableOfActes.tableView.requestResize()
                         }
                     }
-                    button(messages["search"])
                 }
 
                 tableview<MedicationEntryModel> {
@@ -168,7 +167,7 @@ class CreateBillView : View("Create bill") {
 
                     column(messages["id"], MedicationEntryModel::id)
                     column(messages["label"], MedicationEntryModel::name)
-                    column(messages["price"], MedicationEntryModel::officialAmount) {
+                    column(messages["price"], MedicationEntryModel::appliedAmount) {
                         cellFormat { this.text = this.item.formatCurrencyCM() }
                     }.prefWidth(100.0)
                     column(messages["section"], MedicationEntryModel::synthesisSectionName)
@@ -244,6 +243,7 @@ class CreateBillView : View("Create bill") {
                         items[new.toInt()].contains(it!!.name.value)
                     }!!
                     with(patientEntryModel) {
+                        id.value = user.id.value
                         address.value = user.address.value
                         gender.value = user.gender.value
                         age.value = user.age.value
@@ -256,7 +256,7 @@ class CreateBillView : View("Create bill") {
 
             editor.textProperty().addListener { _, _, new ->
                 val filtered = patientController.items.map { it.name.value }.filter {
-                    it.contains(new, true)
+                    it?.contains(new, true) ?: false
                 }
 
                 items.removeIf { !filtered.contains(it) }

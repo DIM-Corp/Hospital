@@ -37,7 +37,7 @@ class Receipt(
     fun addDivider(isUnderLine: Boolean = false): Receipt {
         yPos += (lineSpacing * 2)
 
-        val dashed: Stroke = BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, floatArrayOf(2f, 4f), 0f)
+        val dashed: Stroke = BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, floatArrayOf(1f, 2f), 0f)
         val original = graphics2D.stroke
 
         graphics2D.stroke = dashed

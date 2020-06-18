@@ -56,8 +56,14 @@ class PatientController : Controller() {
             it[DateOfBirth] = updatedItem.age.value.toMillis()
             it[Telephone] = updatedItem.telephone.value
         }
-        listOfPatients.removeIf { it.id.value == updatedItem.id.value }
-        listOfPatients.add(updatedItem)
+        listOfPatients.find { it.id.value == updatedItem.id.value }?.apply {
+            name.value = updatedItem.name.value
+            address.value = updatedItem.address.value
+            gender.value = updatedItem.gender.value
+            age.value = updatedItem.age.value
+            telephone.value = updatedItem.telephone.value
+            condition.value = updatedItem.condition.value
+        }
         return patientSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
             it[Condition] = updatedItem.condition.value.toInt()
         }
