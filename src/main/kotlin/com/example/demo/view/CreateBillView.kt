@@ -196,6 +196,7 @@ class CreateBillView : View("Create bill") {
             buttonbar {
                 button(messages["clear"]) {
                     action {
+                        orderController.selectedItems.clear()
                         patientEntryModel.rollback()
                         toUpdateUser = false
                     }
@@ -205,7 +206,8 @@ class CreateBillView : View("Create bill") {
                     enableWhen(patientEntryModel.valid)
                     action {
                         patientEntryModel.commit {
-                            if (!toUpdateUser) createPatient()
+                            if (!toUpdateUser) patientController.add(patientEntryModel)
+                            else patientController.update(patientEntryModel)
                             orderController.printOrder(patientEntryModel)
                             patientEntryModel.rollback()
                         }
@@ -272,16 +274,5 @@ class CreateBillView : View("Create bill") {
                 }
             }
         }
-    }
-
-    private fun createPatient() {
-        patientController.add(
-                patientEntryModel.name.value,
-                patientEntryModel.address.value,
-                patientEntryModel.gender.value,
-                patientEntryModel.age.value,
-                patientEntryModel.telephone.value,
-                patientEntryModel.condition.value.toInt()
-        )
     }
 }

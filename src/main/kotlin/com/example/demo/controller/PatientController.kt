@@ -29,28 +29,21 @@ class PatientController : Controller() {
         items = listOfPatients
     }
 
-    fun add(
-            newName: String,
-            newAddress: String?,
-            newGender: Boolean,
-            newAge: Int,
-            newTelephone: String,
-            newCondition: Int
-    ): Int? {
+    fun add(newPatient: PatientEntryModel): Int? {
         val newEntry = userSqlRepository.transactionNew {
-            name = newName
-            address = newAddress
-            gender = newGender
-            dateOfBirth = newAge.toMillis()
-            telephone = newTelephone
+            name = newPatient.name.value
+            address = newPatient.address.value
+            gender = newPatient.gender.value
+            dateOfBirth = newPatient.age.value.toMillis()
+            telephone = newPatient.telephone.value
         }
 
         return patientSqlRepository.transactionInsert {
             it[id] = newEntry!![UsersTbl.id]
-            it[Condition] = newCondition
+            it[Condition] = newPatient.condition.value.toInt()
         }.value.also {
             listOfPatients.add(PatientEntryModel().apply {
-                item = PatientEntry(it, newCondition, newEntry!!.toUserEntry())
+                item = PatientEntry(it, newPatient.condition.value.toInt(), newEntry!!.toUserEntry())
             })
         }
     }
@@ -63,6 +56,8 @@ class PatientController : Controller() {
             it[DateOfBirth] = updatedItem.age.value.toMillis()
             it[Telephone] = updatedItem.telephone.value
         }
+        listOfPatients.removeIf { it.id.value == updatedItem.id.value }
+        listOfPatients.add(updatedItem)
         return patientSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
             it[Condition] = updatedItem.condition.value.toInt()
         }
