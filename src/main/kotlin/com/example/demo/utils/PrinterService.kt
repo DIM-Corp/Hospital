@@ -83,14 +83,14 @@ class PrinterService : Printable {
     }
 
     fun printReceipt() {
-        val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
-        val pRas: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
-        val printService = PrintServiceLookup.lookupPrintServices(flavor, pRas)
-        val service = findPrintService("RICOH Aficio MP C4000 (Copy 1)", printService)
+        //val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
+        //val pRas: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
+        //val printService = PrintServiceLookup.lookupPrintServices(flavor, pRas)
+        //val service = findPrintService("RICOH Aficio MP C4000 (Copy 1)", printService)
 
         val job: PrinterJob = PrinterJob.getPrinterJob()
 
-        job.printService = service
+        //job.printService = service
 
         job.setPrintable(this, getPageFormat(job))
 
