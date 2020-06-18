@@ -26,6 +26,7 @@ class MyApp : App(HospitalWorkspace::class, Styles::class) {
             height = 768.0
             minWidth = width / 1.9
             minHeight = height / 1.3
+            isMaximized = true
         }
         super.start(stage)
     }

@@ -42,156 +42,101 @@ class CreateBillView : View("Create bill") {
     private var totalLabel: Label by singleAssign()
     private var orderItemsTotalProperty = SimpleDoubleProperty(0.0)
 
-    override val root = gridpane {
+    override val root = splitpane {
 
-        paddingAll = defaultPadding
 
-        row {
-            vbox {
-                form {
-                    fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
-                        field(messages["name"]) {
-                            nameField = combobox {
-                                bind(patientEntryModel.name)
-                                items = patientController.items.map { it.name.value }.observable()
-                                promptText = messages["placeHolderName"]
-                                isEditable = true
-                                fitToParentWidth()
-                            }
-                            addListenersAndValidation()
+        vbox {
+            form {
+                fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
+                    field(messages["name"]) {
+                        nameField = combobox {
+                            bind(patientEntryModel.name)
+                            items = patientController.items.map { it.name.value }.observable()
+                            promptText = messages["placeHolderName"]
+                            isEditable = true
+                            fitToParentWidth()
                         }
-                        flowpane {
-                            hgap = defaultPadding
-                            field(messages["age"]) {
-                                spinner(1, 200, 20) {
-                                    bind(patientEntryModel.age)
-                                    promptText = messages["placeHolderAge"]
-                                }
-                            }
-                            field(messages["sex"]) {
-                                togglegroup {
-                                    bind(patientEntryModel.gender)
-                                    alignment = Pos.BASELINE_LEFT
-                                    radiobutton(text = messages["male"], value = true) { isSelected = true }
-                                    radiobutton(text = messages["female"], value = false)
-                                }
-                            }
-                            field(messages["address"]) {
-                                textfield(patientEntryModel.address) { promptText = messages["placeHolderAddress"] }
-                            }
-                            field(messages["tel"]) {
-                                textfield(patientEntryModel.telephone) {
-                                    promptText = messages["placeHolderTel"]
-                                    required()
-                                    filterInput { it.controlNewText.isNotEmpty() && it.controlNewText.first() == '6' && it.controlNewText.length <= 9 }
-                                }
-                            }
-                            field(messages["situation"]) {
-                                togglegroup {
-                                    bind(patientEntryModel.condition)
-                                    radiobutton(text = messages["sitIn"], value = 1) { isSelected = true }
-                                    radiobutton(text = messages["sitOut"], value = 0)
-                                }
-                            }
-                        }
-                        padding = Insets(0.0, 8.0, 0.0, 8.0)
+                        addListenersAndValidation()
                     }
-                    paddingBottom = 0.0
-                }
-                separator(orientation = Orientation.HORIZONTAL)
-                tableOfCommandItems = tableview {
-                    items = orderController.orderItems
-
-                    smartResize()
-
-                    column("", OrderItemModel::acteId) {
-                        maxWidth = 30.0
-                        cellFormat {
-                            graphic = cancelButton {
-                                orderController.selectedItems.removeIf { it.id.value == item.toInt() }
-                                updateOrderTotal()
+                    flowpane {
+                        hgap = defaultPadding
+                        field(messages["age"]) {
+                            spinner(1, 200, 20) {
+                                bind(patientEntryModel.age)
+                                promptText = messages["placeHolderAge"]
+                            }
+                        }
+                        field(messages["sex"]) {
+                            togglegroup {
+                                bind(patientEntryModel.gender)
+                                alignment = Pos.BASELINE_LEFT
+                                radiobutton(text = messages["male"], value = true) { isSelected = true }
+                                radiobutton(text = messages["female"], value = false)
+                            }
+                        }
+                        field(messages["address"]) {
+                            textfield(patientEntryModel.address) { promptText = messages["placeHolderAddress"] }
+                        }
+                        field(messages["tel"]) {
+                            textfield(patientEntryModel.telephone) {
+                                promptText = messages["placeHolderTel"]
+                                required()
+                                filterInput { it.controlNewText.isNotEmpty() && it.controlNewText.first() == '6' && it.controlNewText.length <= 9 }
+                            }
+                        }
+                        field(messages["situation"]) {
+                            togglegroup {
+                                bind(patientEntryModel.condition)
+                                radiobutton(text = messages["sitIn"], value = 1) { isSelected = true }
+                                radiobutton(text = messages["sitOut"], value = 0)
                             }
                         }
                     }
-
-
-                    column(messages["label"], OrderItemModel::label) { prefWidth = 200.0 }
-                    column(messages["price"], OrderItemModel::price) {
-                        cellFormat { this.text = this.item.formatCurrencyCM() }
-                    }.prefWidth(100.0)
-                    column(messages["qty"], OrderItemModel::quantity) {
-                        cellFormat {
-                            graphic = spinner(1, 999, item) {
-                                bind(rowItem.qtyTemp)
-                                isEditable = true
-                                this.valueProperty().addListener { _, o, n ->
-                                    if (o != n) updateOrderTotal()
-                                }
-                            }
-                        }
-                    }.prefWidth(96.0)
-                    column(messages["amount"], OrderItemModel::amtCalc).cellFormat { this.text = this.item.formatCurrencyCM() }
+                    padding = Insets(0.0, 8.0, 0.0, 8.0)
                 }
-
-                totalLabel = label {
-                    bind(Bindings.format(Locale("fr", "CM"), "Total:        %,.0f FCFA", orderItemsTotalProperty))
-                    addClass(Styles.heading)
-                }
-
-                /*
-                 * Left Pane Properties
-                 */
-                spacing = defaultPadding
-                gridpaneColumnConstraints { percentWidth = 40.0 }
-                fitToParentSize()
+                paddingBottom = 0.0
             }
-            vbox {
-                hbox {
-                    textfield {
-                        promptText = messages["search"]
-                        hgrow = Priority.ALWAYS
 
-                        textProperty().addListener { _, _, new ->
-                            tableOfActes.tableView.selectionModel.clearSelection()
-                            tableOfActes.tableView.items = actesController.items.filter { it.name.value.contains(new, true) }.observable()
-                            tableOfActes.tableView.requestResize()
-                        }
-                    }
-                }
+            separator(orientation = Orientation.HORIZONTAL)
 
-                tableview<MedicationEntryModel> {
-                    items = actesController.items
-                    vgrow = Priority.ALWAYS
+            tableOfCommandItems = tableview {
+                items = orderController.orderItems
+                vgrow = Priority.ALWAYS
 
-                    tableOfActes = editModel
+                smartResize()
 
-                    column(messages["id"], MedicationEntryModel::id)
-                    column(messages["label"], MedicationEntryModel::name)
-                    column(messages["price"], MedicationEntryModel::appliedAmount) {
-                        cellFormat { this.text = this.item.formatCurrencyCM() }
-                    }.prefWidth(100.0)
-                    column(messages["section"], MedicationEntryModel::synthesisSectionName)
-
-                    selectionModel.selectedItemProperty().addListener { _, _, new ->
-                        if (selectionModel.selectedItem != null && !orderController.selectedItems.contains(new)) {
-                            orderController.selectedItems.add(new)
-                            tableOfCommandItems.requestResize()
+                column("", OrderItemModel::acteId) {
+                    maxWidth = 30.0
+                    cellFormat {
+                        graphic = cancelButton {
+                            orderController.selectedItems.removeIf { it.id.value == item.toInt() }
                             updateOrderTotal()
                         }
                     }
-                    smartResize()
                 }
-                /*
-                 * Right Pane Properties
-                 */
-                paddingLeft = defaultPadding
-                spacing = defaultPadding
-                gridpaneColumnConstraints { percentWidth = 60.0 }
-                fitToParentSize()
+                column(messages["label"], OrderItemModel::label) { prefWidth = 200.0 }
+                column(messages["price"], OrderItemModel::price) {
+                    cellFormat { this.text = this.item.formatCurrencyCM() }
+                }.prefWidth(100.0)
+                column(messages["qty"], OrderItemModel::quantity) {
+                    cellFormat {
+                        graphic = spinner(1, 999, item) {
+                            bind(rowItem.qtyTemp)
+                            isEditable = true
+                            this.valueProperty().addListener { _, o, n ->
+                                if (o != n) updateOrderTotal()
+                            }
+                        }
+                    }
+                }.prefWidth(96.0)
+                column(messages["amount"], OrderItemModel::amtCalc).cellFormat { this.text = this.item.formatCurrencyCM() }
             }
-        }
 
-        row {
+            totalLabel = label {
+                bind(Bindings.format(Locale("fr", "CM"), "Total:        %,.0f FCFA", orderItemsTotalProperty))
+                addClass(Styles.heading)
+            }
+
             buttonbar {
                 button(messages["clear"]) {
                     action {
@@ -212,9 +157,58 @@ class CreateBillView : View("Create bill") {
                         }
                     }
                 }
-                paddingTop = defaultPadding
             }
+
+            /*
+             * Left Pane Properties
+             */
+            spacing = defaultPadding - 8
+            paddingAll = defaultPadding
         }
+
+        vbox {
+            hbox {
+                textfield {
+                    promptText = messages["search"]
+                    prefWidth = 600.0
+
+                    textProperty().addListener { _, _, new ->
+                        tableOfActes.tableView.selectionModel.clearSelection()
+                        tableOfActes.tableView.items = actesController.items.filter { it.name.value.contains(new, true) }.observable()
+                        tableOfActes.tableView.requestResize()
+                    }
+                }
+            }
+
+            tableview<MedicationEntryModel> {
+                items = actesController.items
+                tableOfActes = editModel
+                vgrow = Priority.ALWAYS
+
+                column(messages["id"], MedicationEntryModel::id)
+                column(messages["label"], MedicationEntryModel::name)
+                column(messages["price"], MedicationEntryModel::appliedAmount) {
+                    cellFormat { this.text = this.item.formatCurrencyCM() }
+                }.prefWidth(100.0)
+                column(messages["section"], MedicationEntryModel::synthesisSectionName)
+
+                selectionModel.selectedItemProperty().addListener { _, _, new ->
+                    if (selectionModel.selectedItem != null && !orderController.selectedItems.contains(new)) {
+                        orderController.selectedItems.add(new)
+                        tableOfCommandItems.requestResize()
+                        updateOrderTotal()
+                    }
+                }
+                smartResize()
+            }
+            /*
+             * Right Pane Properties
+             */
+            spacing = defaultPadding
+            paddingAll = defaultPadding
+        }
+
+        setDividerPositions(0.36)
     }
 
     private fun updateOrderTotal() {

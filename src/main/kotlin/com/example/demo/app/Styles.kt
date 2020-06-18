@@ -16,7 +16,7 @@ class Styles : Stylesheet() {
     init {
         label and heading {
             padding = box(10.px)
-            fontSize = 20.px
+            fontSize = 24.px
             fontWeight = FontWeight.BOLD
         }
 
