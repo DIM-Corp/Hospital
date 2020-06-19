@@ -9,22 +9,88 @@ class Receipt(
         pageFormat: PageFormat
 ) {
 
+    var ticket: Ticket = Ticket()
+
+    private val font = Font("Consolas", Font.PLAIN, 10)
+    private val fontMetrics: FontMetrics = graphics2D.getFontMetrics(font)
+
     private var pageWidth = pageFormat.imageableWidth.toFloat()
     private var lineSpacing = 0.1.cm
-    private var yPos = 0f
-
-    private val font = Font("Consolas", Font.PLAIN, 8)
+    private val lineHeight = fontMetrics.height + lineSpacing
+    private var yPos = lineHeight
 
     init {
         graphics2D.font = font
         graphics2D.translate(pageFormat.imageableX.toInt(), pageFormat.imageableY.toInt())
     }
 
-    private val fontMetrics: FontMetrics = graphics2D.getFontMetrics(font)
-
-    enum class Alignment {
-        LEFT, RIGHT, CENTER
+    fun drawTicketHeaders() {
+        ticket.headers.forEach { head ->
+            //
+            // Reset the x position for each header item
+            //
+            var xPos = 0f
+            //
+            // Loop through each section
+            //
+            head.sections.forEach { section ->
+                //
+                // Copy the xPosition
+                //
+                val sectionStart = xPos
+                //
+                // Calculate the end x position of the section
+                //
+                val sectionEnd = sectionStart + (section.weight * pageWidth)
+                //
+                // Initialize the row y position
+                //
+                var rowY = yPos
+                //
+                // Loop through each row
+                //
+                section.rows.forEach { row ->
+                    //
+                    // Calculate the text width
+                    //
+                    val textWidth = fontMetrics.stringWidth(row.label)
+                    //
+                    // Check alignment
+                    //
+                    val rowX = when (section.alignment) {
+                        Alignment.RIGHT -> sectionEnd - textWidth
+                        Alignment.CENTER -> ((sectionEnd - sectionStart) / 2f + sectionStart) - (textWidth / 2f)
+                        else -> sectionStart
+                    }
+                    //
+                    // draw the text
+                    //
+                    if (row.type == RowType.TEXT) {
+                        graphics2D.drawString(row.label, rowX, rowY)
+                    } else {
+                        val icon = ImageIcon(javaClass.classLoader.getResource("header.png")?.path?.replace("/", "\\\\"))
+                        val width = (sectionEnd - sectionStart).toInt()
+                        val height = (lineHeight * head.maxRowCount).toInt()
+                        val imgX = (sectionEnd - width).toInt()
+                        graphics2D.drawImage(icon.image, imgX, (yPos - (lineHeight / 2)).toInt(), width, height, null)
+                    }
+                    //
+                    // Go to the next row
+                    //
+                    rowY += lineHeight
+                }
+                //
+                // Move to next column
+                //
+                xPos += section.weight * pageWidth
+            }
+            //
+            // Prepare y position for next header item
+            //
+            yPos += lineHeight * head.maxRowCount
+        }
     }
+
 
     fun addHeader(): Receipt {
         val imagePath = javaClass.classLoader.getResource("header.png")?.path?.replace("/", "\\\\")

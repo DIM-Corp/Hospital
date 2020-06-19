@@ -5,8 +5,6 @@ import java.awt.Graphics2D
 import java.awt.print.PageFormat
 import java.awt.print.Printable
 import java.awt.print.PrinterJob
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet
@@ -33,11 +31,13 @@ class PrinterService : Printable {
         if (pageIndex > 0) return Printable.NO_SUCH_PAGE
 
         with(Receipt(graphics as Graphics2D, pageFormat)) {
+            drawTicketHeaders()
+            /*
             addHeader()
 
-            addText("EFOULAN DISTRICT HOSPITAL", Receipt.Alignment.CENTER)
+            addText("EFOULAN DISTRICT HOSPITAL", Alignment.CENTER)
             addUnderLine()
-            addText("HOPITAL DE DISTRICT D'EFOULAN", Receipt.Alignment.CENTER)
+            addText("HOPITAL DE DISTRICT D'EFOULAN", Alignment.CENTER)
             addUnderLine()
 
             newLine()
@@ -73,7 +73,7 @@ class PrinterService : Printable {
             addDivider()
             addPair("Cash", "10000")
             addPair("Balance", "7500")
-            addDivider()
+            addDivider() */
         }
         return Printable.PAGE_EXISTS
     }
@@ -114,12 +114,9 @@ class PrinterService : Printable {
     private fun getPageFormat(job: PrinterJob, bodyHeight: Int): PageFormat {
         val pf = job.defaultPage()
 
-        val headerHeight = 6.0
-        val footerHeight = 2.0
-
-        val height = (headerHeight + bodyHeight + footerHeight).cm.toDouble()
-        val width = 7.6.cm.toDouble()
-        val margin = 0.3.cm.toDouble()
+        val height = 29.7.cm.toDouble()//(headerHeight + bodyHeight + footerHeight).cm.toDouble()
+        val width = 21.cm.toDouble()//7.6.cm.toDouble()
+        val margin = 1.5.cm.toDouble()//0.3.cm.toDouble()
 
         val paper = with(pf.paper) {
             setSize(width, height)
