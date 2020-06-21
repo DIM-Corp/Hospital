@@ -5,10 +5,13 @@ import java.awt.Graphics2D
 import java.awt.print.PageFormat
 import java.awt.print.Printable
 import java.awt.print.PrinterJob
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet
 import javax.print.attribute.PrintRequestAttributeSet
+import kotlin.math.roundToInt
 
 class PrinterService : Printable {
 
@@ -30,50 +33,45 @@ class PrinterService : Printable {
     override fun print(graphics: Graphics, pageFormat: PageFormat, pageIndex: Int): Int {
         if (pageIndex > 0) return Printable.NO_SUCH_PAGE
 
+        var total = 0.0
+
+        val headerMainLeft = Section(0.45f).addRows(Row("MINISTRY OF PUBLIC HEALTH"), Row("CENTER REGIONAL DELEGATION"), Row("P.O. BOX: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
+        val headerMainCenter = Section(0.1f).addRows(Row("", RowType.IMAGE))
+        val headerMainRight = Section(0.45f).addRows(Row("MINISTRY OF PUBLIC HEALTH"), Row("CENTER REGIONAL DELEGATION"), Row("P.O. BOX: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
+
+        val now = LocalDateTime.now()
+        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy - HH:mm:ss", Locale.FRANCE)
+        val sub = Section(1f).addRows(Row("TICKET NO: 000094 OF ${dateFormatter.format(now)}"))
+
+        val info = Section(1f, Alignment.LEFT).addRows(
+                Row("CLIENT: $clientName")
+        )
+
+        val bodyOne = Section(0.71f, Alignment.LEFT).addRows(Row("ITEM"))
+        val bodyTwo = Section(0.05f, Alignment.CENTER).addRows(Row("QTY"))
+        val bodyThree = Section(0.12f, Alignment.RIGHT).addRows(Row("PRICE"))
+        val bodyFour = Section(0.12f, Alignment.RIGHT).addRows(Row("AMOUNT"))
+        items.forEach {
+            total += it.price * it.quantity
+            bodyOne.addRows(Row(it.label))
+            bodyTwo.addRows(Row(it.quantity.toString()))
+            bodyThree.addRows(Row(it.price.roundToInt().toString()))
+            bodyFour.addRows(Row((it.price * it.quantity).roundToInt().toString()))
+        }
+
+        bodyOne.addRows(Row("TOTAL"))
+        bodyTwo.addRows(Row(""))
+        bodyThree.addRows(Row(""))
+        bodyFour.addRows(Row(total.roundToInt().toString()))
+
+        val header = Container().addSections(headerMainLeft, headerMainCenter, headerMainRight)
+        val subHead = Container().addSections(sub)
+        val subInfo = Container().addSections(info)
+        val body = Container(true).addSections(bodyOne, bodyTwo, bodyThree, bodyFour)
+
         with(Receipt(graphics as Graphics2D, pageFormat)) {
-            drawTicketHeaders()
-            /*
-            addHeader()
-
-            addText("EFOULAN DISTRICT HOSPITAL", Alignment.CENTER)
-            addUnderLine()
-            addText("HOPITAL DE DISTRICT D'EFOULAN", Alignment.CENTER)
-            addUnderLine()
-
-            newLine()
-
-            val now = LocalDateTime.now()
-            val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy", Locale.FRANCE)
-            val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss", Locale.FRANCE)
-
-            addPair("Tel: 673477745", "Receipt no: 50")
-            addPair(now.format(dateFormatter), now.format(timeFormatter))
-            addPair("Cashier: Forntoh", "Client: ${clientName.simplify()}")
-
-            //TODO: Cashier name
-            //TODO: Receipt number
-            //TODO: Order Total
-            //TODO: Order Balance
-
-            newLine()
-
-            addPair("ITEM", "PRICE")
-
-            addDivider()
-
-            var total = 0.0
-            items.forEach {
-                addReceiptItem(it.label, it.quantity, it.price)
-                total += (it.price * it.quantity)
-            }
-
-            addDivider()
-
-            addPair("Total", total.toInt().toString())
-            addDivider()
-            addPair("Cash", "10000")
-            addPair("Balance", "7500")
-            addDivider() */
+            this.ticket = Ticket().addContainers(header, subHead, subInfo, body)
+            drawTicket()
         }
         return Printable.PAGE_EXISTS
     }

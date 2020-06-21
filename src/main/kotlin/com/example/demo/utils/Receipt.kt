@@ -9,9 +9,9 @@ class Receipt(
         pageFormat: PageFormat
 ) {
 
-    var ticket: Ticket = Ticket()
+    lateinit var ticket: Ticket
 
-    private val font = Font("Consolas", Font.PLAIN, 10)
+    private val font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
     private val fontMetrics: FontMetrics = graphics2D.getFontMetrics(font)
 
     private var pageWidth = pageFormat.imageableWidth.toFloat()
@@ -24,8 +24,8 @@ class Receipt(
         graphics2D.translate(pageFormat.imageableX.toInt(), pageFormat.imageableY.toInt())
     }
 
-    fun drawTicketHeaders() {
-        ticket.headers.forEach { head ->
+    fun drawTicket() {
+        ticket.containers.forEach { container ->
             //
             // Reset the x position for each header item
             //
@@ -33,7 +33,8 @@ class Receipt(
             //
             // Loop through each section
             //
-            head.sections.forEach { section ->
+            val tableHeight = (lineHeight * container.maxRowCount() + lineSpacing).toInt()
+            container.sections.forEach { section ->
                 //
                 // Copy the xPosition
                 //
@@ -42,6 +43,10 @@ class Receipt(
                 // Calculate the end x position of the section
                 //
                 val sectionEnd = sectionStart + (section.weight * pageWidth)
+
+                if (container.isTable) {
+                    graphics2D.drawRect(sectionEnd.toInt(), (yPos - fontMetrics.height).toInt(), sectionEnd.toInt(), tableHeight)
+                }
                 //
                 // Initialize the row y position
                 //
@@ -49,8 +54,16 @@ class Receipt(
                 //
                 // Loop through each row
                 //
-                section.rows.forEach { row ->
-                    //
+                section.rows.forEachIndexed { index, row ->
+                    graphics2D.font = Font(Font.SANS_SERIF, Font.PLAIN, 10)
+                    if (index == 0 && container.isTable) {
+                        graphics2D.font = Font(Font.SANS_SERIF, Font.BOLD, 10)
+                        graphics2D.drawLine(sectionStart.toInt(), (lineSpacing * 2 + rowY).toInt(), sectionEnd.toInt(), (lineSpacing * 2 + rowY).toInt())
+                    } else if (index == section.rows.size - 1 && container.isTable) {
+                        graphics2D.font = Font(Font.SANS_SERIF, Font.BOLD, 10)
+                        graphics2D.drawLine(sectionStart.toInt(), (rowY - fontMetrics.height).toInt(), sectionEnd.toInt(), (rowY - fontMetrics.height).toInt())
+                    }
+//
                     // Calculate the text width
                     //
                     val textWidth = fontMetrics.stringWidth(row.label)
@@ -58,9 +71,9 @@ class Receipt(
                     // Check alignment
                     //
                     val rowX = when (section.alignment) {
-                        Alignment.RIGHT -> sectionEnd - textWidth
+                        Alignment.RIGHT -> if (container.isTable) sectionEnd - textWidth - 6 else sectionEnd - textWidth
                         Alignment.CENTER -> ((sectionEnd - sectionStart) / 2f + sectionStart) - (textWidth / 2f)
-                        else -> sectionStart
+                        else -> if (container.isTable) sectionStart + 6 else sectionStart
                     }
                     //
                     // draw the text
@@ -70,7 +83,7 @@ class Receipt(
                     } else {
                         val icon = ImageIcon(javaClass.classLoader.getResource("header.png")?.path?.replace("/", "\\\\"))
                         val width = (sectionEnd - sectionStart).toInt()
-                        val height = (lineHeight * head.maxRowCount).toInt()
+                        val height = (lineHeight * container.maxRowCount()).toInt()
                         val imgX = (sectionEnd - width).toInt()
                         graphics2D.drawImage(icon.image, imgX, (yPos - (lineHeight / 2)).toInt(), width, height, null)
                     }
@@ -84,24 +97,21 @@ class Receipt(
                 //
                 xPos += section.weight * pageWidth
             }
+
+            if (container.isTable) {
+                graphics2D.drawRect(1, (yPos - fontMetrics.height).toInt(), (pageWidth - 1).toInt(), tableHeight)
+            }
+
             //
             // Prepare y position for next header item
             //
-            yPos += lineHeight * head.maxRowCount
+            yPos += lineHeight * container.maxRowCount()
+            newLine()
         }
     }
 
-
-    fun addHeader(): Receipt {
-        val imagePath = javaClass.classLoader.getResource("header.png")?.path?.replace("/", "\\\\")
-        val icon = ImageIcon(imagePath?.substring(2, imagePath.length))
-        graphics2D.drawImage(icon.image, (pageWidth / 2 - 15).toInt(), yPos.toInt(), 30, 40, null)
-        yPos += (lineSpacing * 2 + 40)
-        return this
-    }
-
     fun addDivider(isUnderLine: Boolean = false): Receipt {
-        yPos += (lineSpacing * 2)
+        //yPos += (lineSpacing * 2)
 
         val dashed: Stroke = BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, floatArrayOf(1f, 2f), 0f)
         val original = graphics2D.stroke
@@ -149,14 +159,19 @@ class Receipt(
         return this
     }
 
-    fun addReceiptItem(label: String, qty: Int, amount: Double): Receipt {
+    private fun addReceiptItem(label: String, qty: Int, amount: Double): Receipt {
         addText(label)
         addPair("$qty x ${amount.toInt()}", (qty * amount).toInt().toString(), false, 0.8.cm)
+
+        if (pageWidth > 7.6.cm) {
+            addPair("$qty x ${amount.toInt()}", (qty * amount).toInt().toString(), false, 0.8.cm)
+        }
+
         return this
     }
 
     fun newLine(): Receipt {
-        yPos += (fontMetrics.height + lineSpacing)
+        yPos += lineHeight
         return this
     }
 

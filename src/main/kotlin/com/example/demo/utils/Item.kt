@@ -20,27 +20,36 @@ data class Section(val weight: Float = 0f, val alignment: Alignment = Alignment.
 
     val rows = mutableListOf<Row>()
 
-    fun addRow(row: Row) = rows.add(row)
+    fun addRows(vararg row: Row): Section {
+        rows.addAll(row)
+        return this
+    }
 }
 
-class Header {
-
-    val maxRowCount: Int
-        get() {
-            var tempRowCount = 0
-            sections.forEach { if (it.rows.size > tempRowCount) tempRowCount = it.rows.size }
-            return tempRowCount
-        }
+class Container(val isTable: Boolean = false) {
+    fun maxRowCount(): Int {
+        var tempRowCount = 0
+        sections.forEach { if (it.rows.size > tempRowCount) tempRowCount = it.rows.size }
+        return tempRowCount
+    }
 
     val sections = mutableListOf<Section>()
 
-    fun addSection(section: Section) = sections.add(section)
+    fun addSections(vararg section: Section): Container {
+        sections.addAll(section)
+        return this
+    }
 }
 
-data class Ticket(val body: List<Item> = emptyList()) {
+class Ticket {
 
-    val headers = mutableListOf<Header>()
+    var isDrawDivider = true
 
-    fun addHeader(header: Header) = headers.add(header)
+    val containers = mutableListOf<Container>()
+
+    fun addContainers(vararg header: Container): Ticket {
+        containers.addAll(header)
+        return this
+    }
 
 }
