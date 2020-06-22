@@ -101,10 +101,8 @@ class CreateBillView : View("Create bill") {
 
                 vgrow = Priority.ALWAYS
 
-                smartResize()
-
                 column("", OrderItemModel::acteId) {
-                    maxWidth = 30.0
+                    fixedWidth(30)
                     cellFormat {
                         graphic = cancelButton {
                             orderController.selectedItems.removeIf { it.id.value == item.toInt() }
@@ -112,7 +110,7 @@ class CreateBillView : View("Create bill") {
                         }
                     }
                 }
-                column(messages["label"], OrderItemModel::label) { prefWidth = 200.0 }
+                column(messages["label"], OrderItemModel::label).remainingWidth()
                 column(messages["price"], OrderItemModel::price) {
                     cellFormat { this.text = this.item.formatCurrencyCM() }
                 }.prefWidth(100.0)
