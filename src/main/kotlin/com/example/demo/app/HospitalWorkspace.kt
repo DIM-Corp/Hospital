@@ -17,11 +17,15 @@ class HospitalWorkspace : Workspace("Efoulan", NavigationMode.Tabs) {
         ActesController()
         OrderController()
         PatientController()
-        // Tabs
-        dock<CreateBillView>()
-        dock<ActesView>()
+
         tabContainer.tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
         header.hide()
     }
 
+    override fun onBeforeShow() {
+        super.onBeforeShow()
+        dock<CreateBillView>()
+        dock<ActesView>()
+        tabContainer.selectionModel.select(0)
+    }
 }

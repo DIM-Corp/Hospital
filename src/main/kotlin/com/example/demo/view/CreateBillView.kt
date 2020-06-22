@@ -170,8 +170,6 @@ class CreateBillView : View("Create bill") {
                     promptText = messages["search"]
                     prefWidth = 600.0
 
-                    hgrow = Priority.ALWAYS
-
                     textProperty().addListener { _, _, new ->
                         tableOfActes.tableView.selectionModel.clearSelection()
                         tableOfActes.tableView.items = actesController.items.filter { it.name.value.contains(new, true) }.observable()
