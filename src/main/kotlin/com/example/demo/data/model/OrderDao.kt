@@ -2,31 +2,32 @@
 
 package com.example.demo.data.model
 
-import com.example.demo.utils.toLocalDateTime
-import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
+import javafx.beans.property.SimpleStringProperty
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IdTable
+import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.jodatime.datetime
+import org.joda.time.LocalDateTime
 import tornadofx.*
-import java.time.LocalDateTime
+import java.util.*
 
 /**
  * @author forntoh
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object OrdersTbl : IdTable<Int>() {
-    override val id = integer("OrderId").autoIncrement().entityId()
-    val Timestamp = long("Timestamp")
+object OrdersTbl : UUIDTable() {
+    override val id = uuid("OrderId").entityId()
+    val Timestamp = datetime("Timestamp")
     val Patient = reference("PatientID", PatientsTbl, fkName = "FK_Order_Patient")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class OrderTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<OrderTbl>(OrdersTbl)
+class OrderTbl(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : EntityClass<UUID, OrderTbl>(OrdersTbl)
 
     var timeStamp by OrdersTbl.Timestamp
     var patient by OrdersTbl.Patient
@@ -35,13 +36,13 @@ class OrderTbl(id: EntityID<Int>) : IntEntity(id) {
 }
 
 fun ResultRow.toOrderEntry() = OrderEntry(
-        this[OrdersTbl.id].value,
+        this[OrdersTbl.id].value.toString(),
         this[OrdersTbl.Timestamp].toLocalDateTime(),
         this.toPatientEntry()
 )
 
-class OrderEntry(id: Int, date: LocalDateTime, patient: PatientEntry) {
-    val idProperty = SimpleIntegerProperty(id)
+class OrderEntry(id: String, date: LocalDateTime, patient: PatientEntry) {
+    val idProperty = SimpleStringProperty(id)
     val id by idProperty
 
     val dateProperty = SimpleObjectProperty(date)

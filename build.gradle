@@ -59,6 +59,7 @@ dependencies {
     compile group: 'org.jetbrains.exposed', name: 'exposed-core', version: '0.25.1'
     compile group: 'org.jetbrains.exposed', name: 'exposed-dao', version: '0.25.1'
     compile group: 'org.jetbrains.exposed', name: 'exposed-jdbc', version: '0.25.1'
+    compile group: 'org.jetbrains.exposed', name: 'exposed-jodatime', version: '0.25.1'
     compile group: 'org.jfxtras', name: 'jmetro', version: '8.6.12'
     compile 'no.tornado:tornadofx-controlsfx:0.1.1'
 
