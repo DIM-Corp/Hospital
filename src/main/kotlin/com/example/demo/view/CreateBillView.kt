@@ -43,8 +43,6 @@ class CreateBillView : View("Create bill") {
     private var orderItemsTotalProperty = SimpleDoubleProperty(0.0)
 
     override val root = splitpane {
-
-
         vbox {
             form {
                 fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
@@ -63,7 +61,7 @@ class CreateBillView : View("Create bill") {
                         field(messages["age"]) {
                             spinner(1, 200, 20) {
                                 bind(patientEntryModel.age)
-                                promptText = messages["placeHolderAge"]
+                                isEditable = true
                             }
                         }
                         field(messages["sex"]) {
@@ -94,13 +92,13 @@ class CreateBillView : View("Create bill") {
                     }
                     padding = Insets(0.0, 8.0, 0.0, 8.0)
                 }
-                paddingBottom = 0.0
             }
 
             separator(orientation = Orientation.HORIZONTAL)
 
             tableOfCommandItems = tableview {
                 items = orderController.orderItems
+
                 vgrow = Priority.ALWAYS
 
                 smartResize()
@@ -128,7 +126,7 @@ class CreateBillView : View("Create bill") {
                             }
                         }
                     }
-                }.prefWidth(96.0)
+                }.maxWidth(96.0)
                 column(messages["amount"], OrderItemModel::amtCalc).cellFormat { this.text = this.item.formatCurrencyCM() }
             }
 
@@ -171,6 +169,8 @@ class CreateBillView : View("Create bill") {
                 textfield {
                     promptText = messages["search"]
                     prefWidth = 600.0
+
+                    hgrow = Priority.ALWAYS
 
                     textProperty().addListener { _, _, new ->
                         tableOfActes.tableView.selectionModel.clearSelection()
