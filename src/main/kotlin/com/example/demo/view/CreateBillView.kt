@@ -2,7 +2,7 @@ package com.example.demo.view
 
 import com.example.demo.app.Styles
 import com.example.demo.controller.ActesController
-import com.example.demo.controller.OrderController
+import com.example.demo.controller.OrderItemsController
 import com.example.demo.controller.PatientController
 import com.example.demo.data.model.MedicationEntryModel
 import com.example.demo.data.model.OrderItemModel
@@ -31,7 +31,7 @@ class CreateBillView : View("Create bill") {
 
     private val patientController: PatientController by inject()
     private val actesController: ActesController by inject()
-    private val orderController: OrderController by inject()
+    private val orderItemsController: OrderItemsController by inject()
 
     var nameField: ComboBox<String> by singleAssign()
     var tableOfActes: TableViewEditModel<MedicationEntryModel> by singleAssign()
@@ -97,7 +97,7 @@ class CreateBillView : View("Create bill") {
             separator(orientation = Orientation.HORIZONTAL)
 
             tableOfCommandItems = tableview {
-                items = orderController.orderItems
+                items = orderItemsController.orderItems
 
                 vgrow = Priority.ALWAYS
 
@@ -105,7 +105,7 @@ class CreateBillView : View("Create bill") {
                     fixedWidth(30)
                     cellFormat {
                         graphic = cancelButton {
-                            orderController.selectedItems.removeIf { it.id.value == item.toInt() }
+                            orderItemsController.selectedItems.removeIf { it.id.value == item.toInt() }
                             updateOrderTotal()
                         }
                     }
@@ -136,7 +136,7 @@ class CreateBillView : View("Create bill") {
             buttonbar {
                 button(messages["clear"]) {
                     action {
-                        orderController.selectedItems.clear()
+                        orderItemsController.selectedItems.clear()
                         patientEntryModel.rollback()
                         toUpdateUser = false
                     }
@@ -148,7 +148,7 @@ class CreateBillView : View("Create bill") {
                         patientEntryModel.commit {
                             if (!toUpdateUser) patientController.add(patientEntryModel)
                             else patientController.update(patientEntryModel)
-                            orderController.printOrder(patientEntryModel)
+                            orderItemsController.printOrder(patientEntryModel)
                             patientEntryModel.rollback()
                         }
                     }
@@ -189,8 +189,8 @@ class CreateBillView : View("Create bill") {
                 column(messages["section"], MedicationEntryModel::synthesisSectionName)
 
                 selectionModel.selectedItemProperty().addListener { _, _, new ->
-                    if (selectionModel.selectedItem != null && !orderController.selectedItems.contains(new)) {
-                        orderController.selectedItems.add(new)
+                    if (selectionModel.selectedItem != null && !orderItemsController.selectedItems.contains(new)) {
+                        orderItemsController.selectedItems.add(new)
                         tableOfCommandItems.requestResize()
                         updateOrderTotal()
                     }
@@ -210,7 +210,7 @@ class CreateBillView : View("Create bill") {
     private fun updateOrderTotal() {
         var total = 0.0
         try {
-            orderController.orderItems.forEach { total += it.amtCalc.value.toDouble() }
+            orderItemsController.orderItems.forEach { total += it.amtCalc.value.toDouble() }
             orderItemsTotalProperty.set(total)
         } catch (e: Exception) {
             orderItemsTotalProperty.set(0.0)
