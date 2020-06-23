@@ -90,7 +90,7 @@ class Receipt(
                         }
                         graphics2D.drawString(text, rowX, rowY)
                     } else {
-                        val icon = ImageIcon(javaClass.classLoader.getResource("header.png")?.path)
+                        val icon = ImageIcon(javaClass.classLoader.getResourceAsStream("header.png")?.readBytes())
                         val width = sectionWidth.toInt()
                         val height = (lineHeight * container.maxRowCount()).toInt()
                         val imgX = (sectionEnd - width).toInt()
