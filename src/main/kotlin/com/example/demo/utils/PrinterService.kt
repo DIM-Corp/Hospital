@@ -1,12 +1,12 @@
 package com.example.demo.utils
 
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.print.PageFormat
 import java.awt.print.Printable
 import java.awt.print.PrinterJob
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.print.*
 import javax.print.attribute.HashPrintRequestAttributeSet
@@ -29,6 +29,8 @@ class PrinterService : Printable {
 
     private var items: List<Item> = emptyList()
     private var clientName = ""
+    private lateinit var orderTime: DateTime
+    private var ticketNumber = ""
 
     override fun print(graphics: Graphics, pageFormat: PageFormat, pageIndex: Int): Int {
         if (pageIndex > 0) return Printable.NO_SUCH_PAGE
@@ -39,16 +41,15 @@ class PrinterService : Printable {
         val headerMainCenter = Section(0.1f).addRows(Row("", RowType.IMAGE))
         val headerMainRight = Section(0.45f).addRows(Row("MINISTRY OF PUBLIC HEALTH"), Row("CENTER REGIONAL DELEGATION"), Row("P.O. BOX: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
 
-        val now = LocalDateTime.now()
-        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy - HH:mm:ss", Locale.FRANCE)
-        val sub = Section(1f).addRows(Row("TICKET NO: 000094 OF ${dateFormatter.format(now)}"))
+        val dateFormatter = DateTimeFormat.forPattern("dd/MM/yy - HH:mm:ss")
+        val sub = Section(1f).addRows(Row("TICKET NO: $ticketNumber    OF    ${orderTime.toString(dateFormatter)}"))
 
         val info = Section(1f, Alignment.LEFT).addRows(
                 Row("CLIENT: $clientName")
         )
 
-        val bodyOne = Section(0.71f, Alignment.LEFT).addRows(Row("ITEM"))
-        val bodyTwo = Section(0.05f, Alignment.CENTER).addRows(Row("QTY"))
+        val bodyOne = Section(0.70f, Alignment.LEFT).addRows(Row("ITEM"))
+        val bodyTwo = Section(0.06f, Alignment.CENTER).addRows(Row("QTY"))
         val bodyThree = Section(0.12f, Alignment.RIGHT).addRows(Row("PRICE"))
         val bodyFour = Section(0.12f, Alignment.RIGHT).addRows(Row("AMOUNT"))
         items.forEach {
@@ -76,9 +77,11 @@ class PrinterService : Printable {
         return Printable.PAGE_EXISTS
     }
 
-    fun printReceipt(items: List<Item>, clientName: String) {
+    fun printReceipt(items: List<Item>, clientName: String, ticketNumber: String, orderTime: DateTime) {
         this.items = items
         this.clientName = clientName
+        this.ticketNumber = ticketNumber
+        this.orderTime = orderTime
 
         //val flavor: DocFlavor = DocFlavor.BYTE_ARRAY.AUTOSENSE
         //val pRas: PrintRequestAttributeSet = HashPrintRequestAttributeSet()
@@ -112,9 +115,9 @@ class PrinterService : Printable {
     private fun getPageFormat(job: PrinterJob, bodyHeight: Int): PageFormat {
         val pf = job.defaultPage()
 
-        val height = 29.7.cm.toDouble()//(headerHeight + bodyHeight + footerHeight).cm.toDouble()
-        val width = 21.cm.toDouble()//7.6.cm.toDouble()
-        val margin = 1.5.cm.toDouble()//0.3.cm.toDouble()
+        val height = pf.height
+        val width = pf.width
+        val margin = 1.5.cm.toDouble()
 
         val paper = with(pf.paper) {
             setSize(width, height)

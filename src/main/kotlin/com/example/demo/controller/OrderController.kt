@@ -18,7 +18,7 @@ class OrderController : Controller() {
     var orderItems: ObservableList<OrderItemModel> by singleAssign()
     private var printerService: PrinterService by singleAssign()
 
-    fun createOrder(patientEntryModel: PatientEntryModel) = execute {
+    private fun createOrder(patientEntryModel: PatientEntryModel) = execute {
         val o = OrderTbl.new(UUID.randomUUID()) {
             timeStamp = LocalDate.now().toDateTime(LocalTime.now())
             patient = EntityID(patientEntryModel.id.value.toInt(), PatientsTbl)
@@ -30,13 +30,16 @@ class OrderController : Controller() {
                 it[Quantity] = item.qtyTemp.value.toInt()
             }
         }
+        Pair(o.id.value.toString(), o.timeStamp)
     }
 
     fun printOrder(patientEntryModel: PatientEntryModel) {
-        createOrder(patientEntryModel)
+        val pair = createOrder(patientEntryModel)
         printerService.printReceipt(
                 orderItems.map { Item(it.label.value, it.qtyTemp.value, it.price.value.toDouble()) },
-                patientEntryModel.name.value
+                patientEntryModel.name.value,
+                pair.first,
+                pair.second
         )
     }
 

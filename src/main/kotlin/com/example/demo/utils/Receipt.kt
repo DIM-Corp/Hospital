@@ -43,6 +43,10 @@ class Receipt(
                 // Calculate the end x position of the section
                 //
                 val sectionEnd = sectionStart + (section.weight * pageWidth)
+                //
+                // Calculate the section width
+                //
+                val sectionWidth = sectionEnd - sectionStart
 
                 if (container.isTable) {
                     graphics2D.drawRect(sectionEnd.toInt(), (yPos - fontMetrics.height).toInt(), sectionEnd.toInt(), tableHeight)
@@ -63,26 +67,31 @@ class Receipt(
                         graphics2D.font = Font(Font.SANS_SERIF, Font.BOLD, 10)
                         graphics2D.drawLine(sectionStart.toInt(), (rowY - fontMetrics.height).toInt(), sectionEnd.toInt(), (rowY - fontMetrics.height).toInt())
                     }
-//
+                    //
                     // Calculate the text width
                     //
-                    val textWidth = fontMetrics.stringWidth(row.label)
+                    var textWidth = fontMetrics.stringWidth(row.label)
                     //
                     // Check alignment
                     //
                     val rowX = when (section.alignment) {
                         Alignment.RIGHT -> if (container.isTable) sectionEnd - textWidth - 6 else sectionEnd - textWidth
-                        Alignment.CENTER -> ((sectionEnd - sectionStart) / 2f + sectionStart) - (textWidth / 2f)
+                        Alignment.CENTER -> (sectionWidth / 2f + sectionStart) - (textWidth / 2f)
                         else -> if (container.isTable) sectionStart + 6 else sectionStart
                     }
                     //
                     // draw the text
                     //
                     if (row.type == RowType.TEXT) {
-                        graphics2D.drawString(row.label, rowX, rowY)
+                        var text = row.label
+                        while (textWidth >= sectionWidth - 2.cm && sectionWidth > 3.cm) {
+                            text = text.dropLast(4)
+                            textWidth = fontMetrics.stringWidth(text)
+                        }
+                        graphics2D.drawString(text, rowX, rowY)
                     } else {
-                        val icon = ImageIcon(javaClass.classLoader.getResource("header.png")?.path?.replace("/", "\\\\"))
-                        val width = (sectionEnd - sectionStart).toInt()
+                        val icon = ImageIcon(javaClass.classLoader.getResource("header.png")?.path)
+                        val width = sectionWidth.toInt()
                         val height = (lineHeight * container.maxRowCount()).toInt()
                         val imgX = (sectionEnd - width).toInt()
                         graphics2D.drawImage(icon.image, imgX, (yPos - (lineHeight / 2)).toInt(), width, height, null)
