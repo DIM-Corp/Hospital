@@ -1,11 +1,9 @@
 package com.example.demo.app
 
-import com.example.demo.controller.ActesController
-import com.example.demo.controller.OrderController
-import com.example.demo.controller.PatientController
-import com.example.demo.controller.UserController
+import com.example.demo.controller.*
 import com.example.demo.view.ActesView
 import com.example.demo.view.CreateBillView
+import com.example.demo.view.OrdersView
 import javafx.scene.control.TabPane
 import tornadofx.*
 
@@ -16,6 +14,7 @@ class HospitalWorkspace : Workspace("Efoulan", NavigationMode.Tabs) {
         UserController()
         ActesController()
         OrderController()
+        OrderItemsController()
         PatientController()
 
         tabContainer.tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
@@ -26,6 +25,7 @@ class HospitalWorkspace : Workspace("Efoulan", NavigationMode.Tabs) {
         super.onBeforeShow()
         dock<CreateBillView>()
         dock<ActesView>()
+        dock<OrdersView>()
         tabContainer.selectionModel.select(0)
     }
 }

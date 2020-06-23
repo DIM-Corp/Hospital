@@ -39,19 +39,25 @@ fun ResultRow.toOrderEntry() = OrderEntry(
         this.toPatientEntry()
 )
 
-class OrderEntry(id: String, date: LocalDateTime, patient: PatientEntry) {
+fun ResultRow.toOrderEntryNoPatient() = OrderEntry(
+        this[OrdersTbl.id].value.toString(),
+        this[OrdersTbl.Timestamp].toLocalDateTime(),
+        null
+)
+
+class OrderEntry(id: String, date: LocalDateTime, patient: PatientEntry?) {
     val idProperty = SimpleStringProperty(id)
     val id by idProperty
 
     val dateProperty = SimpleObjectProperty(date)
     val date by dateProperty
 
-    val patientProperty = SimpleObjectProperty(patient)
-    val patient by patientProperty
+    val patient = PatientEntryModel().apply { item = patient }
 }
 
 class OrderViewModel : ItemViewModel<OrderEntry>() {
     val id = bind { item?.idProperty }
     val date = bind { item?.dateProperty }
-    val patient = bind { item?.patientProperty }
+    val patientId = bind { item?.patient?.id }
+    val patientName = bind { item?.patient?.name }
 }

@@ -22,7 +22,7 @@ object OrderItemsTbl : Table() {
 
 fun ResultRow.toOrderItemEntry() = OrderItemEntry(
         this.toActeEntry(),
-        this.toOrderEntry(),
+        this.toOrderEntryNoPatient(),
         this[OrderItemsTbl.Quantity]
 )
 
@@ -46,6 +46,8 @@ class OrderItemModel : ItemViewModel<OrderItemEntry>() {
     val orderId = bind { item?.order?.id }
 
     val qtyTemp = SimpleIntegerProperty(1)
+
+    //TODO: Set amount
     val amtCalc = SimpleDoubleProperty(0.0)
 
     var totalAmount = itemProperty.select(OrderItemEntry::totalAmount)
