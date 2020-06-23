@@ -11,7 +11,7 @@ import tornadofx.*
 
 class ActesController : Controller() {
 
-    private val userSqlRepository by lazy { SqlRepository(ActesTbl, ActeTbl) }
+    private val actesSqlRepository by lazy { SqlRepository(ActesTbl, ActeTbl) }
 
     private val listOfActes: ObservableList<MedicationEntryModel> = execute {
         ActesTbl.join(MedicationsTbl, JoinType.LEFT, ActesTbl.id, MedicationsTbl.id)
@@ -35,7 +35,7 @@ class ActesController : Controller() {
             newOfficialAmount: Double,
             synthesisSectionId: Int
     ): ActeEntry? {
-        val newEntry = userSqlRepository.transactionNew {
+        val newEntry = actesSqlRepository.transactionNew {
             name = newName
             appliedAmount = newAppliedAmount.toBigDecimal()
             officialAmount = newOfficialAmount.toBigDecimal()
@@ -53,5 +53,5 @@ class ActesController : Controller() {
         }
     }*/
 
-    fun delete(acteEntry: ActeEntry) = userSqlRepository.deleteById(acteEntry.id)
+    fun delete(acteEntry: ActeEntry) = actesSqlRepository.deleteById(acteEntry.id)
 }

@@ -84,7 +84,7 @@ class Receipt(
                     //
                     if (row.type == RowType.TEXT) {
                         var text = row.label
-                        while (textWidth >= sectionWidth - 2.cm && sectionWidth > 3.cm) {
+                        while (textWidth >= sectionWidth && sectionWidth > 7.5.cm) {
                             text = text.dropLast(4)
                             textWidth = fontMetrics.stringWidth(text)
                         }
