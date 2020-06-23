@@ -19,11 +19,9 @@ import java.util.*
  * @version 1.0
  * @created 12-Jun-2020 11:17:28 AM
  */
-object OrdersTbl : UUIDTable() {
-    override val id = uuid("OrderId").entityId()
+object OrdersTbl : UUIDTable(columnName = "OrderId") {
     val Timestamp = datetime("Timestamp")
     val Patient = reference("PatientID", PatientsTbl, fkName = "FK_Order_Patient")
-    override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
 class OrderTbl(id: EntityID<UUID>) : UUIDEntity(id) {

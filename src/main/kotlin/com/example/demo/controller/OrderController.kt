@@ -1,12 +1,16 @@
 package com.example.demo.controller
 
-import com.example.demo.data.model.MedicationEntryModel
-import com.example.demo.data.model.OrderItemModel
-import com.example.demo.data.model.PatientEntryModel
+import com.example.demo.data.db.execute
+import com.example.demo.data.model.*
 import com.example.demo.utils.Item
 import com.example.demo.utils.PrinterService
 import javafx.collections.ObservableList
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.insert
+import org.joda.time.LocalDate
+import org.joda.time.LocalTime
 import tornadofx.*
+import java.util.*
 
 class OrderController : Controller() {
 
@@ -14,8 +18,22 @@ class OrderController : Controller() {
     var orderItems: ObservableList<OrderItemModel> by singleAssign()
     private var printerService: PrinterService by singleAssign()
 
+    fun createOrder(patientEntryModel: PatientEntryModel) = execute {
+        val o = OrderTbl.new(UUID.randomUUID()) {
+            timeStamp = LocalDate.now().toDateTime(LocalTime.now())
+            patient = EntityID(patientEntryModel.id.value.toInt(), PatientsTbl)
+        }
+        orderItems.forEach { item ->
+            OrderItemsTbl.insert {
+                it[Acte] = EntityID(item.acteId.value.toInt(), ActesTbl)
+                it[Order] = o.id
+                it[Quantity] = item.qtyTemp.value.toInt()
+            }
+        }
+    }
+
     fun printOrder(patientEntryModel: PatientEntryModel) {
-        //TODO: Save order
+        createOrder(patientEntryModel)
         printerService.printReceipt(
                 orderItems.map { Item(it.label.value, it.qtyTemp.value, it.price.value.toDouble()) },
                 patientEntryModel.name.value
