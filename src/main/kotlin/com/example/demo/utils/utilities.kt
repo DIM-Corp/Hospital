@@ -33,9 +33,13 @@ val Int.cm: Float get() = (this * 72.0 * 0.393600787).toFloat()
 val Double.cm: Float get() = (this * 72.0 * 0.393600787).toFloat()
 
 fun Number.formatCurrencyCM(): String {
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("fr", "CM"))
+    val currencyFormat = NumberFormat.getCurrencyInstance(fr_CM)
     return currencyFormat.format(this)
 }
+
+val fr_CM: Locale get() = Locale("fr", "CM")
+
+val pattern_dateTime: String get() = "dd/MM/yy - HH:mm:ss"
 
 fun Node.cancelButton(event: () -> Unit): Node = group {
     circle(0, 0, 8) { fill = Color.valueOf("#E21B1B") }

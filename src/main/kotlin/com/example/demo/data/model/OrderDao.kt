@@ -34,7 +34,7 @@ class OrderTbl(id: EntityID<UUID>) : UUIDEntity(id) {
 }
 
 fun ResultRow.toOrderEntry() = OrderEntry(
-        this[OrdersTbl.id].value.toString(),
+        this[OrdersTbl.id].value.toString().toUpperCase(),
         this[OrdersTbl.Timestamp].toLocalDateTime(),
         this.toPatientEntry()
 )

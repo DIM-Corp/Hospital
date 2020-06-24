@@ -77,7 +77,7 @@ class OrderItemsController : Controller() {
                             label.value = it?.name?.value
                             price.value = it?.appliedAmount?.value
                             quantity.value = 0
-                            amtCalc.value = price.value.toDouble()
+                            amount.value = price.value.toDouble()
 
                             acteId.value = it?.id?.value
                         }

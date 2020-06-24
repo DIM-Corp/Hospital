@@ -41,7 +41,7 @@ class PrinterService : Printable {
         val headerMainCenter = Section(0.1f).addRows(Row("", RowType.IMAGE))
         val headerMainRight = Section(0.45f).addRows(Row("MINISTRY OF PUBLIC HEALTH"), Row("CENTER REGIONAL DELEGATION"), Row("P.O. BOX: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
 
-        val dateFormatter = DateTimeFormat.forPattern("dd/MM/yy - HH:mm:ss")
+        val dateFormatter = DateTimeFormat.forPattern(pattern_dateTime)
         val sub = Section(1f).addRows(Row("TICKET NO: $ticketNumber    OF    ${orderTime.toString(dateFormatter)}"))
 
         val info = Section(1f, Alignment.LEFT).addRows(

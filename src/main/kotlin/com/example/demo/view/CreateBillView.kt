@@ -125,7 +125,7 @@ class CreateBillView : View("Create bill") {
                         }
                     }
                 }.maxWidth(96.0)
-                column(messages["amount"], OrderItemModel::amtCalc).cellFormat { this.text = this.item.formatCurrencyCM() }
+                column(messages["amount"], OrderItemModel::amount).cellFormat { this.text = this.item.formatCurrencyCM() }
             }
 
             totalLabel = label {
@@ -163,7 +163,7 @@ class CreateBillView : View("Create bill") {
         }
 
         vbox {
-            hbox {
+            anchorpane {
                 textfield {
                     promptText = messages["search"]
                     prefWidth = 600.0
@@ -172,6 +172,12 @@ class CreateBillView : View("Create bill") {
                         tableOfActes.tableView.selectionModel.clearSelection()
                         tableOfActes.tableView.items = actesController.items.filter { it.name.value.contains(new, true) }.observable()
                         tableOfActes.tableView.requestResize()
+                    }
+
+                    anchorpaneConstraints {
+                        applyToNode(this@textfield)
+                        this.leftAnchor = 0
+                        this.rightAnchor = 0
                     }
                 }
             }
@@ -210,7 +216,7 @@ class CreateBillView : View("Create bill") {
     private fun updateOrderTotal() {
         var total = 0.0
         try {
-            orderItemsController.orderItems.forEach { total += it.amtCalc.value.toDouble() }
+            orderItemsController.orderItems.forEach { total += it.amount.value.toDouble() }
             orderItemsTotalProperty.set(total)
         } catch (e: Exception) {
             orderItemsTotalProperty.set(0.0)
