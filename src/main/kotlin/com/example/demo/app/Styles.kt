@@ -9,6 +9,7 @@ import tornadofx.*
 class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
+        val subheading by cssclass()
         val j_metro by cssclass()
         val accent_color by cssproperty<Color>("accent_color")
     }
@@ -17,6 +18,11 @@ class Styles : Stylesheet() {
         label and heading {
             padding = box(10.px)
             fontSize = 26.px
+            fontWeight = FontWeight.BOLD
+        }
+
+        label and subheading {
+            fontSize = 16.px
             fontWeight = FontWeight.BOLD
         }
 

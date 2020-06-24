@@ -4,6 +4,7 @@ import com.example.demo.data.db.execute
 import com.example.demo.data.model.*
 import javafx.collections.ObservableList
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.selectAll
 import tornadofx.*
 
@@ -12,10 +13,9 @@ class OrderController : Controller() {
     private val listOfOrders: ObservableList<OrderViewModel> = execute {
         OrdersTbl.join(PatientsTbl, JoinType.LEFT, OrdersTbl.Patient, PatientsTbl.id)
                 .join(UsersTbl, JoinType.LEFT, PatientsTbl.id, UsersTbl.id)
-                .selectAll().map {
-                    OrderViewModel().apply {
-                        item = it.toOrderEntry()
-                    }
+                .selectAll()
+                .orderBy(OrdersTbl.Timestamp, SortOrder.DESC).map {
+                    OrderViewModel().apply { item = it.toOrderEntry() }
                 }
     }.observable()
 
