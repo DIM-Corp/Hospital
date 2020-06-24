@@ -71,7 +71,7 @@ dependencies {
 mainClassName = "com.example.demo.app.MyApp"
 
 group 'com.example.demo'
-version '1.0'
+version '1.0.0-alpha02'
 
 jar {
     manifest {

@@ -1,10 +1,10 @@
 package com.example.demo.data.repository
 
-interface CrudRepository<T, K> {
-    fun create(entry: T): T
-    fun update(vararg entries: T): Iterable<T>
-    fun delete(entry: T): Int
-    fun find(id: K): Iterable<T?>
-    fun findAll(): Iterable<T>
+interface CrudRepository<VM, K> {
+    fun create(entry: VM): VM
+    fun update(vararg entries: VM): Iterable<VM>
+    fun delete(entry: VM): Int
+    fun find(id: K): Iterable<VM?>
+    fun findAll(): Iterable<VM>
     fun deleteAll(): Int
 }

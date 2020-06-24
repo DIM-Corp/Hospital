@@ -29,9 +29,10 @@ fun ResultRow.toOrderItemEntry() = OrderItemEntry(
         this[OrderItemsTbl.Quantity]
 )
 
-fun OrderItemEntry.toRow(): OrderItemsTbl.(UpdateBuilder<*>) -> Unit = {
-    it[Order] = EntityID(UUID.fromString(this@toRow.order.id.value), OrdersTbl)
-    it[Acte] = EntityID(this@toRow.acte.id.value.toInt(), ActesTbl)
+fun OrderItemModel.toRow(): OrderItemsTbl.(UpdateBuilder<*>) -> Unit = {
+    it[Acte] = EntityID(this@toRow.acteId.value.toInt(), ActesTbl)
+    it[Order] = EntityID(UUID.fromString(this@toRow.orderId.value), OrdersTbl)
+    it[Quantity] = this@toRow.qtyTemp.value.toInt()
 }
 
 class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {

@@ -10,19 +10,17 @@ class OrderController : Controller() {
 
     private val orderRepo: OrderRepo by di()
 
-    private val listOfOrders: ObservableList<OrderModel> = execute {
-        orderRepo.findAll().map {
-            OrderModel().apply { item = it }
-        }
-    }.observable()
+    private val listOfOrders: ObservableList<OrderModel> = execute { orderRepo.findAll() }.observable()
 
     var items: ObservableList<OrderModel> by singleAssign()
 
     init {
+        listOfOrders.sortByDescending { it.date.value }
         items = listOfOrders
     }
 
     fun addOrder(order: OrderModel) {
         listOfOrders.add(order)
+        listOfOrders.sortByDescending { it.date.value }
     }
 }

@@ -40,10 +40,10 @@ fun ResultRow.toOrderEntry(includePatient: Boolean = true) = OrderEntry(
         this[OrdersTbl.Timestamp].toLocalDateTime()
 )
 
-fun OrderEntry.toRow(): OrdersTbl.(UpdateBuilder<*>) -> Unit = {
+fun OrderModel.toRow(): OrdersTbl.(UpdateBuilder<*>) -> Unit = {
     it[id] = EntityID(UUID.randomUUID(), OrdersTbl)
-    it[Patient] = EntityID(this@toRow.patient.id.value.toInt(), PatientsTbl)
-    it[Timestamp] = this@toRow.date.toDateTime()
+    it[Patient] = EntityID(this@toRow.patientId.value.toInt(), PatientsTbl)
+    it[Timestamp] = LocalDateTime.now().toDateTime()
 }
 
 class OrderEntry(patient: PatientEntry?, id: String? = null, date: LocalDateTime = LocalDateTime.now()) {

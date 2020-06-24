@@ -64,11 +64,11 @@ class ActeEntry(
     val synthesisSection = SynthesisSectionModel().apply { item = synthesisSection }
 }
 
-fun ActeEntry.toRow(): ActesTbl.(UpdateBuilder<*>) -> Unit = {
-    it[Name] = this@toRow.name
-    it[AppliedAmount] = this@toRow.appliedAmount.toBigDecimal()
-    it[OfficialAmount] = this@toRow.officialAmount.toBigDecimal()
-    it[SynthesisSection] = EntityID(this@toRow.synthesisSection.id.value.toInt(), SynthesisSectionsTbl)
+fun ActeModel.toRow(): ActesTbl.(UpdateBuilder<*>) -> Unit = {
+    it[Name] = this@toRow.name.value
+    it[AppliedAmount] = this@toRow.appliedAmount.value.toDouble().toBigDecimal()
+    it[OfficialAmount] = this@toRow.officialAmount.value.toDouble().toBigDecimal()
+    it[SynthesisSection] = EntityID(this@toRow.synthesisSectionId.value.toInt(), SynthesisSectionsTbl)
 }
 
 class ActeModel : ItemViewModel<ActeEntry>() {

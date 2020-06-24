@@ -1,19 +1,22 @@
 package com.example.demo.controller
 
 import com.example.demo.data.db.execute
-import com.example.demo.data.model.*
+import com.example.demo.data.model.MedicationModel
+import com.example.demo.data.model.OrderItemModel
+import com.example.demo.data.model.OrderModel
+import com.example.demo.data.model.PatientModel
+import com.example.demo.data.repository.OrderItemsRepo
+import com.example.demo.data.repository.OrderRepo
 import com.example.demo.utils.Item
 import com.example.demo.utils.PrinterService
 import javafx.collections.ObservableList
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.joda.time.LocalDate
-import org.joda.time.LocalTime
+import org.joda.time.DateTime
 import tornadofx.*
-import java.util.*
 
 class OrderItemsController : Controller() {
+
+    private val orderItemsRepo: OrderItemsRepo by di()
+    private val orderRepo: OrderRepo by di()
 
     var selectedItems: ObservableList<MedicationModel> by singleAssign()
     var orderItems: ObservableList<OrderItemModel> by singleAssign()
@@ -23,32 +26,20 @@ class OrderItemsController : Controller() {
 
     fun loadOrderItemsForOrder(uuid: String) = execute {
         orderItems.clear()
-        orderItems.addAll(
-                OrderItemsTbl
-                        .innerJoin(ActesTbl)
-                        .innerJoin(OrdersTbl)
-                        .select { OrderItemsTbl.Order eq UUID.fromString(uuid) }
-                        .map { OrderItemModel().apply { item = it.toOrderItemEntry() } })
+        orderItems.addAll(orderItemsRepo.find(uuid))
     }
 
-    private fun createOrder(patientModel: PatientModel) = execute {
-        val o = Order.new(UUID.randomUUID()) {
-            timeStamp = LocalDate.now().toDateTime(LocalTime.now())
-            patient = EntityID(patientModel.id.value.toInt(), PatientsTbl)
-        }
-        orderItems.forEach { item ->
-            OrderItemsTbl.insert {
-                it[Acte] = EntityID(item.acteId.value.toInt(), ActesTbl)
-                it[Order] = o.id
-                it[Quantity] = item.qtyTemp.value.toInt()
-            }
+    private fun createOrder(patientModel: PatientModel): Pair<String, DateTime> = execute {
+        val o = orderRepo.create(OrderModel().apply { patientId.value = patientModel.id.value; patientName.value = patientModel.name.value })
+
+        orderItems.forEach {
+            it.orderId.value = o.id.value
+            orderItemsRepo.create(it)
         }
         // Update orders view
-        orderController.addOrder(OrderModel().apply {
-            item = OrderEntry(o.id.value.toString(), o.timeStamp.toLocalDateTime(), patientModel.item)
-        })
+        orderController.addOrder(o)
         // Return a pair (UUID, timestamp)
-        Pair(o.id.value.toString(), o.timeStamp)
+        Pair(o.id.value, o.date.value.toDateTime())
     }
 
     fun printOrder(patientModel: PatientModel) {
