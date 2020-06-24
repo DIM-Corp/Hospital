@@ -6,7 +6,6 @@ import com.example.demo.utils.Item
 import com.example.demo.utils.PrinterService
 import javafx.collections.ObservableList
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.joda.time.LocalDate
@@ -28,7 +27,6 @@ class OrderItemsController : Controller() {
                 OrderItemsTbl
                         .innerJoin(ActesTbl)
                         .innerJoin(OrdersTbl)
-                        .join(SynthesisSectionsTbl, JoinType.LEFT, SynthesisSectionsTbl.id, ActesTbl.SynthesisSection)
                         .select { OrderItemsTbl.Order eq UUID.fromString(uuid) }
                         .map { OrderItemModel().apply { item = it.toOrderItemEntry() } })
     }

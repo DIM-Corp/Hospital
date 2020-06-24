@@ -41,12 +41,20 @@ fun ResultRow.toActeEntry() = ActeEntry(
         this.toSynthesisSectionEntry()
 )
 
+fun ResultRow.toActeEntryNoSynthesisSection() = ActeEntry(
+        this[ActesTbl.id].value,
+        this[ActesTbl.Name],
+        this[ActesTbl.AppliedAmount].toDouble(),
+        this[ActesTbl.OfficialAmount].toDouble(),
+        null
+)
+
 class ActeEntry(
         id: Int,
         name: String,
         appliedAmount: Double,
         officialAmount: Double,
-        synthesisSection: SynthesisSectionEntry
+        synthesisSection: SynthesisSectionEntry?
 ) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty

@@ -21,7 +21,7 @@ object OrderItemsTbl : Table() {
 }
 
 fun ResultRow.toOrderItemEntry() = OrderItemEntry(
-        this.toActeEntry(),
+        this.toActeEntryNoSynthesisSection(),
         this.toOrderEntryNoPatient(),
         this[OrderItemsTbl.Quantity]
 )
