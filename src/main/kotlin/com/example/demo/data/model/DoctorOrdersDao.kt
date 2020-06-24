@@ -18,8 +18,8 @@ object DoctorOrdersTbl : Table() {
 }
 
 fun ResultRow.toDoctorOrderEntry() = DoctorOrderEntry(
-        OrderTbl(this[DoctorOrdersTbl.Order]).readValues.toOrderEntry(),
-        DoctorTbl(this[DoctorOrdersTbl.Doctor]).readValues.toDoctorEntry()
+        Order(this[DoctorOrdersTbl.Order]).readValues.toOrderEntry(),
+        Doctor(this[DoctorOrdersTbl.Doctor]).readValues.toDoctorEntry()
 )
 
 class DoctorOrderEntry(order: OrderEntry, doctor: DoctorEntry) {
@@ -30,7 +30,7 @@ class DoctorOrderEntry(order: OrderEntry, doctor: DoctorEntry) {
     val doctor by doctorProperty
 }
 
-class DoctorOrderViewModel : ItemViewModel<DoctorOrderEntry>() {
+class DoctorOrderModel : ItemViewModel<DoctorOrderEntry>() {
     val order = bind { item?.orderProperty }
     val doctor = bind { item?.doctorProperty }
 }

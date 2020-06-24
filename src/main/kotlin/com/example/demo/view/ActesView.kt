@@ -1,7 +1,7 @@
 package com.example.demo.view
 
 import com.example.demo.controller.ActesController
-import com.example.demo.data.model.ActeViewModel
+import com.example.demo.data.model.ActeModel
 import com.example.demo.utils.defaultPadding
 import com.example.demo.utils.isDarkTheme
 import javafx.geometry.Orientation
@@ -15,7 +15,7 @@ import tornadofx.*
 
 class ActesView : View("Actes/Medications") {
 
-    private val actesModel = ActeViewModel()
+    private val actesModel = ActeModel()
     private val actesController: ActesController by inject()
 
     override val root = vbox {

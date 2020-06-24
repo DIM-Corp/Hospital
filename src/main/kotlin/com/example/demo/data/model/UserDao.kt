@@ -29,8 +29,8 @@ object UsersTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-open class UserTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<UserTbl>(UsersTbl)
+open class User(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<User>(UsersTbl)
 
     var name by UsersTbl.Name
     var address by UsersTbl.Address
@@ -68,7 +68,7 @@ class UserEntry(id: Int, name: String, address: String?, gender: Boolean, age: I
     val telephone by telephoneProperty
 }
 
-class UserViewModel : ItemViewModel<UserEntry>() {
+class UserModel : ItemViewModel<UserEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.nameProperty }
     val address = bind { item?.addressProperty }

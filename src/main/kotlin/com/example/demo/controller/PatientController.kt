@@ -11,25 +11,25 @@ import tornadofx.*
 
 class PatientController : Controller() {
 
-    private val patientSqlRepository by lazy { SqlRepository(PatientsTbl, PatientTbl) }
-    private val userSqlRepository by lazy { SqlRepository(UsersTbl, UserTbl) }
+    private val patientSqlRepository by lazy { SqlRepository(PatientsTbl, Patient) }
+    private val userSqlRepository by lazy { SqlRepository(UsersTbl, User) }
 
-    private val listOfPatients: ObservableList<PatientEntryModel> = execute {
+    private val listOfPatients: ObservableList<PatientModel> = execute {
         PatientsTbl.join(UsersTbl, JoinType.LEFT, PatientsTbl.id, UsersTbl.id)
                 .selectAll().map {
-                    PatientEntryModel().apply {
+                    PatientModel().apply {
                         item = it.toPatientEntry()
                     }
                 }
     }.observable()
 
-    var items: ObservableList<PatientEntryModel> by singleAssign()
+    var items: ObservableList<PatientModel> by singleAssign()
 
     init {
         items = listOfPatients
     }
 
-    fun add(newPatient: PatientEntryModel): Int? {
+    fun add(newPatient: PatientModel): Int? {
         val newEntry = userSqlRepository.transactionNew {
             name = newPatient.name.value
             address = newPatient.address.value
@@ -42,13 +42,13 @@ class PatientController : Controller() {
             it[id] = newEntry!![UsersTbl.id]
             it[Condition] = newPatient.condition.value.toInt()
         }.value.also {
-            listOfPatients.add(PatientEntryModel().apply {
+            listOfPatients.add(PatientModel().apply {
                 item = PatientEntry(it, newPatient.condition.value.toInt(), newEntry!!.toUserEntry())
             })
         }
     }
 
-    fun update(updatedItem: PatientEntryModel): Int? {
+    fun update(updatedItem: PatientModel): Int? {
         userSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
             it[Name] = updatedItem.name.value
             it[Address] = updatedItem.address.value
@@ -72,6 +72,6 @@ class PatientController : Controller() {
     fun delete(patientItem: PatientEntry) = patientSqlRepository.deleteById(patientItem.id)
 
     fun select(id: Int) = patientSqlRepository.transactionSelectOne(id) {
-        PatientEntryModel().apply { item = it?.toPatientEntry() }
+        PatientModel().apply { item = it?.toPatientEntry() }
     }
 }

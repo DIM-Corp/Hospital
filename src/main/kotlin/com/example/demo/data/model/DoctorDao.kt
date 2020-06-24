@@ -22,10 +22,10 @@ object DoctorsTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class DoctorTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<DoctorTbl>(DoctorsTbl)
+class Doctor(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Doctor>(DoctorsTbl)
 
-    var orders by OrderTbl via DoctorOrdersTbl
+    var orders by Order via DoctorOrdersTbl
 }
 
 fun ResultRow.toDoctorEntry() = DoctorEntry(
@@ -41,7 +41,7 @@ class DoctorEntry(id: Int, speciality: SpecialityEntry) {
     val speciality by specialityProperty
 }
 
-class DoctorViewModel : ItemViewModel<DoctorEntry>() {
+class DoctorModel : ItemViewModel<DoctorEntry>() {
     val id = bind { item?.idProperty }
     val speciality = bind { item?.specialityProperty }
 }

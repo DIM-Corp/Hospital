@@ -24,8 +24,8 @@ object MedicationsTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class MedicationTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<MedicationTbl>(MedicationsTbl)
+class Medication(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Medication>(MedicationsTbl)
 
     var counterStock by MedicationsTbl.CounterStock
     var warehouseStock by MedicationsTbl.WarehouseStock
@@ -42,7 +42,7 @@ class MedicationEntry(id: Int, counterStock: Long?, warehouseStock: Long?, acteE
     var idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
-    val acte = ActeViewModel().apply { item = acteEntry }
+    val acte = ActeModel().apply { item = acteEntry }
 
     var counterStockProperty = SimpleLongProperty(counterStock ?: -1)
     val counterStock by counterStockProperty
@@ -51,7 +51,7 @@ class MedicationEntry(id: Int, counterStock: Long?, warehouseStock: Long?, acteE
     val warehouseStock by warehouseStockProperty
 }
 
-class MedicationEntryModel : ItemViewModel<MedicationEntry>() {
+class MedicationModel : ItemViewModel<MedicationEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.acte?.name }
     val appliedAmount = bind { item?.acte?.appliedAmount }

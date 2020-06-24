@@ -10,22 +10,22 @@ import tornadofx.*
 
 class OrderController : Controller() {
 
-    private val listOfOrders: ObservableList<OrderViewModel> = execute {
+    private val listOfOrders: ObservableList<OrderModel> = execute {
         OrdersTbl.join(PatientsTbl, JoinType.LEFT, OrdersTbl.Patient, PatientsTbl.id)
                 .join(UsersTbl, JoinType.LEFT, PatientsTbl.id, UsersTbl.id)
                 .selectAll()
                 .orderBy(OrdersTbl.Timestamp, SortOrder.DESC).map {
-                    OrderViewModel().apply { item = it.toOrderEntry() }
+                    OrderModel().apply { item = it.toOrderEntry() }
                 }
     }.observable()
 
-    var items: ObservableList<OrderViewModel> by singleAssign()
+    var items: ObservableList<OrderModel> by singleAssign()
 
     init {
         items = listOfOrders
     }
 
-    fun addOrder(order: OrderViewModel) {
+    fun addOrder(order: OrderModel) {
         listOfOrders.add(order)
     }
 }

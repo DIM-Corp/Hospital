@@ -21,14 +21,14 @@ object OrderItemsTbl : Table() {
 }
 
 fun ResultRow.toOrderItemEntry() = OrderItemEntry(
-        this.toActeEntryNoSynthesisSection(),
-        this.toOrderEntryNoPatient(),
+        this.toActeEntry(false),
+        this.toOrderEntry(false),
         this[OrderItemsTbl.Quantity]
 )
 
 class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
-    val acte = ActeViewModel().apply { item = acte }
-    val order = OrderViewModel().apply { item = order }
+    val acte = ActeModel().apply { item = acte }
+    val order = OrderModel().apply { item = order }
 
     val quantityProperty = SimpleIntegerProperty(quantity)
     val quantity by quantityProperty

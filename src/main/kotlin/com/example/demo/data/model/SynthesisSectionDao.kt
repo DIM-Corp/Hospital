@@ -22,8 +22,8 @@ object SynthesisSectionsTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class SynthesisSectionTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<SynthesisSectionTbl>(SynthesisSectionsTbl)
+class SynthesisSection(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<SynthesisSection>(SynthesisSectionsTbl)
 
     var name by SynthesisSectionsTbl.Name
 }
@@ -41,7 +41,7 @@ class SynthesisSectionEntry(id: Int, name: String) {
     val name by nameProperty
 }
 
-class SynthesisSectionViewModel : ItemViewModel<SynthesisSectionEntry>() {
+class SynthesisSectionModel : ItemViewModel<SynthesisSectionEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.nameProperty }
 }

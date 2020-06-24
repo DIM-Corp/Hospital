@@ -22,8 +22,8 @@ object SpecialitiesTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class SpecialityTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<SpecialityTbl>(SpecialitiesTbl)
+class Speciality(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Speciality>(SpecialitiesTbl)
 
     var name by SpecialitiesTbl.Name
 }
@@ -41,7 +41,7 @@ class SpecialityEntry(id: Int, name: String) {
     val name by nameProperty
 }
 
-class SpecialityViewModel : ItemViewModel<SpecialityEntry>() {
+class SpecialityModel : ItemViewModel<SpecialityEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.nameProperty }
 }

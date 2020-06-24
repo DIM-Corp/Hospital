@@ -1,4 +1,4 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "unused")
+@file:Suppress("MemberVisibilityCanBePrivate", "unused", "HasPlatformType")
 
 package com.example.demo.data.model
 
@@ -30,7 +30,7 @@ class CashierOrderEntry(order: OrderEntry, cashier: CashierEntry) {
     val cashier by cashierProperty
 }
 
-class CashierOrderViewModel : ItemViewModel<CashierOrderEntry>() {
+class CashierOrderModel : ItemViewModel<CashierOrderEntry>() {
     val order = bind { item?.orderProperty }
     val cashier = bind { item?.cashierProperty }
 }

@@ -24,25 +24,19 @@ object OrdersTbl : UUIDTable(columnName = "OrderId") {
     val Patient = reference("PatientID", PatientsTbl, fkName = "FK_Order_Patient")
 }
 
-class OrderTbl(id: EntityID<UUID>) : UUIDEntity(id) {
-    companion object : EntityClass<UUID, OrderTbl>(OrdersTbl)
+class Order(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : EntityClass<UUID, Order>(OrdersTbl)
 
     var timeStamp by OrdersTbl.Timestamp
     var patient by OrdersTbl.Patient
 
-    var orderItems by ActeTbl via OrderItemsTbl
+    var orderItems by Acte via OrderItemsTbl
 }
 
-fun ResultRow.toOrderEntry() = OrderEntry(
+fun ResultRow.toOrderEntry(includePatient: Boolean = true) = OrderEntry(
         this[OrdersTbl.id].value.toString().toUpperCase(),
         this[OrdersTbl.Timestamp].toLocalDateTime(),
-        this.toPatientEntry()
-)
-
-fun ResultRow.toOrderEntryNoPatient() = OrderEntry(
-        this[OrdersTbl.id].value.toString(),
-        this[OrdersTbl.Timestamp].toLocalDateTime(),
-        null
+        if (includePatient) this.toPatientEntry() else null
 )
 
 class OrderEntry(id: String, date: LocalDateTime, patient: PatientEntry?) {
@@ -52,10 +46,10 @@ class OrderEntry(id: String, date: LocalDateTime, patient: PatientEntry?) {
     val dateProperty = SimpleObjectProperty(date)
     val date by dateProperty
 
-    val patient = PatientEntryModel().apply { item = patient }
+    val patient = PatientModel().apply { item = patient }
 }
 
-class OrderViewModel : ItemViewModel<OrderEntry>() {
+class OrderModel : ItemViewModel<OrderEntry>() {
     val id = bind { item?.idProperty }
     val date = bind { item?.dateProperty }
     val patientId = bind { item?.patient?.id }

@@ -15,7 +15,7 @@ import java.util.*
 
 class OrderItemsController : Controller() {
 
-    var selectedItems: ObservableList<MedicationEntryModel> by singleAssign()
+    var selectedItems: ObservableList<MedicationModel> by singleAssign()
     var orderItems: ObservableList<OrderItemModel> by singleAssign()
     private var printerService: PrinterService by singleAssign()
 
@@ -31,10 +31,10 @@ class OrderItemsController : Controller() {
                         .map { OrderItemModel().apply { item = it.toOrderItemEntry() } })
     }
 
-    private fun createOrder(patientEntryModel: PatientEntryModel) = execute {
-        val o = OrderTbl.new(UUID.randomUUID()) {
+    private fun createOrder(patientModel: PatientModel) = execute {
+        val o = Order.new(UUID.randomUUID()) {
             timeStamp = LocalDate.now().toDateTime(LocalTime.now())
-            patient = EntityID(patientEntryModel.id.value.toInt(), PatientsTbl)
+            patient = EntityID(patientModel.id.value.toInt(), PatientsTbl)
         }
         orderItems.forEach { item ->
             OrderItemsTbl.insert {
@@ -44,18 +44,18 @@ class OrderItemsController : Controller() {
             }
         }
         // Update orders view
-        orderController.addOrder(OrderViewModel().apply {
-            item = OrderEntry(o.id.value.toString(), o.timeStamp.toLocalDateTime(), patientEntryModel.item)
+        orderController.addOrder(OrderModel().apply {
+            item = OrderEntry(o.id.value.toString(), o.timeStamp.toLocalDateTime(), patientModel.item)
         })
         // Return a pair (UUID, timestamp)
         Pair(o.id.value.toString(), o.timeStamp)
     }
 
-    fun printOrder(patientEntryModel: PatientEntryModel) {
-        val pair = createOrder(patientEntryModel)
+    fun printOrder(patientModel: PatientModel) {
+        val pair = createOrder(patientModel)
         printerService.printReceipt(
                 orderItems.map { Item(it.label.value, it.qtyTemp.value, it.price.value.toDouble()) },
-                patientEntryModel.name.value,
+                patientModel.name.value,
                 pair.first,
                 pair.second
         )
@@ -66,7 +66,7 @@ class OrderItemsController : Controller() {
         printerService = PrinterService()
 
         orderItems = mutableListOf<OrderItemModel>().observable()
-        selectedItems = mutableListOf<MedicationEntryModel>().observable()
+        selectedItems = mutableListOf<MedicationModel>().observable()
         selectedItems.onChange { items ->
             while (items.next()) {
                 if (items.wasAdded()) {

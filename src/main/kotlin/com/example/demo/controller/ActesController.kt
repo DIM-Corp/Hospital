@@ -11,19 +11,19 @@ import tornadofx.*
 
 class ActesController : Controller() {
 
-    private val actesSqlRepository by lazy { SqlRepository(ActesTbl, ActeTbl) }
+    private val actesSqlRepository by lazy { SqlRepository(ActesTbl, Acte) }
 
-    private val listOfActes: ObservableList<MedicationEntryModel> = execute {
+    private val listOfActes: ObservableList<MedicationModel> = execute {
         ActesTbl.join(MedicationsTbl, JoinType.LEFT, ActesTbl.id, MedicationsTbl.id)
                 .join(SynthesisSectionsTbl, JoinType.LEFT, ActesTbl.SynthesisSection, SynthesisSectionsTbl.id)
                 .selectAll().map {
-                    MedicationEntryModel().apply {
+                    MedicationModel().apply {
                         item = it.toMedicationEntry()
                     }
                 }
     }.observable()
 
-    var items: ObservableList<MedicationEntryModel> by singleAssign()
+    var items: ObservableList<MedicationModel> by singleAssign()
 
     init {
         items = listOfActes

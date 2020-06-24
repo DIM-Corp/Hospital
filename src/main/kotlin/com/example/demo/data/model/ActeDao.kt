@@ -24,8 +24,8 @@ object ActesTbl : IntIdTable(columnName = "ActeId") {
     val SynthesisSection = reference("SynthesisSectionId", SynthesisSectionsTbl, fkName = "FK_Acte_Belongs")
 }
 
-class ActeTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<ActeTbl>(ActesTbl)
+class Acte(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Acte>(ActesTbl)
 
     var name by ActesTbl.Name
     var appliedAmount by ActesTbl.AppliedAmount
@@ -33,20 +33,12 @@ class ActeTbl(id: EntityID<Int>) : IntEntity(id) {
     var synthesisSection by ActesTbl.SynthesisSection
 }
 
-fun ResultRow.toActeEntry() = ActeEntry(
+fun ResultRow.toActeEntry(includeSection: Boolean = true) = ActeEntry(
         this[ActesTbl.id].value,
         this[ActesTbl.Name],
         this[ActesTbl.AppliedAmount].toDouble(),
         this[ActesTbl.OfficialAmount].toDouble(),
-        this.toSynthesisSectionEntry()
-)
-
-fun ResultRow.toActeEntryNoSynthesisSection() = ActeEntry(
-        this[ActesTbl.id].value,
-        this[ActesTbl.Name],
-        this[ActesTbl.AppliedAmount].toDouble(),
-        this[ActesTbl.OfficialAmount].toDouble(),
-        null
+        if (includeSection) this.toSynthesisSectionEntry() else null
 )
 
 class ActeEntry(
@@ -68,10 +60,10 @@ class ActeEntry(
     val officialAmountProperty = SimpleDoubleProperty(officialAmount)
     val officialAmount by officialAmountProperty
 
-    val synthesisSection = SynthesisSectionViewModel().apply { item = synthesisSection }
+    val synthesisSection = SynthesisSectionModel().apply { item = synthesisSection }
 }
 
-class ActeViewModel : ItemViewModel<ActeEntry>() {
+class ActeModel : ItemViewModel<ActeEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.nameProperty }
     val appliedAmount = bind { item?.appliedAmountProperty }

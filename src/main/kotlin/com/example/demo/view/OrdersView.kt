@@ -4,7 +4,7 @@ import com.example.demo.app.Styles
 import com.example.demo.controller.OrderController
 import com.example.demo.controller.OrderItemsController
 import com.example.demo.data.model.OrderItemModel
-import com.example.demo.data.model.OrderViewModel
+import com.example.demo.data.model.OrderModel
 import com.example.demo.utils.defaultPadding
 import com.example.demo.utils.formatCurrencyCM
 import com.example.demo.utils.fr_CM
@@ -19,7 +19,7 @@ class OrdersView : View("Orders") {
     private val orderItemsController: OrderItemsController by inject()
 
     private var tableOrderItems by singleAssign<TableView<OrderItemModel>>()
-    private var tableOrders by singleAssign<TableView<OrderViewModel>>()
+    private var tableOrders by singleAssign<TableView<OrderModel>>()
 
     override val root = splitpane {
         vbox {
@@ -29,11 +29,11 @@ class OrdersView : View("Orders") {
 
                 smartResize()
 
-                column("Order ID", OrderViewModel::id).prefWidth(50.0)
-                column("Date", OrderViewModel::date) {
+                column("Order ID", OrderModel::id).prefWidth(50.0)
+                column("Date", OrderModel::date) {
                     cellFormat { this.text = this.item.toString(pattern_dateTime, fr_CM) }
                 }
-                column("Client Name", OrderViewModel::patientName)
+                column("Client Name", OrderModel::patientName)
 
                 selectionModel.selectedItemProperty().addListener { _, _, new ->
                     if (selectionModel.selectedItem != null) {

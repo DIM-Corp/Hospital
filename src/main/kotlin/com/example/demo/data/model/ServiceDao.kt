@@ -22,8 +22,8 @@ object ServicesTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class ServiceTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<ServiceTbl>(ServicesTbl)
+class Service(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Service>(ServicesTbl)
 
     var name by ServicesTbl.Name
 }
@@ -41,7 +41,7 @@ class ServiceEntry(id: Int, name: String) {
     val name by nameProperty
 }
 
-class ServiceViewModel : ItemViewModel<ServiceEntry>() {
+class ServiceModel : ItemViewModel<ServiceEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.nameProperty }
 }

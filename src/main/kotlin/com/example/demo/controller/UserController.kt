@@ -8,15 +8,15 @@ import tornadofx.*
 
 class UserController : Controller() {
 
-    private val userSqlRepository by lazy { SqlRepository(UsersTbl, UserTbl) }
+    private val userSqlRepository by lazy { SqlRepository(UsersTbl, User) }
 
-    private val listOfUsers: ObservableList<UserViewModel> = userSqlRepository.transactionSelectAll {
+    private val listOfUsers: ObservableList<UserModel> = userSqlRepository.transactionSelectAll {
         it.map {
-            UserViewModel().apply { item = it.toUserEntry() }
+            UserModel().apply { item = it.toUserEntry() }
         }.observable()
     }
 
-    var items: ObservableList<UserViewModel> by singleAssign()
+    var items: ObservableList<UserModel> by singleAssign()
 
     init {
         items = listOfUsers
@@ -37,11 +37,11 @@ class UserController : Controller() {
             telephone = newTelephone
         }
         return newEntry?.toUserEntry().also {
-            listOfUsers.add(UserViewModel().apply { item = it })
+            listOfUsers.add(UserModel().apply { item = it })
         }
     }
 
-    fun update(updatedItem: UserViewModel): Int? {
+    fun update(updatedItem: UserModel): Int? {
         return userSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
             it[Name] = updatedItem.name.value
             it[Address] = updatedItem.address.value

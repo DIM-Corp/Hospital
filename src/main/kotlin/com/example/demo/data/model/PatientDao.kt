@@ -22,8 +22,8 @@ object PatientsTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class PatientTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<PatientTbl>(PatientsTbl)
+class Patient(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Patient>(PatientsTbl)
 
     var condition by PatientsTbl.Condition
 }
@@ -41,10 +41,10 @@ class PatientEntry(id: Int, condition: Int, user: UserEntry) {
     val conditionProperty = SimpleIntegerProperty(condition)
     val condition by conditionProperty
 
-    val user = UserViewModel().apply { item = user }
+    val user = UserModel().apply { item = user }
 }
 
-class PatientEntryModel : ItemViewModel<PatientEntry>() {
+class PatientModel : ItemViewModel<PatientEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.user?.name }
     val address = bind { item?.user?.address }

@@ -21,12 +21,12 @@ object CashiersTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class CashierTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<CashierTbl>(CashiersTbl)
+class Cashier(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Cashier>(CashiersTbl)
 
     var type by CashiersTbl.Type
 
-    var orders by OrderTbl via CashierOrdersTbl
+    var orders by Order via CashierOrdersTbl
 }
 
 fun ResultRow.toCashierEntry() = CashierEntry(this[CashiersTbl.id].value, this[CashiersTbl.Type])
@@ -39,7 +39,7 @@ class CashierEntry(id: Int, type: Int) {
     val type by typeProperty
 }
 
-class CashierVieModel : ItemViewModel<CashierEntry>() {
+class CashierModel : ItemViewModel<CashierEntry>() {
     val id = bind { item?.idProperty }
     val type = bind { item?.typeProperty }
 }

@@ -26,8 +26,8 @@ object MedicalStaffsTbl : IdTable<Int>() {
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
-class MedicalStaffTbl(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<MedicalStaffTbl>(MedicalStaffsTbl)
+class MedicalStaff(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<MedicalStaff>(MedicalStaffsTbl)
 
     var username by MedicalStaffsTbl.Username
     var password by MedicalStaffsTbl.Password
@@ -60,7 +60,7 @@ class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, 
     val service by serviceProperty
 }
 
-class MedicalStaffViewModel : ItemViewModel<MedicalStaffEntry>() {
+class MedicalStaffModel : ItemViewModel<MedicalStaffEntry>() {
     val id = bind { item?.idProperty }
     val username = bind { item?.usernameProperty }
     val password = bind { item?.passwordProperty }

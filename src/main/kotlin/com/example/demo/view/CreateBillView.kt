@@ -4,9 +4,9 @@ import com.example.demo.app.Styles
 import com.example.demo.controller.ActesController
 import com.example.demo.controller.OrderItemsController
 import com.example.demo.controller.PatientController
-import com.example.demo.data.model.MedicationEntryModel
+import com.example.demo.data.model.MedicationModel
 import com.example.demo.data.model.OrderItemModel
-import com.example.demo.data.model.PatientEntryModel
+import com.example.demo.data.model.PatientModel
 import com.example.demo.utils.cancelButton
 import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
@@ -27,14 +27,14 @@ import java.util.*
 class CreateBillView : View("Create bill") {
 
     private var toUpdateUser = false
-    private val patientEntryModel = PatientEntryModel()
+    private val patientEntryModel = PatientModel()
 
     private val patientController: PatientController by inject()
     private val actesController: ActesController by inject()
     private val orderItemsController: OrderItemsController by inject()
 
     var nameField: ComboBox<String> by singleAssign()
-    var tableOfActes: TableViewEditModel<MedicationEntryModel> by singleAssign()
+    var tableOfActes: TableViewEditModel<MedicationModel> by singleAssign()
 
     var tableOfCommandItems: TableView<OrderItemModel> by singleAssign()
 
@@ -182,17 +182,17 @@ class CreateBillView : View("Create bill") {
                 }
             }
 
-            tableview<MedicationEntryModel> {
+            tableview<MedicationModel> {
                 items = actesController.items
                 tableOfActes = editModel
                 vgrow = Priority.ALWAYS
 
-                column(messages["id"], MedicationEntryModel::id)
-                column(messages["label"], MedicationEntryModel::name)
-                column(messages["price"], MedicationEntryModel::appliedAmount) {
+                column(messages["id"], MedicationModel::id)
+                column(messages["label"], MedicationModel::name)
+                column(messages["price"], MedicationModel::appliedAmount) {
                     cellFormat { this.text = this.item.formatCurrencyCM() }
                 }.prefWidth(100.0)
-                column(messages["section"], MedicationEntryModel::synthesisSectionName)
+                column(messages["section"], MedicationModel::synthesisSectionName)
 
                 selectionModel.selectedItemProperty().addListener { _, _, new ->
                     if (selectionModel.selectedItem != null && !orderItemsController.selectedItems.contains(new)) {
