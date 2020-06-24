@@ -5,9 +5,12 @@ package com.example.demo.data.model
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
+import java.util.*
 
 /**
  * @author forntoh
@@ -25,6 +28,11 @@ fun ResultRow.toOrderItemEntry() = OrderItemEntry(
         this.toOrderEntry(false),
         this[OrderItemsTbl.Quantity]
 )
+
+fun OrderItemEntry.toRow(): OrderItemsTbl.(UpdateBuilder<*>) -> Unit = {
+    it[Order] = EntityID(UUID.fromString(this@toRow.order.id.value), OrdersTbl)
+    it[Acte] = EntityID(this@toRow.acte.id.value.toInt(), ActesTbl)
+}
 
 class OrderItemEntry(acte: ActeEntry, order: OrderEntry, quantity: Int) {
     val acte = ActeModel().apply { item = acte }

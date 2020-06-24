@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.jodatime.datetime
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.joda.time.LocalDateTime
 import tornadofx.*
 import java.util.*
@@ -34,12 +35,18 @@ class Order(id: EntityID<UUID>) : UUIDEntity(id) {
 }
 
 fun ResultRow.toOrderEntry(includePatient: Boolean = true) = OrderEntry(
+        if (includePatient) this.toPatientEntry() else null,
         this[OrdersTbl.id].value.toString().toUpperCase(),
-        this[OrdersTbl.Timestamp].toLocalDateTime(),
-        if (includePatient) this.toPatientEntry() else null
+        this[OrdersTbl.Timestamp].toLocalDateTime()
 )
 
-class OrderEntry(id: String, date: LocalDateTime, patient: PatientEntry?) {
+fun OrderEntry.toRow(): OrdersTbl.(UpdateBuilder<*>) -> Unit = {
+    it[id] = EntityID(UUID.randomUUID(), OrdersTbl)
+    it[Patient] = EntityID(this@toRow.patient.id.value.toInt(), PatientsTbl)
+    it[Timestamp] = this@toRow.date.toDateTime()
+}
+
+class OrderEntry(patient: PatientEntry?, id: String? = null, date: LocalDateTime = LocalDateTime.now()) {
     val idProperty = SimpleStringProperty(id)
     val id by idProperty
 

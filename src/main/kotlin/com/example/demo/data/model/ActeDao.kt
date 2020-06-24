@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -42,13 +43,13 @@ fun ResultRow.toActeEntry(includeSection: Boolean = true) = ActeEntry(
 )
 
 class ActeEntry(
-        id: Int,
+        id: Int?,
         name: String,
         appliedAmount: Double,
         officialAmount: Double,
         synthesisSection: SynthesisSectionEntry?
 ) {
-    val idProperty = SimpleIntegerProperty(id)
+    val idProperty = SimpleIntegerProperty(id ?: 0)
     val id by idProperty
 
     val nameProperty = SimpleStringProperty(name)
@@ -61,6 +62,13 @@ class ActeEntry(
     val officialAmount by officialAmountProperty
 
     val synthesisSection = SynthesisSectionModel().apply { item = synthesisSection }
+}
+
+fun ActeEntry.toRow(): ActesTbl.(UpdateBuilder<*>) -> Unit = {
+    it[Name] = this@toRow.name
+    it[AppliedAmount] = this@toRow.appliedAmount.toBigDecimal()
+    it[OfficialAmount] = this@toRow.officialAmount.toBigDecimal()
+    it[SynthesisSection] = EntityID(this@toRow.synthesisSection.id.value.toInt(), SynthesisSectionsTbl)
 }
 
 class ActeModel : ItemViewModel<ActeEntry>() {
