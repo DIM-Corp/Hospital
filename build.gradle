@@ -63,6 +63,7 @@ dependencies {
     compile group: 'org.jfxtras', name: 'jmetro', version: '8.6.12'
     compile 'no.tornado:tornadofx-controlsfx:0.1.1'
 
+    compile 'com.google.inject:guice:4.2.3'
     // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.31.1'
 }
