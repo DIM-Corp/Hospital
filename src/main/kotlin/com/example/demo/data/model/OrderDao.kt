@@ -62,3 +62,8 @@ class OrderModel : ItemViewModel<OrderEntry>() {
     val patientId = bind { item?.patient?.id }
     val patientName = bind { item?.patient?.name }
 }
+
+fun OrderModel.getPatientModel() = PatientModel().apply {
+    id.value = this@getPatientModel.patientId.value
+    name.value = this@getPatientModel.patientName.value
+}

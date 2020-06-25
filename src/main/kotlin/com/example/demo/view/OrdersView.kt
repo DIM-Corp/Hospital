@@ -5,6 +5,7 @@ import com.example.demo.controller.OrderController
 import com.example.demo.controller.OrderItemsController
 import com.example.demo.data.model.OrderItemModel
 import com.example.demo.data.model.OrderModel
+import com.example.demo.data.model.getPatientModel
 import com.example.demo.utils.defaultPadding
 import com.example.demo.utils.formatCurrencyCM
 import com.example.demo.utils.fr_CM
@@ -13,7 +14,7 @@ import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
 
-class OrdersView : View("Orders") {
+class OrdersView : View() {
 
     private val orderController: OrderController by inject()
     private val orderItemsController: OrderItemsController by inject()
@@ -22,18 +23,21 @@ class OrdersView : View("Orders") {
     private var tableOrders by singleAssign<TableView<OrderModel>>()
 
     override val root = splitpane {
+
+        title = messages["orders"]
+
         vbox {
-            label("Order history").addClass(Styles.subheading)
+            label(messages["o_his"]).addClass(Styles.subheading)
             tableOrders = tableview(orderController.items) {
                 vgrow = Priority.ALWAYS
 
                 smartResize()
 
-                column("Order ID", OrderModel::id).prefWidth(50.0)
-                column("Date", OrderModel::date) {
+                column(messages["oid"], OrderModel::id).prefWidth(50.0)
+                column(messages["date"], OrderModel::date) {
                     cellFormat { this.text = this.item.toString(pattern_dateTime, fr_CM) }
                 }
-                column("Client Name", OrderModel::patientName)
+                column(messages["cname"], OrderModel::patientName)
 
                 selectionModel.selectedItemProperty().addListener { _, _, new ->
                     if (selectionModel.selectedItem != null) {
@@ -42,11 +46,21 @@ class OrdersView : View("Orders") {
                     } else orderItemsController.orderItems.clear()
                 }
             }
+
+            buttonbar {
+                button(messages["print"]) {
+                    isDefaultButton = true
+                    enableWhen(tableOrders.selectionModel.selectedIndexProperty().gt(-1))
+                    action {
+                        orderItemsController.printOrder(tableOrders.selectedItem!!.getPatientModel(), false)
+                    }
+                }
+            }
             spacing = defaultPadding
             paddingAll = defaultPadding
         }
         vbox {
-            label("Order Items").addClass(Styles.subheading)
+            label(messages["o_items"]).addClass(Styles.subheading)
             tableOrderItems = tableview(orderItemsController.orderItems) {
 
                 vgrow = Priority.ALWAYS

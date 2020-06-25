@@ -1,10 +1,7 @@
 package com.example.demo.controller
 
 import com.example.demo.data.db.execute
-import com.example.demo.data.model.MedicationModel
-import com.example.demo.data.model.OrderItemModel
-import com.example.demo.data.model.OrderModel
-import com.example.demo.data.model.PatientModel
+import com.example.demo.data.model.*
 import com.example.demo.data.repository.OrderItemsRepo
 import com.example.demo.data.repository.OrderRepo
 import com.example.demo.utils.Item
@@ -24,9 +21,13 @@ class OrderItemsController : Controller() {
 
     private val orderController: OrderController by inject()
 
+    private lateinit var selectedOrder: OrderEntry
+
     fun loadOrderItemsForOrder(uuid: String) = execute {
         orderItems.clear()
-        orderItems.addAll(orderItemsRepo.find(uuid))
+        val items = orderItemsRepo.find(uuid)
+        selectedOrder = OrderEntry(null, items.first().orderId.value.toString(), items.first().timeStamp.value)
+        orderItems.addAll(items)
     }
 
     private fun createOrder(patientModel: PatientModel): Pair<String, DateTime> = execute {
@@ -42,8 +43,10 @@ class OrderItemsController : Controller() {
         Pair(o.id.value, o.date.value.toDateTime())
     }
 
-    fun printOrder(patientModel: PatientModel) {
-        val pair = createOrder(patientModel)
+    fun printOrder(patientModel: PatientModel, isNew: Boolean = true) {
+        val pair = if (isNew) createOrder(patientModel)
+        else Pair(selectedOrder.id, selectedOrder.date.toDateTime())
+
         printerService.printReceipt(
                 orderItems.map { Item(it.label.value, it.qtyTemp.value, it.price.value.toDouble()) },
                 patientModel.name.value,
