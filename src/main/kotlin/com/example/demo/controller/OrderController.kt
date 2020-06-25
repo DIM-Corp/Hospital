@@ -20,7 +20,7 @@ class OrderController : Controller() {
     }
 
     fun addOrder(order: OrderModel) {
-        listOfOrders.add(order)
-        listOfOrders.sortByDescending { it.date.value }
+        items.add(order)
+        items.sortByDescending { it.date.value }
     }
 }

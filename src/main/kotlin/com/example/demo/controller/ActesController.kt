@@ -31,7 +31,7 @@ class ActesController : Controller() {
         execute {
             newMedication.id.value = actesRepo.create(newMedication.toActeModel()).id.value
             medicationRepo.create(newMedication)
-            listOfActes.add(newMedication)
+            items.add(newMedication)
         }
     }
 }

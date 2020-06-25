@@ -131,6 +131,7 @@ class CreateBillView : View("Create bill") {
                 button(messages["clear"]) {
                     action {
                         orderItemsController.selectedItems.clear()
+                        orderItemsController.orderItemsTotalProperty.set(0.0)
                         patientEntryModel.rollback()
                         toUpdateUser = false
                     }

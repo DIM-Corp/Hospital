@@ -20,7 +20,7 @@ class UserController : Controller() {
 
     fun add(newItem: UserModel) {
         execute {
-            listOfUsers.add(userRepo.create(newItem))
+            items.add(userRepo.create(newItem))
         }
     }
 

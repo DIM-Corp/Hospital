@@ -89,7 +89,6 @@ class OrderItemsController : Controller() {
                         }
                     })
                 } else if (items.wasRemoved()) {
-                    orderItemsTotalProperty.set(0.0)
                     items.removed.forEach { m ->
                         orderItems.removeIf { it.acteId.value == m.id.value }
                     }
