@@ -60,9 +60,9 @@ fun PatientModel.toRow(): PatientsTbl.(UpdateBuilder<*>) -> Unit = {
     it[Condition] = this@toRow.condition.value.toInt()
 }
 
-fun PatientModel.toUserModel(): UserModel = UserModel().apply {
+fun PatientModel.toUserModel(hasId: Boolean = true): UserModel = UserModel().apply {
     item = UserEntry(
-            this@toUserModel.id.value.toInt(),
+            if (hasId) this@toUserModel.id.value.toInt() else 0,
             this@toUserModel.name.value,
             this@toUserModel.address.value,
             this@toUserModel.gender.value,

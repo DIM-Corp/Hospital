@@ -23,8 +23,9 @@ class PatientController : Controller() {
 
     fun add(newPatient: PatientModel) {
         execute {
-            userRepo.create(newPatient.toUserModel())
-            listOfPatients.add(patientRepo.create(newPatient))
+            val result = userRepo.create(newPatient.toUserModel(false))
+            newPatient.id.value = result.id.value
+            items.add(patientRepo.create(newPatient))
         }
     }
 

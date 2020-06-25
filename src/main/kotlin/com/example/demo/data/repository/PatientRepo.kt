@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.*
 class PatientRepo : CrudRepository<PatientModel, Int> {
 
     override fun create(entry: PatientModel): PatientModel {
-        val result = PatientsTbl.insert(entry.toRow()).resultedValues?.first()?.toActeEntry(false)
+        val result = PatientsTbl.insert(entry.toRow()).resultedValues?.first()?.toPatientEntry(false)
         return entry.apply { id.value = result?.id }
     }
 
