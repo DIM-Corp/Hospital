@@ -1,9 +1,6 @@
 package com.example.demo.data.repository
 
-import com.example.demo.data.model.ActeModel
-import com.example.demo.data.model.ActesTbl
-import com.example.demo.data.model.toActeEntry
-import com.example.demo.data.model.toRow
+import com.example.demo.data.model.*
 import org.jetbrains.exposed.sql.*
 
 class ActesRepo : CrudRepository<ActeModel, Int> {
@@ -28,8 +25,13 @@ class ActesRepo : CrudRepository<ActeModel, Int> {
     })
 
     override fun findAll() = ActesTbl
-            .selectAll()
-            .map { ActeModel().apply { item = it.toActeEntry() } }
+            .join(MedicationsTbl, JoinType.LEFT, ActesTbl.id, MedicationsTbl.id)
+            .join(SynthesisSectionsTbl, JoinType.LEFT, ActesTbl.SynthesisSection, SynthesisSectionsTbl.id)
+            .select {
+                notExists(MedicationsTbl.select {
+                    MedicationsTbl.id eq ActesTbl.id
+                })
+            }.map { ActeModel().apply { item = it.toActeEntry() } }
 
     override fun deleteAll() = ActesTbl.deleteAll()
 }

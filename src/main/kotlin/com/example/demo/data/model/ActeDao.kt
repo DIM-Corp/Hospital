@@ -79,3 +79,21 @@ class ActeModel : ItemViewModel<ActeEntry>() {
     val synthesisSectionId = bind { item?.synthesisSection?.id }
     val synthesisSectionName = bind { item?.synthesisSection?.name }
 }
+
+fun ActeModel.toMedicationModel() = MedicationModel().apply {
+    item = MedicationEntry(
+            this@toMedicationModel.id.value.toInt(),
+            -1,
+            -1,
+            ActeEntry(
+                    this@toMedicationModel.id.value.toInt(),
+                    this@toMedicationModel.name.value,
+                    this@toMedicationModel.appliedAmount.value.toDouble(),
+                    this@toMedicationModel.officialAmount.value.toDouble(),
+                    SynthesisSectionEntry(
+                            this@toMedicationModel.synthesisSectionId.value.toInt(),
+                            this@toMedicationModel.synthesisSectionName.value
+                    )
+            )
+    )
+}

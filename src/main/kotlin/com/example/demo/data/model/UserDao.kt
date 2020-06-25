@@ -3,6 +3,7 @@
 package com.example.demo.data.model
 
 import com.example.demo.utils.toAge
+import com.example.demo.utils.toMillis
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -12,6 +13,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -75,4 +77,12 @@ class UserModel : ItemViewModel<UserEntry>() {
     val gender = bind { item?.genderProperty }
     val age = bind { item?.ageProperty }
     val telephone = bind { item?.telephoneProperty }
+}
+
+fun UserModel.toRow(): UsersTbl.(UpdateBuilder<*>) -> Unit = {
+    it[Name] = this@toRow.name.value
+    it[Address] = this@toRow.address.value
+    it[Gender] = this@toRow.gender.value
+    it[DateOfBirth] = this@toRow.age.value.toMillis()
+    it[Telephone] = this@toRow.telephone.value
 }

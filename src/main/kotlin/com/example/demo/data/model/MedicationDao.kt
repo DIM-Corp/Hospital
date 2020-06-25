@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -31,12 +32,17 @@ class Medication(id: EntityID<Int>) : IntEntity(id) {
     var warehouseStock by MedicationsTbl.WarehouseStock
 }
 
-fun ResultRow.toMedicationEntry() = MedicationEntry(
+fun ResultRow.toMedicationEntry(includeActe: Boolean = true) = MedicationEntry(
         this[ActesTbl.id].value,
         this[MedicationsTbl.CounterStock],
         this[MedicationsTbl.WarehouseStock],
-        this.toActeEntry()
+        this.toActeEntry(includeActe)
 )
+
+fun MedicationModel.toRow(): MedicationsTbl.(UpdateBuilder<*>) -> Unit = {
+    it[CounterStock] = this@toRow.counterStock.value.toLong()
+    it[WarehouseStock] = this@toRow.warehouseStock.value.toLong()
+}
 
 class MedicationEntry(id: Int, counterStock: Long?, warehouseStock: Long?, acteEntry: ActeEntry) {
     var idProperty = SimpleIntegerProperty(id)
@@ -61,4 +67,16 @@ class MedicationModel : ItemViewModel<MedicationEntry>() {
 
     val synthesisSectionId = bind { item?.acte?.synthesisSectionId }
     val synthesisSectionName = bind { item?.acte?.synthesisSectionName }
+}
+
+fun MedicationModel.toActeModel(): ActeModel = ActeModel().apply {
+    item = ActeEntry(
+            this@toActeModel.id.value.toInt(),
+            this@toActeModel.name.value,
+            this@toActeModel.appliedAmount.value.toDouble(),
+            this@toActeModel.officialAmount.value.toDouble(),
+            SynthesisSectionEntry(
+                    this@toActeModel.synthesisSectionId.value.toInt(),
+                    this@toActeModel.synthesisSectionName.value
+            ))
 }

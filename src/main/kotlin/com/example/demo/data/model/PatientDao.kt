@@ -9,6 +9,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -28,13 +29,13 @@ class Patient(id: EntityID<Int>) : IntEntity(id) {
     var condition by PatientsTbl.Condition
 }
 
-fun ResultRow.toPatientEntry() = PatientEntry(
+fun ResultRow.toPatientEntry(includeUser: Boolean = true) = PatientEntry(
         this[PatientsTbl.id].value,
         this[PatientsTbl.Condition],
-        this.toUserEntry()
+        if (includeUser) this.toUserEntry() else null
 )
 
-class PatientEntry(id: Int, condition: Int, user: UserEntry) {
+class PatientEntry(id: Int, condition: Int, user: UserEntry?) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
@@ -52,4 +53,20 @@ class PatientModel : ItemViewModel<PatientEntry>() {
     val age = bind { item?.user?.age }
     val telephone = bind { item?.user?.telephone }
     val condition = bind { item?.conditionProperty }
+}
+
+fun PatientModel.toRow(): PatientsTbl.(UpdateBuilder<*>) -> Unit = {
+    it[id] = EntityID(this@toRow.id.value.toInt(), UsersTbl)
+    it[Condition] = this@toRow.condition.value.toInt()
+}
+
+fun PatientModel.toUserModel(): UserModel = UserModel().apply {
+    item = UserEntry(
+            this@toUserModel.id.value.toInt(),
+            this@toUserModel.name.value,
+            this@toUserModel.address.value,
+            this@toUserModel.gender.value,
+            this@toUserModel.age.value.toInt(),
+            this@toUserModel.telephone.value
+    )
 }
