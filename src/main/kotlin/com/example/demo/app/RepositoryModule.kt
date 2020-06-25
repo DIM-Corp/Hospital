@@ -1,8 +1,6 @@
 package com.example.demo.app
 
-import com.example.demo.data.repository.ActesRepo
-import com.example.demo.data.repository.OrderItemsRepo
-import com.example.demo.data.repository.OrderRepo
+import com.example.demo.data.repository.*
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 
@@ -17,6 +15,15 @@ class RepositoryModule : AbstractModule() {
 
         @Provides
         fun provideOrderItemsRepo() = OrderItemsRepo()
+
+        @Provides
+        fun provideMedicationRepo() = MedicationRepo()
+
+        @Provides
+        fun providePatientRepo() = PatientRepo()
+
+        @Provides
+        fun provideUserRepo() = UserRepo()
 
     }
 
