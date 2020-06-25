@@ -1,18 +1,19 @@
 # Hospital
+
 Hospital management app
 
 ## Screenshots
 
 ### Create bill
 
-![ScreenShot_20200623172346](https://github.com/forntoh/Hospital/blob/master/screenshots/ScreenShot_20200623172143.png)
+![Create Bill](https://github.com/forntoh/Hospital/blob/master/screenshots/create_bill.png)
 
-![ScreenShot_20200623172346](https://github.com/forntoh/Hospital/blob/master/screenshots/ScreenShot_20200623172143.png)
+![Create Bill with items](https://github.com/forntoh/Hospital/blob/master/screenshots/create_bill_items.png)
 
-### Bill *(printer = Microsoft Print to PDF)*
+### Bill _(printer = Microsoft Print to PDF)_
 
-![ScreenShot_20200623172346](https://github.com/forntoh/Hospital/blob/master/screenshots/ScreenShot_20200623172346.png)
+![Printed receipt](https://github.com/forntoh/Hospital/blob/master/screenshots/printed_receipt.png)
 
 ### Order history
 
-![ScreenShot_20200623172538](https://github.com/forntoh/Hospital/blob/master/screenshots/ScreenShot_20200623172538.png)
+![Order History](https://github.com/forntoh/Hospital/blob/master/screenshots/order_history.png)
