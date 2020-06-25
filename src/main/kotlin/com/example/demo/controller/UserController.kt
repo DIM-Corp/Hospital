@@ -1,20 +1,16 @@
 package com.example.demo.controller
 
-import com.example.demo.data.db.SqlRepository
-import com.example.demo.data.model.*
-import com.example.demo.utils.toMillis
+import com.example.demo.data.db.execute
+import com.example.demo.data.model.UserModel
+import com.example.demo.data.repository.UserRepo
 import javafx.collections.ObservableList
 import tornadofx.*
 
 class UserController : Controller() {
 
-    private val userSqlRepository by lazy { SqlRepository(UsersTbl, User) }
+    private val userRepo: UserRepo by di()
 
-    private val listOfUsers: ObservableList<UserModel> = userSqlRepository.transactionSelectAll {
-        it.map {
-            UserModel().apply { item = it.toUserEntry() }
-        }.observable()
-    }
+    private val listOfUsers: ObservableList<UserModel> = execute { userRepo.findAll() }.observable()
 
     var items: ObservableList<UserModel> by singleAssign()
 
@@ -22,34 +18,17 @@ class UserController : Controller() {
         items = listOfUsers
     }
 
-    fun add(
-            newName: String,
-            newAddress: String?,
-            newGender: Boolean,
-            newAge: Int,
-            newTelephone: String
-    ): UserEntry? {
-        val newEntry = userSqlRepository.transactionNew {
-            name = newName
-            address = newAddress
-            gender = newGender
-            dateOfBirth = newAge.toMillis()
-            telephone = newTelephone
-        }
-        return newEntry?.toUserEntry().also {
-            listOfUsers.add(UserModel().apply { item = it })
+    fun add(newItem: UserModel) {
+        execute {
+            listOfUsers.add(userRepo.create(newItem))
         }
     }
 
-    fun update(updatedItem: UserModel): Int? {
-        return userSqlRepository.transactionSingleUpdate(updatedItem.id.value.toInt()) {
-            it[Name] = updatedItem.name.value
-            it[Address] = updatedItem.address.value
-            it[Gender] = updatedItem.gender.value
-            it[DateOfBirth] = updatedItem.age.value.toMillis()
-            it[Telephone] = updatedItem.telephone.value
+    fun update(updatedItem: UserModel) {
+        execute {
+            userRepo.update(updatedItem)
         }
     }
 
-    fun delete(userItem: UserEntry) = userSqlRepository.deleteById(userItem.id)
+    fun delete(userItem: UserModel) = execute { userRepo.delete(userItem) }
 }
