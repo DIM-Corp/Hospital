@@ -10,9 +10,11 @@ import com.example.demo.utils.defaultPadding
 import com.example.demo.utils.formatCurrencyCM
 import com.example.demo.utils.fr_CM
 import com.example.demo.utils.pattern_dateTime
+import javafx.beans.binding.Bindings
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
+import java.util.*
 
 class OrdersView : View() {
 
@@ -72,6 +74,12 @@ class OrdersView : View() {
                 column(messages["qty"], OrderItemModel::quantity).maxWidth(96.0)
                 column(messages["amount"], OrderItemModel::amount).cellFormat { this.text = this.item.formatCurrencyCM() }
             }
+
+            label {
+                bind(Bindings.format(Locale("fr", "CM"), "Total:        %,.0f FCFA", orderItemsController.orderItemsTotalProperty))
+                addClass(Styles.heading)
+            }
+
             spacing = defaultPadding
             paddingAll = defaultPadding
         }
@@ -81,6 +89,7 @@ class OrdersView : View() {
     init {
         workspace.tabContainer.selectionModel.selectedItemProperty().addListener { _, _, _ ->
             tableOrders.selectionModel.clearSelection()
+            orderItemsController.orderItemsTotalProperty.set(0.0)
         }
     }
 }

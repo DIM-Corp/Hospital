@@ -6,6 +6,7 @@ import com.example.demo.data.repository.OrderItemsRepo
 import com.example.demo.data.repository.OrderRepo
 import com.example.demo.utils.Item
 import com.example.demo.utils.PrinterService
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.collections.ObservableList
 import org.joda.time.DateTime
 import tornadofx.*
@@ -19,15 +20,28 @@ class OrderItemsController : Controller() {
     var orderItems: ObservableList<OrderItemModel> by singleAssign()
     private var printerService: PrinterService by singleAssign()
 
+    var orderItemsTotalProperty = SimpleDoubleProperty(0.0)
+
     private val orderController: OrderController by inject()
 
     private lateinit var selectedOrder: OrderEntry
+
+    fun updateOrderTotal() {
+        var total = 0.0
+        try {
+            orderItems.forEach { total += it.amount.value.toDouble() }
+            orderItemsTotalProperty.set(total)
+        } catch (e: Exception) {
+            orderItemsTotalProperty.set(0.0)
+        }
+    }
 
     fun loadOrderItemsForOrder(uuid: String) = execute {
         orderItems.clear()
         val items = orderItemsRepo.find(uuid)
         selectedOrder = OrderEntry(null, items.first().orderId.value.toString(), items.first().timeStamp.value)
         orderItems.addAll(items)
+        updateOrderTotal()
     }
 
     private fun createOrder(patientModel: PatientModel): Pair<String, DateTime> = execute {
@@ -75,6 +89,7 @@ class OrderItemsController : Controller() {
                         }
                     })
                 } else if (items.wasRemoved()) {
+                    orderItemsTotalProperty.set(0.0)
                     items.removed.forEach { m ->
                         orderItems.removeIf { it.acteId.value == m.id.value }
                     }

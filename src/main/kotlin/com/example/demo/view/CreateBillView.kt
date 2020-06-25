@@ -12,12 +12,10 @@ import com.example.demo.utils.capitalizeWords
 import com.example.demo.utils.defaultPadding
 import com.example.demo.utils.formatCurrencyCM
 import javafx.beans.binding.Bindings
-import javafx.beans.property.SimpleDoubleProperty
 import javafx.geometry.Insets
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
-import javafx.scene.control.Label
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
@@ -37,10 +35,6 @@ class CreateBillView : View("Create bill") {
     var tableOfActes: TableViewEditModel<MedicationModel> by singleAssign()
 
     var tableOfCommandItems: TableView<OrderItemModel> by singleAssign()
-
-    private var orderItemsModel = OrderItemModel()
-    private var totalLabel: Label by singleAssign()
-    private var orderItemsTotalProperty = SimpleDoubleProperty(0.0)
 
     override val root = splitpane {
         vbox {
@@ -106,7 +100,7 @@ class CreateBillView : View("Create bill") {
                     cellFormat {
                         graphic = cancelButton {
                             orderItemsController.selectedItems.removeIf { it.id.value == item.toInt() }
-                            updateOrderTotal()
+                            orderItemsController.updateOrderTotal()
                         }
                     }
                 }
@@ -120,7 +114,7 @@ class CreateBillView : View("Create bill") {
                             bind(rowItem.qtyTemp)
                             isEditable = true
                             this.valueProperty().addListener { _, o, n ->
-                                if (o != n) updateOrderTotal()
+                                if (o != n) orderItemsController.updateOrderTotal()
                             }
                         }
                     }
@@ -128,8 +122,8 @@ class CreateBillView : View("Create bill") {
                 column(messages["amount"], OrderItemModel::amount).cellFormat { this.text = this.item.formatCurrencyCM() }
             }
 
-            totalLabel = label {
-                bind(Bindings.format(Locale("fr", "CM"), "Total:        %,.0f FCFA", orderItemsTotalProperty))
+            label {
+                bind(Bindings.format(Locale("fr", "CM"), "Total:        %,.0f FCFA", orderItemsController.orderItemsTotalProperty))
                 addClass(Styles.heading)
             }
 
@@ -198,7 +192,7 @@ class CreateBillView : View("Create bill") {
                     if (selectionModel.selectedItem != null && !orderItemsController.selectedItems.contains(new)) {
                         orderItemsController.selectedItems.add(new)
                         tableOfCommandItems.requestResize()
-                        updateOrderTotal()
+                        orderItemsController.updateOrderTotal()
                     }
                 }
                 smartResize()
@@ -211,17 +205,6 @@ class CreateBillView : View("Create bill") {
         }
 
         setDividerPositions(0.36)
-    }
-
-    private fun updateOrderTotal() {
-        var total = 0.0
-        try {
-            orderItemsController.orderItems.forEach { total += it.amount.value.toDouble() }
-            orderItemsTotalProperty.set(total)
-        } catch (e: Exception) {
-            orderItemsTotalProperty.set(0.0)
-        }
-        orderItemsModel.totalAmount.value = total
     }
 
     private fun addListenersAndValidation() {
