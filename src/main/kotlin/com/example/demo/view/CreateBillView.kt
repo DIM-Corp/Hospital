@@ -138,7 +138,7 @@ class CreateBillView : View("Create bill") {
                 }
                 button(messages["validate"]) {
                     isDefaultButton = true
-                    enableWhen(patientEntryModel.valid)
+                    enableWhen(patientEntryModel.valid.and(Bindings.isNotEmpty(orderItemsController.selectedItems)))
                     action {
                         patientEntryModel.commit {
                             if (!toUpdateUser) patientController.add(patientEntryModel)
