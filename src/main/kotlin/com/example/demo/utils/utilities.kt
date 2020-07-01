@@ -41,6 +41,8 @@ val fr_CM: Locale get() = Locale("fr", "CM")
 
 val pattern_dateTime: String get() = "dd/MM/yy - HH:mm:ss"
 
+fun LocalDate.isBetween(start: LocalDate, end: LocalDate) = start.compareTo(this) * this.compareTo(end) >= 0
+
 fun Node.cancelButton(event: () -> Unit): Node = group {
     circle(0, 0, 8) { fill = Color.valueOf("#E21B1B") }
     line(-2, 2, 2, -2) {

@@ -11,6 +11,7 @@ import com.example.demo.utils.formatCurrencyCM
 import com.example.demo.utils.fr_CM
 import com.example.demo.utils.pattern_dateTime
 import javafx.beans.binding.Bindings
+import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
@@ -30,6 +31,16 @@ class OrdersView : View() {
 
         vbox {
             label(messages["o_his"]).addClass(Styles.subheading)
+            hbox {
+                textfield(orderController.searchProperty) { promptText = "Search"; hgrow = Priority.ALWAYS }
+                label("Between") { alignment = Pos.BASELINE_LEFT; fitToParentHeight() }
+                datepicker(orderController.startDateProperty) { prefWidth = 100.0 }
+                label("and") { alignment = Pos.BASELINE_LEFT; fitToParentHeight() }
+                datepicker(orderController.endDateProperty) { prefWidth = 100.0 }
+                button("Filter").action { orderController.filter() }
+                button("Clear").action { orderController.clearFilter() }
+                spacing = defaultPadding - 12
+            }
             tableOrders = tableview(orderController.items) {
                 vgrow = Priority.ALWAYS
 
