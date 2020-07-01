@@ -21,8 +21,8 @@ class OrderController : Controller() {
 
     var items: ObservableList<OrderModel> by singleAssign()
 
-    val searchProperty = SimpleStringProperty()
-    val startDateProperty = SimpleObjectProperty(LocalDate.now())
+    val searchProperty = SimpleStringProperty("")
+    val startDateProperty = SimpleObjectProperty(LocalDate.now().minusMonths(1))
     val endDateProperty = SimpleObjectProperty(LocalDate.now())
 
     init {
@@ -32,8 +32,8 @@ class OrderController : Controller() {
     }
 
     fun addOrder(order: OrderModel) {
-        items.add(order)
-        items.sortByDescending { it.date.value }
+        listOfOrders.add(order)
+        listOfOrders.sortByDescending { it.date.value }
     }
 
     fun filter() {
@@ -45,7 +45,7 @@ class OrderController : Controller() {
             )).isBetween(startDateProperty.value, endDateProperty.value)
 
             return@setPredicate when {
-                searchProperty.value.toString().isEmpty() -> true
+                searchProperty.value.toString().isEmpty() && isBetweenSelectedDates -> true
                 order.id.value.contains(searchProperty.value.toString(), true) && isBetweenSelectedDates -> true
                 order.patientName.value.contains(searchProperty.value.toString(), true) && isBetweenSelectedDates -> true
                 else -> false
