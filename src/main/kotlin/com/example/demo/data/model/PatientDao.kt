@@ -52,7 +52,7 @@ class PatientModel : ItemViewModel<PatientEntry>() {
     val gender = bind { item?.user?.gender }
     val age = bind { item?.user?.age }
     val telephone = bind { item?.user?.telephone }
-    val condition = bind { item?.conditionProperty }
+    val condition = bind { if (item == null) SimpleIntegerProperty(0) else item.conditionProperty }
 }
 
 fun PatientModel.toRow(): PatientsTbl.(UpdateBuilder<*>) -> Unit = {
