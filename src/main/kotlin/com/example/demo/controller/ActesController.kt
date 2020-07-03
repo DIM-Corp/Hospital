@@ -69,4 +69,14 @@ class ActesController : Controller() {
             actes.add(newActe)
         }
     }
+
+    fun deleteActe(actesModel: ActeModel) {
+        execute {
+            actesRepo.delete(actesModel)
+            medicationRepo.delete(actesModel.toMedicationModel())
+            items.removeIf { it.id.value == actesModel.id.value }
+            actes.removeIf { it.id.value == actesModel.id.value }
+            medications.removeIf { it.id.value == actesModel.id.value }
+        }
+    }
 }

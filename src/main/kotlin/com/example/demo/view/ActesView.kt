@@ -93,7 +93,10 @@ class ActesView : View("Actes/Medications") {
                         button("Delete") {
                             enableWhen(actesModel.valid)
                             action {
-
+                                actesController.deleteActe(actesModel)
+                                tableOfActes.selectionModel.clearSelection()
+                                tableOfMedications.selectionModel.clearSelection()
+                                actesModel.rollback()
                             }
                         }
                         button("Save") {
