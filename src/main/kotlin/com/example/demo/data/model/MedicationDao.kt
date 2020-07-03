@@ -33,10 +33,10 @@ class Medication(id: EntityID<Int>) : IntEntity(id) {
 }
 
 fun ResultRow.toMedicationEntry(includeActe: Boolean = true) = MedicationEntry(
-        this[ActesTbl.id].value,
+        this[MedicationsTbl.id].value,
         this[MedicationsTbl.CounterStock],
         this[MedicationsTbl.WarehouseStock],
-        this.toActeEntry(includeActe)
+        if (includeActe) this.toActeEntry(includeActe) else null
 )
 
 fun MedicationModel.toRow(): MedicationsTbl.(UpdateBuilder<*>) -> Unit = {
@@ -44,7 +44,7 @@ fun MedicationModel.toRow(): MedicationsTbl.(UpdateBuilder<*>) -> Unit = {
     it[WarehouseStock] = this@toRow.warehouseStock.value.toLong()
 }
 
-class MedicationEntry(id: Int, counterStock: Long?, warehouseStock: Long?, acteEntry: ActeEntry) {
+class MedicationEntry(id: Int, counterStock: Long?, warehouseStock: Long?, acteEntry: ActeEntry?) {
     var idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
@@ -69,9 +69,9 @@ class MedicationModel : ItemViewModel<MedicationEntry>() {
     val synthesisSectionName = bind { item?.acte?.synthesisSectionName }
 }
 
-fun MedicationModel.toActeModel(): ActeModel = ActeModel().apply {
+fun MedicationModel.toActeModel(ignoreId: Boolean = false): ActeModel = ActeModel().apply {
     item = ActeEntry(
-            this@toActeModel.id.value.toInt(),
+            if (ignoreId) 0 else this@toActeModel.id.value.toInt(),
             this@toActeModel.name.value,
             this@toActeModel.appliedAmount.value.toDouble(),
             this@toActeModel.officialAmount.value.toDouble(),
