@@ -40,6 +40,7 @@ fun ResultRow.toMedicationEntry(includeActe: Boolean = true) = MedicationEntry(
 )
 
 fun MedicationModel.toRow(): MedicationsTbl.(UpdateBuilder<*>) -> Unit = {
+    it[id] = EntityID(this@toRow.id.value.toInt(), MedicationsTbl)
     it[CounterStock] = this@toRow.counterStock.value.toLong()
     it[WarehouseStock] = this@toRow.warehouseStock.value.toLong()
 }
