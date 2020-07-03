@@ -25,6 +25,9 @@ class RepositoryModule : AbstractModule() {
         @Provides
         fun provideUserRepo() = UserRepo()
 
+        @Provides
+        fun provideSectionRepo() = SectionRepo()
+
     }
 
 }
