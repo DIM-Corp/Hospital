@@ -81,3 +81,14 @@ fun MedicationModel.toActeModel(ignoreId: Boolean = false): ActeModel = ActeMode
                     this@toActeModel.synthesisSectionName.value
             ))
 }
+
+fun MedicationModel.copy() = MedicationModel().apply {
+    id.value = this@copy.id.value
+    name.value = this@copy.name.value
+    appliedAmount.value = this@copy.appliedAmount.value
+    officialAmount.value = this@copy.officialAmount.value
+    counterStock.value = this@copy.counterStock.value
+    warehouseStock.value = this@copy.warehouseStock.value
+    synthesisSectionId.value = this@copy.synthesisSectionId.value
+    synthesisSectionName.value = this@copy.synthesisSectionName.value
+}
