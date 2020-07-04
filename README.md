@@ -14,6 +14,10 @@ Hospital management app
 
 ![Printed receipt](https://github.com/forntoh/Hospital/blob/master/screenshots/printed_receipt.png)
 
+### CRUD Operations on Acte/Medication
+
+![CRUD Acte/Medication](https://github.com/forntoh/Hospital/blob/master/screenshots/acte_add_mod.png)
+
 ### Order history
 
 ![Order History](https://github.com/forntoh/Hospital/blob/master/screenshots/order_history.png)
