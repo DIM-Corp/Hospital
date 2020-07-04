@@ -205,7 +205,7 @@ class CreateBillView : View("Create bill") {
             paddingAll = defaultPadding
         }
 
-        setDividerPositions(0.36)
+        setDividerPositions(0.38)
     }
 
     private fun addListenersAndValidation() {

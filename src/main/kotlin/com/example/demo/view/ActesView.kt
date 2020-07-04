@@ -19,6 +19,8 @@ class ActesView : View("Actes/Medications") {
     private val medicationModel = MedicationModel()
 
     private val isMedication = SimpleBooleanProperty(false)
+    private var isMedicationOld = false
+    private var toUpdate = false
 
     private val actesController: ActesController by inject()
 
@@ -96,6 +98,7 @@ class ActesView : View("Actes/Medications") {
                                 actesController.deleteActe(actesModel)
                                 tableOfActes.selectionModel.clearSelection()
                                 tableOfMedications.selectionModel.clearSelection()
+                                toUpdate = false
                                 actesModel.rollback()
                             }
                         }
@@ -105,11 +108,18 @@ class ActesView : View("Actes/Medications") {
                                     .or(medicationModel.valid.and(isMedication).and(actesModel.valid))
                             )
                             action {
-                                if (isMedication.value) actesController.addMedication(medicationModel)
-                                else actesController.addActe(actesModel)
+                                if (toUpdate) {
+                                    actesController.updateActe(medicationModel, isMedicationOld, isMedication.value)
+                                } else {
+                                    if (isMedication.value) actesController.addMedication(medicationModel)
+                                    else actesController.addActe(actesModel)
+                                }
+                                toUpdate = false
                                 actesModel.rollback()
                                 medicationModel.warehouseStock.value = 0
                                 medicationModel.counterStock.value = 0
+                                tableOfActes.selectionModel.clearSelection()
+                                tableOfMedications.selectionModel.clearSelection()
                             }
                         }
                     }
@@ -130,6 +140,8 @@ class ActesView : View("Actes/Medications") {
                     if (selectionModel.selectedItem != null) {
                         updateActeModel(it.toMedicationModel())
                         isMedication.value = false
+                        isMedicationOld = false
+                        toUpdate = true
                     }
                 }
             }
@@ -148,6 +160,8 @@ class ActesView : View("Actes/Medications") {
                     if (selectionModel.selectedItem != null) {
                         updateActeModel(it)
                         isMedication.value = true
+                        isMedicationOld = true
+                        toUpdate = true
                         medicationModel.counterStock.value = it.counterStock.value
                         medicationModel.warehouseStock.value = it.warehouseStock.value
                     }
@@ -167,6 +181,8 @@ class ActesView : View("Actes/Medications") {
         actesModel.appliedAmount.value = it.appliedAmount.value
         actesModel.synthesisSectionId.value = it.synthesisSectionId.value
         actesModel.synthesisSectionName.value = it.synthesisSectionName.value
+        medicationModel.id.value = it.id.value
+        medicationModel.synthesisSectionId.value = it.synthesisSectionId.value
         sectionsCombo.selectionModel.select(it.synthesisSectionName.value)
     }
 }

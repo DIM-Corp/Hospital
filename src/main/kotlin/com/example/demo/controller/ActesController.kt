@@ -46,13 +46,49 @@ class ActesController : Controller() {
         sections = listOfSections
     }
 
+    fun updateActe(updatedMedication: MedicationModel, isMedicationOld: Boolean, isMedicationNew: Boolean) {
+        execute {
+            val medicationModel = updatedMedication.copy()
+            when {
+                isMedicationOld and isMedicationNew -> {
+                    actesRepo.update(medicationModel.toActeModel())
+                    medicationRepo.update(medicationModel)
+
+                    replace(medicationModel, medicationsOnly)
+                }
+                !isMedicationOld and !isMedicationNew -> {
+                    actesRepo.update(medicationModel.toActeModel())
+
+                    actesOnly.removeIf { it.id.value.toInt() == medicationModel.id.value.toInt() }
+                    actesOnly.add(medicationModel.toActeModel())
+
+                    replace(medicationModel.toActeModel(), actesOnly)
+                }
+                isMedicationOld and !isMedicationNew -> {
+                    medicationRepo.delete(medicationModel)
+                    actesRepo.update(medicationModel.toActeModel())
+
+                    medicationsOnly.removeIf { it.id.value.toInt() == medicationModel.id.value.toInt() }
+                    actesOnly.add(medicationModel.toActeModel())
+                }
+                else -> {
+                    medicationRepo.create(medicationModel)
+                    actesRepo.update(medicationModel.toActeModel())
+
+                    actesOnly.removeIf { it.id.value.toInt() == medicationModel.id.value.toInt() }
+                    medicationsOnly.add(medicationModel)
+                }
+            }
+            replace(medicationModel, listOfActes)
+        }
+    }
+
     fun addMedication(newMedication: MedicationModel) {
         execute {
             newMedication.synthesisSectionId.value = sections.find {
                 it.name.value == newMedication.synthesisSectionName.value
             }!!.id.value
             newMedication.id.value = actesRepo.create(newMedication.toActeModel(true)).id.value
-            println(newMedication.id.value)
             medicationRepo.create(newMedication)
             items.add(newMedication)
             medications.add(newMedication)
@@ -78,5 +114,17 @@ class ActesController : Controller() {
             actes.removeIf { it.id.value == actesModel.id.value }
             medications.removeIf { it.id.value == actesModel.id.value }
         }
+    }
+
+    private fun <T> replace(newItem: T, list: ObservableList<T>) {
+        val item = list.find {
+            when (it) {
+                is MedicationModel -> it.id.value.toInt() == (newItem as MedicationModel).id.value.toInt()
+                is ActeModel -> it.id.value.toInt() == (newItem as ActeModel).id.value.toInt()
+                else -> false
+            }
+        }
+        val index = list.indexOf(item)
+        list[index] = newItem
     }
 }
