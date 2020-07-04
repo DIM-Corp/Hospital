@@ -6,6 +6,7 @@ import com.example.demo.data.model.ActeModel
 import com.example.demo.data.model.MedicationModel
 import com.example.demo.data.model.toMedicationModel
 import com.example.demo.utils.defaultPadding
+import com.example.demo.utils.formatCurrencyCM
 import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Orientation
@@ -39,13 +40,13 @@ class ActesView : View("Actes/Medications") {
                             required()
                         }
                     }
-                    field("Official amount") {
+                    field(messages["o_amt"]) {
                         textfield(actesModel.officialAmount) {
                             medicationModel.officialAmount.bind(actesModel.officialAmount)
                             required()
                         }
                     }
-                    field("Applied amount") {
+                    field(messages["a_amt"]) {
                         textfield(actesModel.appliedAmount) {
                             medicationModel.appliedAmount.bind(actesModel.appliedAmount)
                             required()
@@ -53,7 +54,7 @@ class ActesView : View("Actes/Medications") {
                     }
                     hbox {
                         spacing = defaultPadding
-                        field("Section") {
+                        field(messages["section"]) {
                             sectionsCombo = combobox(actesModel.synthesisSectionName) {
                                 medicationModel.synthesisSectionName.bind(actesModel.synthesisSectionName)
                                 items = actesController.sections.map { it.name.value }.observable()
@@ -65,25 +66,25 @@ class ActesView : View("Actes/Medications") {
                             }
                         }
                         field {
-                            checkbox("Medication", isMedication) {
+                            checkbox(messages["med"], isMedication) {
                                 prefWidth = 250.0
                             }
                         }
                     }
-                    field("Counter Stock") {
+                    field(messages["c_stock"]) {
                         textfield(medicationModel.counterStock) {
                             required()
                             disableProperty().bind(Bindings.not(isMedication))
                         }
                     }
-                    field("Warehouse Stock") {
+                    field(messages["w_stock"]) {
                         textfield(medicationModel.warehouseStock) {
                             required()
                             disableProperty().bind(Bindings.not(isMedication))
                         }
                     }
                     buttonbar {
-                        button("Clear") {
+                        button(messages["clear"]) {
                             action {
                                 actesModel.rollback()
                                 medicationModel.warehouseStock.value = 0
@@ -92,7 +93,7 @@ class ActesView : View("Actes/Medications") {
                                 tableOfMedications.selectionModel.clearSelection()
                             }
                         }
-                        button("Delete") {
+                        button(messages["delete"]) {
                             enableWhen(actesModel.valid)
                             action {
                                 actesController.deleteActe(actesModel)
@@ -102,7 +103,7 @@ class ActesView : View("Actes/Medications") {
                                 actesModel.rollback()
                             }
                         }
-                        button("Save") {
+                        button(messages["save"]) {
                             isDefaultButton = true
                             enableWhen(actesModel.valid.and(Bindings.not(isMedication))
                                     .or(medicationModel.valid.and(isMedication).and(actesModel.valid))
@@ -132,10 +133,14 @@ class ActesView : View("Actes/Medications") {
             label("Actes").addClass(Styles.subheading)
             tableOfActes = tableview {
                 items = actesController.actes
+                smartResize()
                 column(messages["id"], ActeModel::id)
-                column(messages["label"], ActeModel::name)
-                column(messages["price"], ActeModel::appliedAmount)
-                column(messages["price"], ActeModel::officialAmount)
+                column(messages["label"], ActeModel::name).remainingWidth()
+                column(messages["o_amt"], ActeModel::appliedAmount).cellFormat { this.text = this.item.formatCurrencyCM() }
+                column(messages["a_amt"], ActeModel::officialAmount) {
+                    cellFormat { this.text = this.item.formatCurrencyCM() }
+                    contentWidth(padding = 50.0, useAsMin = true)
+                }
                 selectionModel.selectedItemProperty().addListener { _, _, it ->
                     if (selectionModel.selectedItem != null) {
                         updateActeModel(it.toMedicationModel())
@@ -148,13 +153,14 @@ class ActesView : View("Actes/Medications") {
             label("Medications").addClass(Styles.subheading)
             tableOfMedications = tableview {
                 items = actesController.medications
+                smartResize()
                 column(messages["id"], MedicationModel::id)
-                column(messages["label"], MedicationModel::name)
-                column(messages["price"], MedicationModel::appliedAmount)
-                column(messages["price"], MedicationModel::officialAmount)
+                column(messages["label"], MedicationModel::name).remainingWidth()
+                column(messages["o_amt"], MedicationModel::appliedAmount).cellFormat { this.text = this.item.formatCurrencyCM() }
+                column(messages["a_amt"], MedicationModel::officialAmount).cellFormat { this.text = this.item.formatCurrencyCM() }
 
-                column(messages["price"], MedicationModel::counterStock)
-                column(messages["price"], MedicationModel::warehouseStock)
+                column(messages["c_stock"], MedicationModel::counterStock)
+                column(messages["w_stock"], MedicationModel::warehouseStock)
 
                 selectionModel.selectedItemProperty().addListener { _, _, it ->
                     if (selectionModel.selectedItem != null) {
