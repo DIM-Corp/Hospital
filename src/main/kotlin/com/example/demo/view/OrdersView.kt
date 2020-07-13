@@ -32,13 +32,13 @@ class OrdersView : View() {
         vbox {
             label(messages["o_his"]).addClass(Styles.subheading)
             hbox {
-                textfield(orderController.searchProperty) { promptText = "Search"; hgrow = Priority.ALWAYS }
-                label("Between") { alignment = Pos.BASELINE_LEFT; fitToParentHeight() }
+                textfield(orderController.searchProperty) { promptText = "Rechercher"; hgrow = Priority.ALWAYS }
+                label("Entre") { alignment = Pos.BASELINE_LEFT; fitToParentHeight() }
                 datepicker(orderController.startDateProperty) { prefWidth = 100.0 }
-                label("and") { alignment = Pos.BASELINE_LEFT; fitToParentHeight() }
+                label("et") { alignment = Pos.BASELINE_LEFT; fitToParentHeight() }
                 datepicker(orderController.endDateProperty) { prefWidth = 100.0 }
-                button("Filter").action { orderController.filter() }
-                button("Clear").action { orderController.clearFilter() }
+                button("Filtre").action { orderController.filter() }
+                button("Effacer").action { orderController.clearFilter() }
                 spacing = defaultPadding - 12
             }
             tableOrders = tableview(orderController.items) {

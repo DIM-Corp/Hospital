@@ -37,12 +37,12 @@ class PrinterService : Printable {
 
         var total = 0.0
 
-        val headerMainLeft = Section(0.45f).addRows(Row("MINISTRY OF PUBLIC HEALTH"), Row("CENTER REGIONAL DELEGATION"), Row("P.O. BOX: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
+        val headerMainLeft = Section(0.45f).addRows(Row("MINISTERE DE LA SANTE PUBLIQUE"), Row("DELEGATION REGIONALE DU CENTRE"), Row("HOPITAL DE DISTRICT D’EFOULAN"), Row("B.P: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
         val headerMainCenter = Section(0.1f).addRows(Row("", RowType.IMAGE))
-        val headerMainRight = Section(0.45f).addRows(Row("MINISTRY OF PUBLIC HEALTH"), Row("CENTER REGIONAL DELEGATION"), Row("P.O. BOX: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
+        val headerMainRight = Section(0.45f).addRows(Row("MINISTRY OF PUBLIC HEALTH"), Row("CENTER REGIONAL DELEGATION"), Row("EFOULAN DISTRICT HOSPITAL"), Row("P.O. BOX: 1113 EFOULAN - YAOUNDE"), Row("TEL: +237 22 31 26 98"))
 
         val dateFormatter = DateTimeFormat.forPattern(pattern_dateTime)
-        val sub = Section(1f).addRows(Row("TICKET NO: $ticketNumber    OF    ${orderTime.toString(dateFormatter)}"))
+        val sub = Section(1f).addRows(Row("TICKET NO: $ticketNumber    Du    ${orderTime.toString(dateFormatter)}"))
 
         val info = Section(1f, Alignment.LEFT).addRows(
                 Row("CLIENT: $clientName")
