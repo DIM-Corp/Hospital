@@ -31,6 +31,8 @@ class ActesView : View("Actes/Médicaments") {
 
     override val root = splitpane {
 
+        title = messages["actMed"]
+
         vbox {
             form {
                 fieldset("Acte/Médicament", labelPosition = Orientation.HORIZONTAL) {
@@ -130,7 +132,7 @@ class ActesView : View("Actes/Médicaments") {
         }
 
         vbox {
-            label("Actes").addClass(Styles.subheading)
+            label(messages["actes"]).addClass(Styles.subheading)
             tableOfActes = tableview {
                 items = actesController.actes
                 smartResize()

@@ -37,6 +37,8 @@ class CreateBillView : View("Facturation") {
     var tableOfCommandItems: TableView<OrderItemModel> by singleAssign()
 
     override val root = splitpane {
+
+        title = messages["bill"]
         vbox {
             form {
                 fieldset("Information du patient", labelPosition = Orientation.HORIZONTAL) {
