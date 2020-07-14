@@ -14,7 +14,7 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.TableView
 import tornadofx.*
 
-class ActesView : View("Actes/Medications") {
+class ActesView : View("Actes/Médicaments") {
 
     private val actesModel = ActeModel()
     private val medicationModel = MedicationModel()
@@ -31,9 +31,11 @@ class ActesView : View("Actes/Medications") {
 
     override val root = splitpane {
 
+        title = messages["actMed"]
+
         vbox {
             form {
-                fieldset("Acte/Medication", labelPosition = Orientation.HORIZONTAL) {
+                fieldset("Acte/Médicament", labelPosition = Orientation.HORIZONTAL) {
                     field(messages["name"]) {
                         textfield(actesModel.name) {
                             medicationModel.name.bind(actesModel.name)
@@ -130,7 +132,7 @@ class ActesView : View("Actes/Medications") {
         }
 
         vbox {
-            label("Actes").addClass(Styles.subheading)
+            label(messages["actes"]).addClass(Styles.subheading)
             tableOfActes = tableview {
                 items = actesController.actes
                 smartResize()
@@ -150,7 +152,7 @@ class ActesView : View("Actes/Medications") {
                     }
                 }
             }
-            label("Medications").addClass(Styles.subheading)
+            label("Médicaments").addClass(Styles.subheading)
             tableOfMedications = tableview {
                 items = actesController.medications
                 smartResize()

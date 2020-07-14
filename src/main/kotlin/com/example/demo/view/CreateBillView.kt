@@ -22,7 +22,7 @@ import tornadofx.*
 import java.util.*
 
 
-class CreateBillView : View("Create bill") {
+class CreateBillView : View("Facturation") {
 
     private var toUpdateUser = false
     private val patientEntryModel = PatientModel()
@@ -37,9 +37,11 @@ class CreateBillView : View("Create bill") {
     var tableOfCommandItems: TableView<OrderItemModel> by singleAssign()
 
     override val root = splitpane {
+
+        title = messages["bill"]
         vbox {
             form {
-                fieldset("Patient information", labelPosition = Orientation.HORIZONTAL) {
+                fieldset("Information du patient", labelPosition = Orientation.HORIZONTAL) {
                     field(messages["name"]) {
                         nameField = combobox {
                             bind(patientEntryModel.name)
