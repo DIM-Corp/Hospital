@@ -1,20 +1,26 @@
 package com.example.demo.view
 
+import com.example.demo.data.model.MedicalStaffModel
 import javafx.geometry.Orientation
 import tornadofx.*
 
-class MainView : View("Login") {
+class LoginView : View("Login") {
+
+    private val medicalStaff = MedicalStaffModel()
+
     override val root = form {
         fieldset(title, labelPosition = Orientation.VERTICAL) {
             field("Username") {
-                textfield()
+                textfield(medicalStaff.username).required()
             }
             field("Password") {
-                passwordfield()
+                passwordfield(medicalStaff.password).required()
             }
             buttonbar {
                 button("Log in") {
                     isDefaultButton = true
+                    enableWhen(medicalStaff.valid)
+                    action { }
                 }
             }
         }
