@@ -8,9 +8,6 @@ class MedicalStaffController : Controller() {
     private val stateController by inject<StateController>()
 
     fun login(user: MedicalStaffModel) {
-        preferences {
-            putBoolean("isLoggedIn", true)
-            stateController.isLoggedIn.value = getBoolean("isLoggedIn", false)
-        }
+        stateController.isLoggedIn.value = !stateController.isLoggedIn.value
     }
 }

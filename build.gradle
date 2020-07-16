@@ -23,14 +23,6 @@ apply plugin: "kotlin"
 apply plugin: "application"
 apply plugin: 'no.tornado.fxlauncher'
 
-fxlauncher {
-    applicationVendor 'My Company'
-    applicationUrl '192.168.10.20/Hospital'
-    applicationMainClass 'com.example.demo.app.MyApp'
-    acceptDowngrade false
-    deployTarget 'forntoh@192.168.10.20:Hospital'
-}
-
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

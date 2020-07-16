@@ -34,24 +34,24 @@ class MyApp : App(LoginView::class, Styles::class) {
     private val stateController by inject<StateController>()
 
     private fun observeLogInState() {
-        stateController.isLoggedIn.addListener { _, old, isLoggedIn ->
-
-            if (old == isLoggedIn) return@addListener
+        stateController.isLoggedIn.addListener { _, _, isLoggedIn ->
 
             val view = if (isLoggedIn) find<HospitalWorkspace>() else find<LoginView>()
             bindJMetro(view.root)
 
-            runAsync {
-                GlobalScope.launch { delay(700) }
-            } ui {
-                view.currentStage?.isMaximized = isLoggedIn
-                view.preferences {
-                    if (getBoolean("isLoggedIn", false)) find<LoginView>().close()
-                    else find<HospitalWorkspace>().close()
-                }
+            view.preferences {
+                putBoolean("isLoggedIn", isLoggedIn)
             }
 
-            view.openWindow(escapeClosesWindow = false)
+            runAsync {
+                GlobalScope.launch { delay(1000) }
+            } ui {
+
+                if (isLoggedIn) find<LoginView>().close()
+                else find<HospitalWorkspace>().close()
+
+                view.openWindow(escapeClosesWindow = false)
+            }
         }
     }
 
