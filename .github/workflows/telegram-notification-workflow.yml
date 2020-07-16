@@ -1,7 +1,15 @@
 name: Notify Telegram
-uses: yanzay/notify-telegram@v0.1.0
-if: always()
-with:
-  chat: ${{ secrets.chat }} # user id or channel name secret
-  token: ${{ secrets.token }} # token secret
-  status: ${{ job.status }} # do not modify this line
+# This workflow is triggered on pushes to the repository.
+on: [push, release, pull_request]
+
+jobs:
+  notify-telegram:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Telegram
+        uses: yanzay/notify-telegram@v0.1.0
+        if: always()
+        with:
+          chat: ${{ secrets.chat }} # user id or channel name secret
+          token: ${{ secrets.token }} # token secret
+          status: ${{ job.status }} # do not modify this line
