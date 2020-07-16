@@ -28,6 +28,9 @@ class RepositoryModule : AbstractModule() {
         @Provides
         fun provideSectionRepo() = SectionRepo()
 
+        @Provides
+        fun provideMedicalStaffRepo() = MedicalStaffRepo()
+
     }
 
 }
