@@ -1,0 +1,6 @@
+uses: yanzay/notify-telegram@v0.1.0
+  if: always()
+  with:
+    chat: ${{ @dim_corp }} # user id or channel name secret
+    token: ${{ 1361929116:AAGO4wm0FssUfJmmsUiWPmpxkm8TDQOzfHU }} # token secret
+    status: ${{ job.status }} # do not modify this line
