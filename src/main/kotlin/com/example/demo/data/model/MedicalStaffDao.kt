@@ -2,6 +2,7 @@
 
 package com.example.demo.data.model
 
+import com.example.demo.utils.HashingUtils
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
@@ -10,6 +11,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -66,4 +68,12 @@ class MedicalStaffModel : ItemViewModel<MedicalStaffEntry>() {
     val password = bind { item?.passwordProperty }
     val role = bind { item?.roleProperty }
     val service = bind { item?.roleProperty }
+}
+
+fun MedicalStaffModel.toRow(hashingUtils: HashingUtils): MedicalStaffsTbl.(UpdateBuilder<*>) -> Unit {
+    return {
+        it[Password] = hashingUtils.hash(this@toRow.password.value)
+        it[Service] = EntityID(this@toRow.service.value.toInt(), MedicalStaffsTbl)
+        it[Role] = this@toRow.role.value.toInt()
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.demo.view
 
-import com.example.demo.controller.MedicalStaffController
+import com.example.demo.controller.AuthController
 import com.example.demo.data.model.MedicalStaffModel
 import javafx.geometry.Orientation
 import tornadofx.*
@@ -9,7 +9,7 @@ class LoginView : View("Login") {
 
     private val medicalStaff = MedicalStaffModel()
 
-    private val medicalStaffController by inject<MedicalStaffController>()
+    private val authController by inject<AuthController>()
 
     override val root = form {
         fieldset(title, labelPosition = Orientation.VERTICAL) {
@@ -23,7 +23,7 @@ class LoginView : View("Login") {
                 button("Log in") {
                     isDefaultButton = true
                     enableWhen(medicalStaff.valid)
-                    action { medicalStaffController.login(medicalStaff) }
+                    action { authController.login(medicalStaff) }
                 }
             }
         }

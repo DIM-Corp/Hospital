@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
 class MyApp : App(LoginView::class, Styles::class) {
 
     init {
-        val guice = Guice.createInjector(RepositoryModule())
+        val guice = Guice.createInjector(RepositoryModule(), UtilsModule())
 
         FX.dicontainer = object : DIContainer {
             override fun <T : Any> getInstance(type: KClass<T>) = guice.getInstance(type.java)
