@@ -1,4 +1,5 @@
-uses: yanzay/notify-telegram@v0.1.0
+- name: Notify Telegram
+  uses: yanzay/notify-telegram@v0.1.0
   if: always()
   with:
     chat: ${{ secrets.chat }} # user id or channel name secret
