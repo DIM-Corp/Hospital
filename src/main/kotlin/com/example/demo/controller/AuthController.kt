@@ -20,7 +20,6 @@ class AuthController : Controller() {
 
     fun login(user: MedicalStaffModel) = execute {
 
-        medicalStaffRepo.create(user)
         val autUser = medicalStaffRepo.findByUsername(user)
 
         if (autUser == null) usernameError.set(true)
