@@ -3,12 +3,12 @@
 package com.example.demo.data.model
 
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleObjectProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -28,20 +28,36 @@ class Doctor(id: EntityID<Int>) : IntEntity(id) {
     var orders by Order via DoctorOrdersTbl
 }
 
-fun ResultRow.toDoctorEntry() = DoctorEntry(
+fun ResultRow.toDoctorEntry(ignoreJoin: Boolean = false) = DoctorEntry(
         this[DoctorsTbl.id].value,
-        this.toSpecialityEntry()
+        if (ignoreJoin) null else this.toSpecialityEntry(),
+        if (ignoreJoin) null else this.toUserEntry()
 )
 
-class DoctorEntry(id: Int, speciality: SpecialityEntry) {
+class DoctorEntry(id: Int, speciality: SpecialityEntry?, user: UserEntry?) {
     var idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
-    var specialityProperty = SimpleObjectProperty(speciality)
-    val speciality by specialityProperty
+    val speciality = SpecialityModel().apply { item = speciality }
+    val user = UserModel().apply { item = user }
 }
 
 class DoctorModel : ItemViewModel<DoctorEntry>() {
     val id = bind { item?.idProperty }
-    val speciality = bind { item?.specialityProperty }
+
+    // User Data
+    val name = bind { item?.user?.name }
+    val address = bind { item?.user?.address }
+    val gender = bind { item?.user?.gender }
+    val age = bind { item?.user?.age }
+    val telephone = bind { item?.user?.telephone }
+
+    // Speciality Data
+    val specialityId = bind { item?.speciality?.id }
+    val specialityLabel = bind { item?.speciality?.name }
+}
+
+fun DoctorModel.toRow(): DoctorsTbl.(UpdateBuilder<*>) -> Unit = {
+    it[id] = EntityID(1, MedicalStaffsTbl)
+    it[Speciality] = EntityID(this@toRow.specialityId.value.toInt(), MedicalStaffsTbl)
 }

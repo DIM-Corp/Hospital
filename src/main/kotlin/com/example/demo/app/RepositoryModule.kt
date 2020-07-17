@@ -31,6 +31,9 @@ class RepositoryModule : AbstractModule() {
         @Provides
         fun provideMedicalStaffRepo() = MedicalStaffRepo()
 
+        @Provides
+        fun provideDoctorRepo() = DoctorRepo()
+
     }
 
 }
