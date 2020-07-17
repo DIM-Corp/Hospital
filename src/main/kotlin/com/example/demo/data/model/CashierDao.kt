@@ -8,6 +8,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -29,17 +30,35 @@ class Cashier(id: EntityID<Int>) : IntEntity(id) {
     var orders by Order via CashierOrdersTbl
 }
 
-fun ResultRow.toCashierEntry() = CashierEntry(this[CashiersTbl.id].value, this[CashiersTbl.Type])
+fun ResultRow.toCashierEntry(ignoreJoin: Boolean = false) = CashierEntry(
+        this[CashiersTbl.id].value,
+        this[CashiersTbl.Type],
+        if (ignoreJoin) null else this.toUserEntry()
+)
 
-class CashierEntry(id: Int, type: Int) {
+class CashierEntry(id: Int, type: Int, user: UserEntry?) {
     val idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
     val typeProperty = SimpleIntegerProperty(type)
     val type by typeProperty
+
+    val user = UserModel().apply { item = user }
 }
 
 class CashierModel : ItemViewModel<CashierEntry>() {
     val id = bind { item?.idProperty }
     val type = bind { item?.typeProperty }
+
+    // User Data
+    val name = bind { item?.user?.name }
+    val address = bind { item?.user?.address }
+    val gender = bind { item?.user?.gender }
+    val age = bind { item?.user?.age }
+    val telephone = bind { item?.user?.telephone }
+}
+
+fun CashierModel.toRow(): CashiersTbl.(UpdateBuilder<*>) -> Unit = {
+    it[id] = EntityID(1, CashiersTbl)
+    it[Type] = this@toRow.type.value.toInt()
 }

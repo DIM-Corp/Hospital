@@ -58,6 +58,6 @@ class DoctorModel : ItemViewModel<DoctorEntry>() {
 }
 
 fun DoctorModel.toRow(): DoctorsTbl.(UpdateBuilder<*>) -> Unit = {
-    it[id] = EntityID(1, MedicalStaffsTbl)
+    it[id] = EntityID(this@toRow.id.value.toInt(), MedicalStaffsTbl)
     it[Speciality] = EntityID(this@toRow.specialityId.value.toInt(), MedicalStaffsTbl)
 }
