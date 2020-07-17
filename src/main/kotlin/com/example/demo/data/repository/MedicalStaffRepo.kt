@@ -1,9 +1,6 @@
 package com.example.demo.data.repository
 
-import com.example.demo.data.model.MedicalStaffModel
-import com.example.demo.data.model.MedicalStaffsTbl
-import com.example.demo.data.model.toMedicalStaffEntry
-import com.example.demo.data.model.toRow
+import com.example.demo.data.model.*
 import com.example.demo.utils.HashingUtils
 import org.jetbrains.exposed.sql.*
 import tornadofx.*
@@ -28,16 +25,19 @@ class MedicalStaffRepo : CrudRepository<MedicalStaffModel, Int>, Component() {
     override fun delete(entry: MedicalStaffModel) = MedicalStaffsTbl.deleteWhere { MedicalStaffsTbl.id eq entry.id.value.toInt() }
 
     override fun find(id: Int) = listOf(MedicalStaffModel().apply {
-        item = MedicalStaffsTbl.select { MedicalStaffsTbl.id eq id }.firstOrNull()?.toMedicalStaffEntry()
+        item = MedicalStaffsTbl
+                .join(ServicesTbl, JoinType.LEFT, MedicalStaffsTbl.Service, ServicesTbl.id)
+                .select { MedicalStaffsTbl.id eq id }
+                .firstOrNull()?.toMedicalStaffEntry()
     })
+
+    override fun findAll() = MedicalStaffsTbl
+            .selectAll()
+            .map { MedicalStaffModel().apply { item = it.toMedicalStaffEntry(true) } }
+
+    override fun deleteAll() = MedicalStaffsTbl.deleteAll()
 
     fun findByUsername(entry: MedicalStaffModel) = MedicalStaffsTbl
             .select { MedicalStaffsTbl.Username eq entry.username.value }
             .firstOrNull()?.toMedicalStaffEntry(true)
-
-    override fun findAll() = MedicalStaffsTbl
-            .selectAll()
-            .map { MedicalStaffModel().apply { item = it.toMedicalStaffEntry() } }
-
-    override fun deleteAll() = MedicalStaffsTbl.deleteAll()
 }

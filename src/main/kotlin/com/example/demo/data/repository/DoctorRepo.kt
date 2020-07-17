@@ -22,17 +22,15 @@ class DoctorRepo : CrudRepository<DoctorModel, Int> {
 
     override fun find(id: Int) = listOf(DoctorModel().apply {
         item = DoctorsTbl
-                .join(UsersTbl, JoinType.LEFT, PatientsTbl.id, UsersTbl.id)
+                .join(UsersTbl, JoinType.LEFT, DoctorsTbl.id, UsersTbl.id)
                 .join(SpecialitiesTbl, JoinType.LEFT, DoctorsTbl.id, SpecialitiesTbl.id)
                 .select { DoctorsTbl.id eq id }
                 .firstOrNull()?.toDoctorEntry()
     })
 
     override fun findAll() = DoctorsTbl
-            .join(UsersTbl, JoinType.LEFT, PatientsTbl.id, UsersTbl.id)
-            .join(SpecialitiesTbl, JoinType.LEFT, DoctorsTbl.id, SpecialitiesTbl.id)
             .selectAll()
-            .map { DoctorModel().apply { item = it.toDoctorEntry() } }
+            .map { DoctorModel().apply { item = it.toDoctorEntry(true) } }
 
     override fun deleteAll() = DoctorsTbl.deleteAll()
 }

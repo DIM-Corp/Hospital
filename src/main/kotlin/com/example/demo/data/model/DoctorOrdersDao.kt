@@ -34,3 +34,5 @@ class DoctorOrderModel : ItemViewModel<DoctorOrderEntry>() {
     val order = bind { item?.orderProperty }
     val doctor = bind { item?.doctorProperty }
 }
+
+// TODO: Create Repo for DoctorOrders

@@ -28,9 +28,8 @@ class CashierRepo : CrudRepository<CashierModel, Int> {
     })
 
     override fun findAll() = CashiersTbl
-            .join(UsersTbl, JoinType.LEFT, CashiersTbl.id, UsersTbl.id)
             .selectAll()
-            .map { CashierModel().apply { item = it.toCashierEntry() } }
+            .map { CashierModel().apply { item = it.toCashierEntry(true) } }
 
     override fun deleteAll() = CashiersTbl.deleteAll()
 }

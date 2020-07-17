@@ -34,3 +34,5 @@ class CashierOrderModel : ItemViewModel<CashierOrderEntry>() {
     val order = bind { item?.orderProperty }
     val cashier = bind { item?.cashierProperty }
 }
+
+// TODO: Create Repo for CashierOrders
