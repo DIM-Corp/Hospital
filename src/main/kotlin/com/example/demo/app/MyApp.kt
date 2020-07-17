@@ -34,7 +34,7 @@ class MyApp : App(LoginView::class, Styles::class) {
     private val stateController by inject<StateController>()
 
     private fun observeLogInState() {
-        stateController.isLoggedIn.addListener { _, _, isLoggedIn ->
+        stateController.isLoggedIn.onChange { isLoggedIn ->
 
             val view = if (isLoggedIn) find<HospitalWorkspace>() else find<LoginView>()
             bindJMetro(view.root)

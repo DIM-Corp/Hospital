@@ -10,6 +10,7 @@ class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
         val subheading by cssclass()
+        val error by cssclass()
         val j_metro by cssclass()
         val accent_color by cssproperty<Color>("accent_color")
     }
@@ -24,6 +25,12 @@ class Styles : Stylesheet() {
         label and subheading {
             fontSize = 16.px
             fontWeight = FontWeight.BOLD
+        }
+
+        label and error {
+            fontSize = 14.px
+            fontWeight = FontWeight.BOLD
+            textFill = Color.RED
         }
 
         tabPane {

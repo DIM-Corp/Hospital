@@ -17,7 +17,7 @@ import tornadofx.*
  * @created 12-Jun-2020 11:17:28 AM
  */
 object DoctorsTbl : IdTable<Int>() {
-    override val id = MedicalStaffsTbl.integer("DoctorID").entityId() references MedicalStaffsTbl.id
+    override val id = reference("DoctorID", MedicalStaffsTbl)
     val Speciality = reference("SpecialityID", SpecialitiesTbl, fkName = "FK_Doctor_Speciality")
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
