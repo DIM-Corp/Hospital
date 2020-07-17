@@ -20,11 +20,11 @@ import tornadofx.*
  * @created 12-Jun-2020 11:17:28 AM
  */
 object MedicalStaffsTbl : IdTable<Int>() {
-    override val id = integer("Matriculation").entityId() references UsersTbl.id
+    override val id = reference("Matriculation", UsersTbl)
     var Username = varchar("Username", 32)
-    var Password = varchar("Password", 32)
-    var Service = reference("ServiceID", ServicesTbl, fkName = "FK_MedicalStaff_WorksIn")
-    var Role = integer("Role")
+    var Password = text("Password")
+    var Service = reference("ServiceID", ServicesTbl, fkName = "FK_MedicalStaff_WorksIn").nullable()
+    var Role = integer("Role").default(1)
     override val primaryKey = PrimaryKey(columns = *arrayOf(id))
 }
 
@@ -37,15 +37,15 @@ class MedicalStaff(id: EntityID<Int>) : IntEntity(id) {
     var role by MedicalStaffsTbl.Role
 }
 
-fun ResultRow.toMedicalStaffEntry() = MedicalStaffEntry(
+fun ResultRow.toMedicalStaffEntry(ignoreService: Boolean = false) = MedicalStaffEntry(
         this[MedicalStaffsTbl.id].value,
         this[MedicalStaffsTbl.Username],
         this[MedicalStaffsTbl.Password],
         this[MedicalStaffsTbl.Role],
-        this.toServiceEntry()
+        if (ignoreService) null else this.toServiceEntry()
 )
 
-class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, service: ServiceEntry) {
+class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, service: ServiceEntry?) {
     var idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
@@ -70,10 +70,12 @@ class MedicalStaffModel : ItemViewModel<MedicalStaffEntry>() {
     val service = bind { item?.roleProperty }
 }
 
-fun MedicalStaffModel.toRow(hashingUtils: HashingUtils): MedicalStaffsTbl.(UpdateBuilder<*>) -> Unit {
-    return {
-        it[Password] = hashingUtils.hash(this@toRow.password.value)
-        it[Service] = EntityID(this@toRow.service.value.toInt(), MedicalStaffsTbl)
-        it[Role] = this@toRow.role.value.toInt()
-    }
+fun MedicalStaffModel.toRow(hashingUtils: HashingUtils): MedicalStaffsTbl.(UpdateBuilder<*>) -> Unit = {
+    it[id] = EntityID(1, MedicalStaffsTbl)
+
+    it[Username] = this@toRow.username.value
+    it[Password] = hashingUtils.hash(this@toRow.password.value)
+
+    it[Service] = EntityID(this@toRow.service.value.toInt(), MedicalStaffsTbl)
+    it[Role] = this@toRow.role.value.toInt()
 }

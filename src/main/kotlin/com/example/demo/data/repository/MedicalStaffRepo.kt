@@ -13,7 +13,7 @@ class MedicalStaffRepo : CrudRepository<MedicalStaffModel, Int>, Component() {
     private val hashingUtils: HashingUtils by di()
 
     override fun create(entry: MedicalStaffModel): MedicalStaffModel {
-        val result = MedicalStaffsTbl.insert(entry.toRow(hashingUtils)).resultedValues?.first()?.toMedicalStaffEntry()
+        val result = MedicalStaffsTbl.insert(entry.toRow(hashingUtils)).resultedValues?.first()?.toMedicalStaffEntry(true)
         return entry.apply { id.value = result?.id }
     }
 
@@ -30,6 +30,10 @@ class MedicalStaffRepo : CrudRepository<MedicalStaffModel, Int>, Component() {
     override fun find(id: Int) = listOf(MedicalStaffModel().apply {
         item = MedicalStaffsTbl.select { MedicalStaffsTbl.id eq id }.firstOrNull()?.toMedicalStaffEntry()
     })
+
+    fun findByUsername(entry: MedicalStaffModel) = MedicalStaffsTbl
+            .select { MedicalStaffsTbl.Username eq entry.username.value }
+            .firstOrNull()?.toMedicalStaffEntry(true)
 
     override fun findAll() = MedicalStaffsTbl
             .selectAll()
