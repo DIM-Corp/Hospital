@@ -7,6 +7,7 @@ import com.example.demo.utils.isDarkTheme
 import com.example.demo.view.LoginView
 import com.google.inject.Guice
 import javafx.scene.Parent
+import javafx.stage.Screen
 import javafx.stage.Stage
 import jfxtras.styles.jmetro.JMetro
 import jfxtras.styles.jmetro.Style
@@ -50,16 +51,28 @@ class MyApp : App(LoginView::class, Styles::class) {
                 if (isLoggedIn) find<LoginView>().close()
                 else find<HospitalWorkspace>().close()
 
-                view.openWindow(escapeClosesWindow = false)
+                view.openWindow(escapeClosesWindow = false)?.apply {
+                    width = if (!isLoggedIn) loginViewSize.first else Screen.getPrimary().bounds.width
+                    height = if (!isLoggedIn) loginViewSize.second else Screen.getPrimary().bounds.height - 32
+                    minWidth = width / 1.9
+                    minHeight = height / 1.3
+                    if (isLoggedIn) {
+                        x = 0.0
+                        y = 0.0
+                    }
+                    isMaximized = isLoggedIn
+                }
             }
         }
     }
 
+    private val loginViewSize: Pair<Double, Double> = Pair(512.0, 264.0)
+
     override fun start(stage: Stage) {
         observeLogInState()
         with(stage) {
-            width = 1366.0
-            height = 768.0
+            width = loginViewSize.first
+            height = loginViewSize.second
             minWidth = width / 1.9
             minHeight = height / 1.3
         }

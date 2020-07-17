@@ -18,12 +18,11 @@ class AuthController : Controller() {
     val usernameError = SimpleBooleanProperty(false)
     val passwordError = SimpleBooleanProperty(false)
 
-    fun login(user: MedicalStaffModel) = execute {
+    fun login(user: MedicalStaffModel) {
+        val authUser = execute { medicalStaffRepo.findByUsername(user) }
 
-        val autUser = medicalStaffRepo.findByUsername(user)
-
-        if (autUser == null) usernameError.set(true)
-        else if (!hashingUtils.verify(user.password.value, autUser.password)) passwordError.set(true)
+        if (authUser == null) usernameError.set(true)
+        else if (!hashingUtils.verify(user.password.value, authUser.password)) passwordError.set(true)
         else {
             usernameError.set(false)
             passwordError.set(false)
