@@ -26,6 +26,7 @@ class AuthController : Controller() {
         else {
             usernameError.set(false)
             passwordError.set(false)
+            //TODO: Check the type of user
             stateController.isLoggedIn.value = !stateController.isLoggedIn.value
         }
     }
