@@ -1,4 +1,4 @@
-package com.example.demo.app
+package com.example.demo.app.di
 
 import com.example.demo.data.repository.*
 import com.google.inject.AbstractModule

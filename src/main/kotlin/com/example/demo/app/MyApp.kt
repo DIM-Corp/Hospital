@@ -1,5 +1,8 @@
 package com.example.demo.app
 
+import com.example.demo.app.di.RepositoryModule
+import com.example.demo.app.di.UserModule
+import com.example.demo.app.di.UtilsModule
 import com.example.demo.controller.StateController
 import com.example.demo.data.db.createTables
 import com.example.demo.data.db.enableConsoleLogger
@@ -21,7 +24,7 @@ import kotlin.reflect.KClass
 class MyApp : App(LoginView::class, Styles::class) {
 
     init {
-        val guice = Guice.createInjector(RepositoryModule(), UtilsModule())
+        val guice = Guice.createInjector(RepositoryModule(), UtilsModule(), UserModule())
 
         FX.dicontainer = object : DIContainer {
             override fun <T : Any> getInstance(type: KClass<T>) = guice.getInstance(type.java)

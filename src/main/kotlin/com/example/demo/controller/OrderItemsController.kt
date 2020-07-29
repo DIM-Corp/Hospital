@@ -1,11 +1,11 @@
 package com.example.demo.controller
 
+import com.example.demo.app.service.printing.Item
+import com.example.demo.app.service.printing.PrinterService
 import com.example.demo.data.db.execute
 import com.example.demo.data.model.*
 import com.example.demo.data.repository.OrderItemsRepo
 import com.example.demo.data.repository.OrderRepo
-import com.example.demo.utils.Item
-import com.example.demo.utils.PrinterService
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.collections.ObservableList
 import org.joda.time.DateTime

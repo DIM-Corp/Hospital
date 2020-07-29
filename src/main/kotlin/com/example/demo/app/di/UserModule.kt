@@ -1,10 +1,10 @@
-package com.example.demo.app
+package com.example.demo.app.di
 
 import com.example.demo.utils.HashingUtils
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 
-class UtilsModule : AbstractModule() {
+class UserModule : AbstractModule() {
 
     companion object {
 

@@ -1,4 +1,4 @@
-package com.example.demo.utils
+package com.example.demo.app.service.printing
 
 enum class Alignment {
     LEFT, RIGHT, CENTER
