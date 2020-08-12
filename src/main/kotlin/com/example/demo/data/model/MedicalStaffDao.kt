@@ -4,7 +4,6 @@ package com.example.demo.data.model
 
 import com.example.demo.utils.HashingUtils
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -37,15 +36,16 @@ class MedicalStaff(id: EntityID<Int>) : IntEntity(id) {
     var role by MedicalStaffsTbl.Role
 }
 
-fun ResultRow.toMedicalStaffEntry(ignoreService: Boolean = false) = MedicalStaffEntry(
+fun ResultRow.toMedicalStaffEntry(ignoreUser: Boolean = false, ignoreService: Boolean = true) = MedicalStaffEntry(
         this[MedicalStaffsTbl.id].value,
         this[MedicalStaffsTbl.Username],
         this[MedicalStaffsTbl.Password],
         this[MedicalStaffsTbl.Role],
-        if (ignoreService) null else this.toServiceEntry()
+        if (ignoreService) null else this.toServiceEntry(),
+        if (ignoreUser) null else this.toUserEntry()
 )
 
-class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, service: ServiceEntry?) {
+class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, service: ServiceEntry?, user: UserEntry?) {
     var idProperty = SimpleIntegerProperty(id)
     val id by idProperty
 
@@ -58,8 +58,10 @@ class MedicalStaffEntry(id: Int, username: String, password: String, role: Int, 
     var roleProperty = SimpleIntegerProperty(role)
     val role by roleProperty
 
-    var serviceProperty = SimpleObjectProperty(service)
-    val service by serviceProperty
+    val service = ServiceModel().apply { item = service }
+
+    val user = UserModel().apply { item = user }
+
 }
 
 class MedicalStaffModel : ItemViewModel<MedicalStaffEntry>() {
@@ -67,15 +69,34 @@ class MedicalStaffModel : ItemViewModel<MedicalStaffEntry>() {
     val username = bind { item?.usernameProperty }
     val password = bind { item?.passwordProperty }
     val role = bind { item?.roleProperty }
-    val service = bind { item?.roleProperty }
+
+    val serviceId = bind { item?.service?.id }
+    val serviceName = bind { item?.service?.name }
+
+    val name = bind { item?.user?.name }
+    val address = bind { item?.user?.address }
+    val gender = bind { item?.user?.gender }
+    val age = bind { item?.user?.age }
+    val telephone = bind { item?.user?.telephone }
 }
 
 fun MedicalStaffModel.toRow(hashingUtils: HashingUtils): MedicalStaffsTbl.(UpdateBuilder<*>) -> Unit = {
-    it[id] = EntityID(1, MedicalStaffsTbl)
+    it[id] = EntityID(this@toRow.id.value.toInt(), MedicalStaffsTbl)
 
     it[Username] = this@toRow.username.value
     it[Password] = hashingUtils.hash(this@toRow.password.value)
 
-    it[Service] = EntityID(this@toRow.service.value.toInt(), MedicalStaffsTbl)
-    it[Role] = this@toRow.role.value.toInt()
+    if (this@toRow.serviceId.value != null) it[Service] = EntityID(this@toRow.serviceId.value.toInt(), MedicalStaffsTbl)
+    if (this@toRow.role.value != null) it[Role] = this@toRow.role.value.toInt()
+}
+
+fun MedicalStaffModel.toUserModel(hasId: Boolean = true): UserModel = UserModel().apply {
+    item = UserEntry(
+            if (hasId) this@toUserModel.id.value.toInt() else 0,
+            this@toUserModel.name.value,
+            this@toUserModel.address.value,
+            this@toUserModel.gender.value,
+            this@toUserModel.age.value.toInt(),
+            this@toUserModel.telephone.value
+    )
 }

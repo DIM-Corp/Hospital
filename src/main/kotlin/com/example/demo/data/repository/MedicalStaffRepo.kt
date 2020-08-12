@@ -26,18 +26,21 @@ class MedicalStaffRepo : CrudRepository<MedicalStaffModel, Int>, Component() {
 
     override fun find(id: Int) = listOf(MedicalStaffModel().apply {
         item = MedicalStaffsTbl
+                .join(UsersTbl, JoinType.LEFT, MedicalStaffsTbl.id, UsersTbl.id)
                 .join(ServicesTbl, JoinType.LEFT, MedicalStaffsTbl.Service, ServicesTbl.id)
                 .select { MedicalStaffsTbl.id eq id }
-                .firstOrNull()?.toMedicalStaffEntry()
+                .firstOrNull()?.toMedicalStaffEntry(true)
     })
 
     override fun findAll() = MedicalStaffsTbl
+            .join(UsersTbl, JoinType.LEFT, MedicalStaffsTbl.id, UsersTbl.id)
+            .join(ServicesTbl, JoinType.LEFT, MedicalStaffsTbl.Service, ServicesTbl.id)
             .selectAll()
-            .map { MedicalStaffModel().apply { item = it.toMedicalStaffEntry(true) } }
+            .map { MedicalStaffModel().apply { item = it.toMedicalStaffEntry(false) } }
 
     override fun deleteAll() = MedicalStaffsTbl.deleteAll()
 
     fun findByUsername(entry: MedicalStaffModel) = MedicalStaffsTbl
             .select { MedicalStaffsTbl.Username eq entry.username.value }
-            .firstOrNull()?.toMedicalStaffEntry(true)
+            .firstOrNull()?.toMedicalStaffEntry(false)
 }

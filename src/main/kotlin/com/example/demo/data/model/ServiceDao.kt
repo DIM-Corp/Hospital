@@ -9,6 +9,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import tornadofx.*
 
 /**
@@ -44,4 +45,9 @@ class ServiceEntry(id: Int, name: String) {
 class ServiceModel : ItemViewModel<ServiceEntry>() {
     val id = bind { item?.idProperty }
     val name = bind { item?.nameProperty }
+}
+
+fun ServiceModel.toRow(): ServicesTbl.(UpdateBuilder<*>) -> Unit = {
+    it[id] = EntityID(this@toRow.id.value.toInt(), UsersTbl)
+    it[Name] = this@toRow.name.value
 }
