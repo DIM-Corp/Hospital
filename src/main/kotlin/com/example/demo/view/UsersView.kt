@@ -2,22 +2,27 @@ package com.example.demo.view
 
 import com.example.demo.controller.MedicalStaffController
 import com.example.demo.data.model.MedicalStaffModel
+import com.example.demo.data.model.ServiceModel
 import com.example.demo.utils.defaultPadding
 import javafx.geometry.Orientation
 import javafx.scene.control.ComboBox
 import tornadofx.*
 
 
-class UsersView : View("My View") {
+class UsersView : View() {
 
     private var toUpdateStaff = false
 
     private val staffModel = MedicalStaffModel()
+    private val serviceModel = ServiceModel()
+
     private val staffController: MedicalStaffController by inject()
 
     var servicesCombo: ComboBox<String> by singleAssign()
 
     override val root = splitpane {
+
+        title = messages["staff"]
 
         vbox {
             form {
@@ -102,6 +107,50 @@ class UsersView : View("My View") {
             paddingAll = defaultPadding
         }
 
-        setDividerPositions(0.3)
+        vbox {
+
+            form {
+                fieldset(messages["services"]) {
+
+                    field(messages["service"]) {
+                        textfield(serviceModel.name) {
+                            promptText = messages["service"]
+                            required()
+                        }
+                    }
+
+                    tableview<ServiceModel> {
+                        items = staffController.servicesItems
+                        column(messages["name"], ServiceModel::name)
+
+                        selectionModel.selectedIndexProperty().addListener { _, _, newValue ->
+                            serviceModel.item = staffController.servicesItems[newValue.toInt()].item
+                        }
+                    }
+                    buttonbar {
+                        button(messages["delete"]) {
+                            action {
+                                staffController.deleteService(serviceModel)
+                                serviceModel.rollback()
+                            }
+                        }
+                        button(messages["save"]) {
+                            enableWhen(serviceModel.valid)
+                            isDefaultButton = true
+                            action {
+                                staffController.addService(serviceModel)
+                                serviceModel.rollback()
+                            }
+                        }
+                        paddingTop = defaultPadding
+                    }
+                }
+            }
+
+            spacing = defaultPadding
+            paddingAll = defaultPadding
+        }
+
+        setDividerPositions(0.3, 0.95)
     }
 }

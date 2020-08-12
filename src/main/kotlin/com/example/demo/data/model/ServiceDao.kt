@@ -48,6 +48,5 @@ class ServiceModel : ItemViewModel<ServiceEntry>() {
 }
 
 fun ServiceModel.toRow(): ServicesTbl.(UpdateBuilder<*>) -> Unit = {
-    it[id] = EntityID(this@toRow.id.value.toInt(), UsersTbl)
     it[Name] = this@toRow.name.value
 }

@@ -63,4 +63,13 @@ class MedicalStaffController : Controller() {
 
     fun delete(staffItem: MedicalStaffModel) = execute { staffRepo.delete(staffItem) }
 
+    fun addService(newService: ServiceModel) = execute {
+        listOfServices.add(servicesRepo.create(newService))
+    }
+
+    fun deleteService(serviceItem: ServiceModel) = execute {
+        servicesRepo.delete(serviceItem)
+        listOfServices.remove(serviceItem)
+    }
+
 }
